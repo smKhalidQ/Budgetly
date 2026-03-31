@@ -4,14 +4,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/constances.dart';
-import '../../../../core/domain/entities/category_entity.dart';
-import '../../../../core/themes/app_color.dart';
-import '../../../subcategory/presentation/widgets/subcategories_widget.dart';
-import '../../../transaction/presentation/screens/new_expense_entry_screen.dart';
+import '../../../../../core/constances.dart';
+import '../../../../../core/domain/entities/category_entity.dart';
+import '../../../../../core/themes/app_color.dart' show AppColor;
 
-import '../cubit/category_cubit.dart';
-import '../cubit/category_states.dart';
+import '../../../../subcategory/presentation/cubit/subcategory_states.dart';
+import '../../../../subcategory/presentation/widgets/subcategories_list_widget.dart';
+import '../../../../transaction/presentation/screens/new_expense_entry_screen.dart';
+
+import '../../cubit/category_cubit.dart';
+import '../../cubit/category_states.dart';
+
 
 class MainCategoriesListWidget extends StatelessWidget {
   const MainCategoriesListWidget({super.key});
@@ -22,9 +25,9 @@ class MainCategoriesListWidget extends StatelessWidget {
       builder: (context, state) {
         if (state is GetCategoryDataSuccessState || state is ChangeCategoryAppearanceState) {
           final categoryCubit = CategoryCubit.get(context);
-          final categories = categoryCubit.fetchedCategories;
-
+          final categories = categoryCubit.fetchedCategoriesList;
           return ListView.separated(
+
             padding: const EdgeInsets.only(top: 15),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -34,21 +37,15 @@ class MainCategoriesListWidget extends StatelessWidget {
               final categoryEntity = categories[index];
               return GestureDetector(
                 onTap: () {
-                  debugPrint("Pressed");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BlocProvider.value(
-                          value: categoryCubit,
-                          child: NewExpenseEntryScreen(
-                         categoryEntity: categoryEntity,
-                            subCategories:[
-                              Subcategory(name: ("Food"), icon: Icons.food_bank_outlined, color: AppColor.primaryColor),
-                              Subcategory(name: ("Food"), icon: Icons.food_bank_outlined, color: AppColor.primaryColor)
-                            ],
-
-                          )
-                      ),
+                      builder: (context) {
+                        print("The Id of categoryEntity is ${categoryEntity.categoryId}");
+                        return NewExpenseEntryScreen(
+                          categoryEntity: categoryEntity,
+                        );
+                      }
                     ),
                   );
                 },
@@ -56,10 +53,11 @@ class MainCategoriesListWidget extends StatelessWidget {
               );
             },
           );
+
         } else if (state is GetCategoryDataErrorState) {
           return Center(child: Text(state.errorMessage));
         } else {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: Text("Loading..."));
         }
       },
     );
@@ -69,7 +67,7 @@ class MainCategoriesListWidget extends StatelessWidget {
     final double progressValue = categoryEntity.allocatedAmount == 0
         ? 0
         : categoryEntity.storedSpentAmount / categoryEntity.allocatedAmount!;
-    final Color categoryColor = parseColorFromString(categoryEntity.color!);
+    final Color categoryColor = parseColorFromString(categoryEntity.categoryColor!);
     final int percentage = (progressValue * 100).round();
     final double remainingAmount = categoryEntity.allocatedAmount! - categoryEntity.storedSpentAmount;
 
@@ -110,7 +108,7 @@ class MainCategoriesListWidget extends StatelessWidget {
             ),
             child:Icon(
               IconData(
-                int.parse(categoryEntity.icon!),
+                int.parse(categoryEntity.categoryIcon!),
                 fontFamily: 'MaterialIcons',
               ),
               color: Colors.white,
@@ -129,8 +127,8 @@ class MainCategoriesListWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        categoryEntity.name!,
-                        style: TextStyle(
+                        categoryEntity.categoryName!,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColor.textPrimary,

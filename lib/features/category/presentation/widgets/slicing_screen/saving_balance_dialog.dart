@@ -127,27 +127,27 @@ class SavingBalanceDialog extends StatelessWidget {
   }
 
   void _manageSavingBudget(CategoryCubit categoryCubit, context) async {
-    int index = categoryCubit.fetchedCategories
-        .indexWhere((category) => category.name == "Saving");
+    int index = categoryCubit.fetchedCategoriesList
+        .indexWhere((category) => category.categoryName == "Saving");
 
     categoryCubit.remainingBudget > 0
         ? categoryCubit.mappedAllocatedCategoryAmount[index] =
         categoryCubit.remainingBudget
         : null;
 
-    CategoryEntity oldCategory=categoryCubit.fetchedCategories[index];
+    CategoryEntity oldCategory=categoryCubit.fetchedCategoriesList[index];
     final updatedCategory = CategoryModel(
       categoryId: oldCategory.categoryId,
-      name: oldCategory.name,
-      icon: oldCategory.icon,
-      color: oldCategory.color,
+      categoryName: oldCategory.categoryName,
+      categoryIcon: oldCategory.categoryIcon,
+      categoryColor: oldCategory.categoryColor,
       allocatedAmount: categoryCubit.mappedAllocatedCategoryAmount[index]!.toDouble(),
       storedSpentAmount: oldCategory.storedSpentAmount,
     );
-    categoryCubit.fetchedCategories[index] = updatedCategory;
+    categoryCubit.fetchedCategoriesList[index] = updatedCategory;
 
 
-    await categoryCubit.initializeCategoriesStage(categoryCubit.fetchedCategories);
+    await categoryCubit.initializeCategoriesStage(categoryCubit.fetchedCategoriesList);
 
     Navigator.push(
         context, MaterialPageRoute(builder: (ctx) =>  ExploreScreen()));

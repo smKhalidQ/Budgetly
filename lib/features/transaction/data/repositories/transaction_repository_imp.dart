@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/transaction_entity.dart';
 import '../../domain/repositories/transaction_repository.dart';
-import '../../../../core/data/database/category_management_datasource.dart';
+import '../../../../core/data/database/category_datasource.dart';
 import '../datasources/transaction_datasources.dart';
 import '../models/transaction_model.dart';
 

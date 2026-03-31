@@ -46,7 +46,13 @@ class CustomSetUpBottomBar extends StatelessWidget {
                     _showBudgetAlertDialog(context,categoryCubit);
                   }
                   else{
-                    await categoryCubit.initializeCategoriesStage(categoryCubit.fetchedCategories);
+                    print("The length of the category list (custom bottom nav bar) is ${categoryCubit.fetchedCategoriesList.length}");
+                    categoryCubit.fetchedCategoriesList.forEach((category) {
+                      print("The category Id of ${category.categoryName} is ${category.categoryId}");
+                    });
+
+
+                    await categoryCubit.initializeCategoriesStage(categoryCubit.fetchedCategoriesList);
 
                     if (context.mounted) {
                       Navigator.push(
@@ -99,14 +105,6 @@ class CustomSetUpBottomBar extends StatelessWidget {
               child: IconButton(
                 onPressed: () {
                   CategoryCubit categoryCubit = BlocProvider.of(context);
-                  final CategoryEntity newItem = CategoryModel(
-                    categoryId: null,
-                    name: "",
-                    allocatedAmount: 0.0,
-                    storedSpentAmount: 0.0,
-                    color: "",
-                    icon: "",
-                  );
 
                   _showAddCategoryDialog(
                       categoryCubit: categoryCubit,

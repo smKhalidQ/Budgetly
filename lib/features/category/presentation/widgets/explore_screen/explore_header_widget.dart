@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../settings_screen.dart';
+import '../../../../settings_screen.dart';
 
 
-class ExpressHeaderWidget extends StatelessWidget {
-   ExpressHeaderWidget({Key? key}) : super(key: key);
-  final double spentAmount = 550;
+class ExploreHeaderWidget extends StatelessWidget {
+   ExploreHeaderWidget({super.key});
+  final double spentAmount = 560;
   final double totalBudget = 1000;
 
   @override

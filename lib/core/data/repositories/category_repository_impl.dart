@@ -2,9 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../domain/entities/category_entity.dart';
-import '../database/category_management_datasource.dart';
+import '../database/category_datasource.dart';
 
-import '../../domain/repositories/category_management_repository.dart';
+import '../../domain/repositories/category_repository.dart';
 import '../../error/failures.dart';
 import '../models/category_model.dart';
 
@@ -30,10 +30,11 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<Either<Failure, Unit>> insertNewCategory(CategoryEntity item) async {
     try {
       await localDataSource.insertNewCategory(
-        name: item.name!,
-        color: item.color!,
-        icon: item.icon!,
+        categoryName: item.categoryName!,
+        categoryColor: item.categoryColor!,
+        categoryIcon: item.categoryIcon!,
         allocatedAmount: item.allocatedAmount!,
+        categoryId: item.categoryId!,
       );
       return const Right(unit);
     } on DatabaseException catch (e) {
@@ -51,9 +52,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
     try {
       final Map<String, dynamic> updatedFields = {};
 
-      if (item.name != null) updatedFields['name'] = item.name;
-      if (item.color != null) updatedFields['color'] = item.color;
-      if (item.icon != null) updatedFields['icon'] = item.icon;
+      if (item.categoryName != null) updatedFields['name'] = item.categoryName;
+      if (item.categoryColor != null) updatedFields['color'] = item.categoryColor;
+      if (item.categoryIcon != null) updatedFields['icon'] = item.categoryIcon;
       if (item.allocatedAmount != null) updatedFields['allocatedAmount'] = item.allocatedAmount;
 
       // التحقق من وجود بيانات للتحديث

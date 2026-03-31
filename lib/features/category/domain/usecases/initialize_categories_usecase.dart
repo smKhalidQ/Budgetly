@@ -2,7 +2,7 @@
 import 'package:budget_buddy/core/domain/entities/category_entity.dart';
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/domain/repositories/category_management_repository.dart';
+import '../../../../core/domain/repositories/category_repository.dart';
 import '../../../../core/error/failures.dart';
 
 

@@ -1,5 +1,5 @@
 // import 'package:flutter_bloc/flutter_bloc.dart';
-// import '../../../../core/data/database/category_management_datasource.dart';
+// import '../../../../core/data/database/category_datasource.dart';
 // import '../../data/models/transaction_model.dart';
 // import '../../data/repositories/transaction_repository_imp.dart';
 // import '../../domain/entities/transaction_entity.dart';
@@ -15,12 +15,7 @@ class TransactionCubit extends Cubit<TransactionStates> {
   static TransactionCubit get(context) => BlocProvider.of(context);
 
   bool isEditMode = false;
-  bool showPieChart = false;
 
-  void togglePieChart() {
-    showPieChart = !showPieChart;
-    emit(TogglePieChartState());
-  }
 
   void toggleEditMode() {
     isEditMode = !isEditMode;

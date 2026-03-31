@@ -21,14 +21,15 @@ class CategorySlicingCardList extends StatelessWidget {
     final categoryCubit = CategoryCubit.get(context);
 
     return BlocBuilder<CategoryCubit, CategoryStates>(
-      builder: (context, state) {
+      builder: (context, state){
         if (state is GetCategoryDataLoadingState) {
           return const Center(
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(AppColor.primaryColor),
             ),
           );
-        } else if (state is GetCategoryDataErrorState) {
+        }
+        else if (state is GetCategoryDataErrorState) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -49,15 +50,15 @@ class CategorySlicingCardList extends StatelessWidget {
               ],
             ),
           );
-        } else if (state is GetCategoryDataSuccessState ||
+        }
+        else if (state is GetCategoryDataSuccessState ||
             state is AddSettingUpCategoryState ||
             state is UpdateRemainingSalaryState ||
             state is ChangeCategoryAppearanceState ||
             state is CategoryUpdatedState) {
 
-          final currentCategory = categoryCubit.fetchedCategories;
-
-          if (currentCategory.isEmpty) {
+          final fetchedCategories = categoryCubit.fetchedCategoriesList;
+          if (fetchedCategories.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -82,17 +83,17 @@ class CategorySlicingCardList extends StatelessWidget {
 
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            itemCount: currentCategory.length,
+            itemCount: fetchedCategories.length,
             itemBuilder: (context, index) {
               if (!controllers.containsKey(index)) {
-                controllers[index] = TextEditingController();
+                 controllers[index] = TextEditingController();
                 _previousValues[index] = 0;
               }
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: BuildSlicingCategoryCard(
-                  categoryEntity: currentCategory[index],
+                  categoryEntity: fetchedCategories[index],
                   controller: controllers[index]!,
                   index: index,
                   monthlySalary: monthlySalary,
@@ -103,7 +104,6 @@ class CategorySlicingCardList extends StatelessWidget {
             },
           );
         }
-
         return const SizedBox();
       },
     );
@@ -113,19 +113,21 @@ class CategorySlicingCardList extends StatelessWidget {
       int newAmount) {
     final updatedCategory = CategoryModel(
       categoryId: oldCategory.categoryId,
-      name: oldCategory.name,
-      icon: oldCategory.icon,
-      color: oldCategory.color,
+      categoryName: oldCategory.categoryName,
+      categoryIcon: oldCategory.categoryIcon,
+      categoryColor: oldCategory.categoryColor,
       allocatedAmount: newAmount.toDouble(),
       storedSpentAmount: oldCategory.storedSpentAmount,
     );
 
-    final index = categoryCubit.fetchedCategories.indexWhere(
-          (category) => category.categoryId == oldCategory.categoryId,
+    final index = categoryCubit.fetchedCategoriesList.indexWhere(
+          (category) {
+            return category.categoryId == oldCategory.categoryId;
+          }
     );
 
     if (index != -1) {
-      categoryCubit.fetchedCategories[index] = updatedCategory;
+      categoryCubit.fetchedCategoriesList[index] = updatedCategory;
     }
   }
 }

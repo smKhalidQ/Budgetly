@@ -1,9 +1,7 @@
-
 import 'package:sqflite/sqflite.dart';
 import '../../domain/entities/category_entity.dart';
 import 'database_helper.dart';
 import '../../error/exceptions.dart';
-import '../../../features/transaction/domain/entities/transaction_entity.dart';
 
 class CategoryManagementDataSource {
 
@@ -17,21 +15,23 @@ class CategoryManagementDataSource {
   }
 
   Future<int> insertNewCategory({
-    required String name,
-    required String color,
-    required String icon,
+    required int categoryId,
+    required String categoryName,
+    required String categoryColor,
+    required String categoryIcon,
     required double allocatedAmount,
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
       int response = await myDb!.insert('category', {
-        'name': name,
-        'color': color,
-        'icon': icon,
+        'categoryId': categoryId,
+        'categoryName': categoryName,
+        'categoryColor': categoryColor,
+        'categoryIcon': categoryIcon,
         'allocatedAmount': allocatedAmount.toString(),
-        'storedSpentAmount': 0.0, // تعيين spentAmount إلى 0 عند الإدخال الأولي
+        'storedSpentAmount': 0.0,
       });
-      print("Category data inserted");
+      print("Category data inserted with custom ID");
       return response;
     } on DatabaseException catch (e) {
       throw DataInsertionException("Failed to insert category data: ${e.toString()}");
@@ -59,7 +59,6 @@ class CategoryManagementDataSource {
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
-      // تحديث الحقول المحددة فقط
       int response = await myDb!.update(
         'category',
         updatedFields,
@@ -78,11 +77,9 @@ class CategoryManagementDataSource {
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
-      // استخدام Batch لإضافة جميع الفئات أو تحديثها
       Batch batch = myDb!.batch();
 
       for (var category in categories) {
-        // التأكد من وجود الفئة في قاعدة البيانات
         final existingCategory = await myDb.query(
           'category',
           where: 'categoryId = ?',
@@ -90,13 +87,12 @@ class CategoryManagementDataSource {
         );
 
         if (existingCategory.isNotEmpty) {
-          // تحديث السجل إذا كان موجودًا
           batch.update(
             'category',
             {
-              'name': category.name,
-              'color': category.color,
-              'icon': category.icon,
+              'categoryName': category.categoryName,
+              'categoryColor': category.categoryColor,
+              'categoryIcon': category.categoryIcon,
               'allocatedAmount': category.allocatedAmount.toString(),
               'storedSpentAmount': category.storedSpentAmount.toString(),
             },
@@ -104,13 +100,13 @@ class CategoryManagementDataSource {
             whereArgs: [category.categoryId],
           );
         } else {
-          // إدخال سجل جديد إذا لم يكن موجودًا
           batch.insert(
             'category',
             {
-              'name': category.name,
-              'color': category.color,
-              'icon': category.icon,
+              'categoryId': category.categoryId,
+              'categoryName': category.categoryName,
+              'categoryColor': category.categoryColor,
+              'categoryIcon': category.categoryIcon,
               'allocatedAmount': category.allocatedAmount.toString(),
               'storedSpentAmount': category.storedSpentAmount.toString(),
             },
@@ -118,7 +114,6 @@ class CategoryManagementDataSource {
         }
       }
 
-      // تنفيذ العمليات دفعة واحدة
       await batch.commit(noResult: true);
       print("All categories initialized/updated successfully");
       return categories.length;

@@ -17,7 +17,7 @@ class SubcategoryDataSource {
     required String subcategoryName,
     required String subcategoryColor,
     required String subcategoryIcon,
-    required int categoryId,
+    required int parentCategoryId,
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
@@ -26,9 +26,9 @@ class SubcategoryDataSource {
         'subcategoryColor': subcategoryColor,
         'subcategoryIcon': subcategoryIcon,
         'subcategorySpentAmount': "0",
-        'categoryId': categoryId, // ربط الفئة الفرعية بالفئة الرئيسية
+        'parentCategoryId': parentCategoryId,
       });
-      print("Sub-category data inserted");
+      print("Subcategory data inserted");
       return response;
     } on DatabaseException catch (e) {
       throw DataInsertionException("Failed to insert sub-category data: ${e.toString()}");

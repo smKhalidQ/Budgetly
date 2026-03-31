@@ -1,50 +1,46 @@
+import 'package:budget_buddy/core/constances.dart';
+import 'package:budget_buddy/core/domain/entities/subcategory-entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../../../core/themes/app_color.dart';
+import '../../presentation/cubit/subcategory_cubit.dart';
+import '../../presentation/cubit/subcategory_states.dart';
 
-class Subcategory {
-  final String name;
-  final IconData icon;
-  final Color color;
+class SubcategoriesListWidget extends StatelessWidget {
+  final Function(SubcategoryEntity) onSubcategoryTap;//to add Transaction
+  final int parentCategoryId;
 
-  Subcategory({
-    required this.name,
-    required this.icon,
-    required this.color,
+  const SubcategoriesListWidget({
+    super.key,
+    required this.onSubcategoryTap, required this.parentCategoryId,
   });
-}
-
-class SubcategoriesWidget extends StatelessWidget {
-  final List<Subcategory> subcategories;
-  final bool isEditMode;
-  final Color categoryColor;
-  final Function(Subcategory, int) onEditSubcategory;
-  final VoidCallback onToggleEditMode;
-  final Function(Subcategory) onSubcategoryTap;
-
-  const SubcategoriesWidget({
-    Key? key,
-    required this.subcategories,
-    required this.isEditMode,
-    required this.categoryColor,
-    required this.onEditSubcategory,
-    required this.onToggleEditMode,
-    required this.onSubcategoryTap,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildSubcategoriesHeader(context),
-        Expanded(
-          child: _buildSubcategoriesList(context),
-        ),
-      ],
+    return BlocBuilder<SubcategoryCubit, SubcategoryStates>(
+      builder: (context, state) {
+        SubcategoryCubit subcategoryCubit=SubcategoryCubit.get(context);
+        final isEditMode = subcategoryCubit.isEditMode;
+        final List<SubcategoryEntity> selectedSubcategoryItems =
+        subcategoryCubit.fetchedSubcategories
+            .where((item) => item.parentCategoryId == parentCategoryId)
+            .toList();
+
+        return Column(
+          children: [
+            _buildSubcategoriesBar(context, isEditMode,subcategoryCubit),
+            Expanded(
+              child: _buildSubcategoriesList(isEditMode,subcategoryCubit,selectedSubcategoryItems),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildSubcategoriesHeader(BuildContext context) {
+  Widget _buildSubcategoriesBar(BuildContext context, bool isEditMode,SubcategoryCubit subcategoryCubit) {
     return Container(
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
@@ -67,8 +63,9 @@ class SubcategoriesWidget extends StatelessWidget {
               color: Colors.blueGrey[700],
               size: 20,
             ),
-            onPressed: onToggleEditMode,
-            tooltip: isEditMode ? "Exit Settings" : "Settings",
+            onPressed: (){
+              subcategoryCubit.toggleSubCategoryEditModeState();
+            },
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -77,12 +74,12 @@ class SubcategoriesWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSubcategoriesList(BuildContext context) {
+  Widget _buildSubcategoriesList( bool isEditMode,SubcategoryCubit subcategoryCubit, List<SubcategoryEntity> selectedSubcategoryItems) {
     return Container(
       color: Colors.white,
       child: ListView.separated(
         padding: const EdgeInsets.only(bottom: 16),
-        itemCount: subcategories.length,
+        itemCount: selectedSubcategoryItems.length,
         separatorBuilder: (context, index) => Divider(
           color: Colors.grey[200],
           height: 1,
@@ -90,20 +87,23 @@ class SubcategoriesWidget extends StatelessWidget {
           endIndent: 16,
         ),
         itemBuilder: (context, index) {
-          final subCat = subcategories[index];
-          return _buildSubcategoryItem(context, subCat, index);
+          // final subcategoryItem = subcategoryCubit.fetchedSubcategories[index];
+          SubcategoryEntity subcategoryItem=selectedSubcategoryItems[index];
+
+          return _buildSubcategoryItem(context, index, isEditMode, subcategoryItem);
         },
       ),
     );
   }
 
-  Widget _buildSubcategoryItem(BuildContext context, Subcategory subCat, int index) {
+  Widget _buildSubcategoryItem(BuildContext context, int index, bool isEditMode,SubcategoryEntity subcategoryItem) {
     return InkWell(
       onTap: () {
         if (isEditMode) {
-          onEditSubcategory(subCat, index);
+          // onEditSubcategory(subcategory, index);
+          print("Pressed");
         } else {
-          onSubcategoryTap(subCat);
+          onSubcategoryTap(subcategoryItem);
         }
       },
       child: Padding(
@@ -115,16 +115,20 @@ class SubcategoriesWidget extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: subCat.color.withOpacity(0.15),
+                color: parseColorFromString(subcategoryItem.subcategoryColor!),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(subCat.icon, color: subCat.color, size: 24),
+              child: Icon(
+                IconData(int.parse(subcategoryItem.subcategoryIcon!)),
+                color: parseColorFromString(subcategoryItem.subcategoryColor!),
+                size: 24,
+              ),
             ),
             const SizedBox(width: 16),
             // Subcategory Name
             Expanded(
               child: Text(
-                subCat.name,
+                subcategoryItem.subcategoryName!,
                 style: GoogleFonts.roboto(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,

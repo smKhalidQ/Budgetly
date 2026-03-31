@@ -1,8 +1,8 @@
-import '../../domain/entities/sub_category-entity.dart';
+import '../../domain/entities/subcategory-entity.dart';
 
 class SubcategoryModel extends SubcategoryEntity {
   SubcategoryModel({
-    super.subCategoryId,
+    super.subcategoryId,
     super.parentCategoryId,
     required super.subcategoryIcon,
     required super.subcategoryColor,
@@ -14,7 +14,7 @@ class SubcategoryModel extends SubcategoryEntity {
   factory SubcategoryModel.fromJson(Map<String, dynamic> json) {
     return SubcategoryModel(
         parentCategoryId:json["parentCategoryId"],
-      subCategoryId: json["subCategoryId"],
+      subcategoryId: json["subcategoryId"],
       subcategoryIcon: json["subCategoryIcon"],
       subcategoryColor: json["subCategoryColor"],
       subcategoryName: json["subCategoryName"],
@@ -28,7 +28,7 @@ class SubcategoryModel extends SubcategoryEntity {
       "subcategoryName": subcategoryName,
       "subcategoryIcon": subcategoryIcon,
       "subcategoryColor": subcategoryColor ,
-      "subcategoryId": subCategoryId,
+      "subcategoryId": subcategoryId,
       "subcategorySpentAmount": subcategorySpentAmount,
     };
   }

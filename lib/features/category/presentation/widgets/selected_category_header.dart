@@ -102,7 +102,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
           ),
           child: Icon(
             IconData(
-              int.parse(categoryEntity.icon!),
+              int.parse(categoryEntity.categoryIcon!),
               fontFamily: 'MaterialIcons',
             ),
             color: Colors.white,
@@ -118,7 +118,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          categoryEntity.name!,
+          categoryEntity.categoryName!,
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,

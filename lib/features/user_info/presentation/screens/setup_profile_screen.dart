@@ -185,13 +185,13 @@ class SettingBody extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BlocProvider<CategoryCubit>(
-                        create: (context) => CategoryCubit(),
-                        child:  CategorySlicingScreen(
-                          monthlySalary:  settingCubit.monthlySalary, // Replace with actual salary value
-                          currency:  settingCubit.selectedCurrency!
-                        ),
-                      ),
+                      builder: (context) {
+                        CategoryCubit.get(context).remainingBudget=settingCubit.monthlySalary;
+                        return CategorySlicingScreen(
+                            monthlySalary:  settingCubit.monthlySalary, // Replace with actual salary value
+                            currency:  settingCubit.selectedCurrency!
+                        );
+                      }
                     ),
                   );
                 } else {

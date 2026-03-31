@@ -1,4 +1,4 @@
-import 'package:budget_buddy/core/domain/entities/sub_category-entity.dart';
+import 'package:budget_buddy/core/domain/entities/subcategory-entity.dart';
 
 import '../../../../core/domain/entities/category_entity.dart';
 import '../../../transaction/domain/entities/transaction_entity.dart';
@@ -37,9 +37,9 @@ class GetSubcategoryDataSuccessState extends SubcategoryStates {
   final List<SubcategoryEntity> subcategories;
   GetSubcategoryDataSuccessState({required this.subcategories});
 }
-class GetCategoryDataErrorState extends SubcategoryStates {
+class GetSubcategoryDataErrorState extends SubcategoryStates {
   final String errorMessage;
-  GetCategoryDataErrorState({required this.errorMessage});
+  GetSubcategoryDataErrorState({required this.errorMessage});
 }
 
 /// States for handling UI interactions
@@ -50,16 +50,7 @@ class ChangeSubcategoryAppearanceState extends SubcategoryStates {
 }
 
 
-// class UpdateSpentAmountLoadingState extends TransactionStates {}
-// class UpdateSpentAmountSuccessState extends TransactionStates {
-//   UpdateSpentAmountSuccessState();
-// }
-// class UpdateSpentAmountErrorState extends TransactionStates {
-//   final String errorMessage;
-//   UpdateSpentAmountErrorState({required this.errorMessage});
-// }
 
-class ToggleCategoryEditModeState extends SubcategoryStates {}
-class AddSettingUpCategoryState extends SubcategoryStates {}
-class AddSettingUpCategoryLoadingState extends SubcategoryStates {}
+class ToggleSubCategoryEditModeState extends SubcategoryStates {}
+class TogglePieChartState extends SubcategoryStates {}
 

@@ -4,9 +4,9 @@ class CategoryModel extends CategoryEntity {
   CategoryModel({
     super.categoryId,
     required super.allocatedAmount,
-    super.icon,
-    super.color,
-    required super.name,
+    super.categoryIcon,
+    super.categoryColor,
+    required super.categoryName,
     super.storedSpentAmount
   });
 
@@ -15,9 +15,9 @@ class CategoryModel extends CategoryEntity {
     return CategoryModel(
       categoryId: json["categoryId"],
       allocatedAmount: json["allocatedAmount"] != null ? (json["allocatedAmount"] as num).toDouble() : 0.0,
-      icon: json["icon"],
-      color: json["color"],
-      name: json["name"],
+      categoryName: json["categoryName"],
+      categoryColor: json["categoryColor"],
+      categoryIcon: json["categoryIcon"],
       storedSpentAmount: json["storedSpentAmount"],
     );
   }
@@ -25,9 +25,9 @@ class CategoryModel extends CategoryEntity {
   // Method to convert CategoryModel instance to JSON
   Map<String, dynamic> toJson() {
     return {
-      "name": name,
-      "icon": icon,
-      "color": color,
+      "categoryName": categoryName,
+      "categoryIcon": categoryIcon,
+      "categoryColor": categoryColor,
       "allocatedAmount": allocatedAmount,
       "categoryId": categoryId,
       "storedSpentAmount": storedSpentAmount,

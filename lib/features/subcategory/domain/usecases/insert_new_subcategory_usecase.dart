@@ -1,8 +1,8 @@
-import 'package:budget_buddy/core/domain/entities/sub_category-entity.dart';
-import 'package:budget_buddy/core/domain/repositories/sub_category_repository.dart';
+import 'package:budget_buddy/core/domain/entities/subcategory-entity.dart';
+import 'package:budget_buddy/core/domain/repositories/subcategory_repository.dart';
 import 'package:budget_buddy/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
-import '../../../../core/domain/repositories/category_management_repository.dart';
+import '../../../../core/domain/repositories/category_repository.dart';
 
 
 class InsertSubcategoryDataUseCase {

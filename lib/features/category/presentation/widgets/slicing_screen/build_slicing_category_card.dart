@@ -29,7 +29,7 @@ class BuildSlicingCategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CategoryCubit categoryCubit = CategoryCubit.get(context);
-    final categoryColor = parseColorFromString(categoryEntity.color!);
+    final categoryColor = parseColorFromString(categoryEntity.categoryColor!);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -79,7 +79,7 @@ class BuildSlicingCategoryCard extends StatelessWidget {
                     ),
                     child: Icon(
                       IconData(
-                        int.parse(categoryEntity.icon!),
+                        int.parse(categoryEntity.categoryIcon!),
                         fontFamily: 'MaterialIcons',
                       ),
                       color: Colors.white,
@@ -91,7 +91,7 @@ class BuildSlicingCategoryCard extends StatelessWidget {
                   // Category name
                   Expanded(
                     child: Text(
-                      categoryEntity.name!,
+                      categoryEntity.categoryName!,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,

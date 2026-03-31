@@ -5,7 +5,6 @@ import '../../error/exceptions.dart';
 class DatabaseHelper {
   static Database? _db;
 
-  // Getter للحصول على مثيل قاعدة البيانات
   static Future<Database?> get db async {
     if (_db == null) {
       _db = await _initializeDb();
@@ -14,16 +13,15 @@ class DatabaseHelper {
     return _db;
   }
 
-  // تهيئة قاعدة البيانات
   static Future<Database> _initializeDb() async {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, 'budgettly.db');
     try {
       Database myDb = await openDatabase(
         path,
-        version: 1, // زيادة الإصدار
+        version: 1,
         onCreate: _onCreate,
-        onUpgrade: _onUpgrade, // إضافة دالة الترقية
+        onUpgrade: _onUpgrade,
         onOpen: (db) async {
           await db.execute('PRAGMA foreign_keys = ON');
         },
@@ -40,31 +38,27 @@ class DatabaseHelper {
     }
   }
 
-  // إنشاء الجداول عند تشغيل التطبيق لأول مرة
   static Future<void> _onCreate(Database db, int version) async {
     try {
-      // إنشاء جدول الفئات الرئيسية
       await db.execute('''CREATE TABLE category (
-        categoryId INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        color TEXT,
-        icon TEXT,
+        categoryId INTEGER PRIMARY KEY,
+        categoryName TEXT NOT NULL,
+        categoryColor TEXT,
+        categoryIcon TEXT,
         allocatedAmount REAL NOT NULL,
         storedSpentAmount REAL NOT NULL DEFAULT 0
       )''');
 
-      // إنشاء جدول الفئات الفرعية مع ربطه بجدول الفئات الرئيسية
       await db.execute('''CREATE TABLE subcategory (
         subcategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
         subcategoryName TEXT NOT NULL,
         subcategoryColor TEXT,
         subcategoryIcon TEXT,
-        subcategorySpentAmount TEXT
+        subcategorySpentAmount TEXT,
         parentCategoryId INTEGER NOT NULL,
         FOREIGN KEY (parentCategoryId) REFERENCES category (categoryId) ON DELETE CASCADE
       )''');
 
-      // إنشاء جدول معلومات المستخدم
       await db.execute('''CREATE TABLE userInfo (
         userId INTEGER PRIMARY KEY AUTOINCREMENT,
         userName TEXT NOT NULL,
@@ -74,7 +68,6 @@ class DatabaseHelper {
         storedSpentAmount REAL NOT NULL DEFAULT 0
       )''');
 
-      // إنشاء جدول المدخلات المالية (المصروفات)
       await db.execute('''CREATE TABLE `transaction` (
         transactionId INTEGER PRIMARY KEY AUTOINCREMENT,
         categoryId INTEGER NOT NULL,
@@ -90,11 +83,9 @@ class DatabaseHelper {
     }
   }
 
-  // تحديث الجداول عند زيادة إصدار قاعدة البيانات
   static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       try {
-        // إضافة عمود userImg إلى الجدول userInfo
         await db.execute('ALTER TABLE userInfo ADD COLUMN userImg TEXT NOT NULL DEFAULT ""');
         print("Table userInfo upgraded successfully");
       } catch (e) {
@@ -104,11 +95,25 @@ class DatabaseHelper {
     }
   }
 
-  // حذف قاعدة البيانات
+  // حذف كامل للقاعدة
   static Future<void> removeDatabase() async {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, "budgettly.db");
     await deleteDatabase(path);
     print("Database deleted");
+  }
+
+  // حذف بيانات جدول category
+  static Future<void> clearCategoryTable() async {
+    final dbClient = await db;
+    await dbClient?.delete('category');
+    print("Category table cleared");
+  }
+
+  // حذف بيانات جدول subcategory
+  static Future<void> clearSubcategoryTable() async {
+    final dbClient = await db;
+    await dbClient?.delete('subcategory');
+    print("Subcategory table cleared");
   }
 }

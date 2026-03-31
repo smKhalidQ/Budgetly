@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import '../../error/failures.dart';
-import '../entities/sub_category-entity.dart';
+import '../entities/subcategory-entity.dart';
 
 abstract class SubcategoryRepository{
   Future<Either<Failure,List<SubcategoryEntity>>> getSubcategoryData();

@@ -1,9 +1,9 @@
 
 abstract class CategoryEntity {
   final int? categoryId;
-  final String? name;
-  final String? color;
-  final String? icon;
+  final String? categoryName;
+  final String? categoryColor;
+  final String? categoryIcon;
   final double? allocatedAmount;
   final double storedSpentAmount;
 
@@ -12,8 +12,8 @@ abstract class CategoryEntity {
     this.categoryId,
     required this.allocatedAmount,
     this.storedSpentAmount=0,
-    this.icon,
-    this.color,
-    required this.name,
+    this.categoryIcon,
+    this.categoryColor,
+    required this.categoryName,
   });
 }

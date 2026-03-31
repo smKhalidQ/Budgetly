@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constances.dart';
-import '../../../../core/data/database/category_management_datasource.dart';
+import '../../../../core/data/database/category_datasource.dart';
 import '../../../../core/data/models/category_model.dart';
 import '../../../../core/domain/entities/category_entity.dart';
 import '../../../transaction/data/repositories/transaction_repository_imp.dart';
@@ -19,16 +19,16 @@ class CategoryCubit extends Cubit<CategoryStates> {
   CategoryCubit() : super(CategoryManagementInitialStates());
 
   static CategoryCubit get(context) => BlocProvider.of(context);
-  List<CategoryEntity> fetchedCategories = [];
+  List<CategoryEntity> fetchedCategoriesList = [];
   int remainingBudget = 0;
 
   void _ensureSavingCategoryIsLast() {
     final savingCategoryIndex =
-    fetchedCategories.indexWhere((category) => category.name == "Saving");
+    fetchedCategoriesList.indexWhere((category) => category.categoryName == "Saving");
     if (savingCategoryIndex != -1 &&
-        savingCategoryIndex != fetchedCategories.length - 1) {
-      final savingCategory = fetchedCategories.removeAt(savingCategoryIndex);
-      fetchedCategories.add(savingCategory);
+        savingCategoryIndex != fetchedCategoriesList.length - 1) {
+      final savingCategory = fetchedCategoriesList.removeAt(savingCategoryIndex);
+      fetchedCategoriesList.add(savingCategory);
     }
   }
 
@@ -44,7 +44,7 @@ class CategoryCubit extends Cubit<CategoryStates> {
         emit(GetCategoryDataErrorState(errorMessage: failure.message));
       },
           (data) {
-        fetchedCategories = data;
+        fetchedCategoriesList = data;
         _ensureSavingCategoryIsLast();
         emit(GetCategoryDataSuccessState(categories: data));
       },
@@ -59,14 +59,14 @@ class CategoryCubit extends Cubit<CategoryStates> {
     // نقوم بوضع ID مؤقت، سيتم تعويضه بعد الإدراج في قاعدة البيانات
     final tempCategory = CategoryModel(
       categoryId: DateTime.now().millisecondsSinceEpoch, // ID مؤقت
-      name: item.name,
+      categoryName: item.categoryName,
       allocatedAmount: item.allocatedAmount,
-      color: item.color,
-      icon: item.icon,
+      categoryColor: item.categoryColor,
+      categoryIcon: item.categoryIcon,
       storedSpentAmount: item.storedSpentAmount,
     );
 
-    fetchedCategories.add(tempCategory);
+    fetchedCategoriesList.add(tempCategory);
     _ensureSavingCategoryIsLast();
     emit(CategoryInsertedState());
 
@@ -83,10 +83,10 @@ class CategoryCubit extends Cubit<CategoryStates> {
         emit(CategoryInsertionErrorState(failure.message));
 
         // في حالة الفشل، نزيل الفئة المؤقتة من القائمة
-        fetchedCategories.removeWhere((category) =>
+        fetchedCategoriesList.removeWhere((category) =>
         category.categoryId == tempCategory.categoryId);
         _ensureSavingCategoryIsLast();
-        emit(ChangeCategoryAppearanceState(items: fetchedCategories));
+        emit(ChangeCategoryAppearanceState(items: fetchedCategoriesList));
       },
           (_) {
         print('Category inserted successfully');
@@ -100,12 +100,12 @@ class CategoryCubit extends Cubit<CategoryStates> {
     emit(CategoryDeleteLoadingState()); // حالة التحميل
 
     // إزالة الفئة مؤقتًا من القائمة
-    int index = fetchedCategories.indexWhere((category) => category.categoryId == categoryId);
+    int index = fetchedCategoriesList.indexWhere((category) => category.categoryId == categoryId);
     CategoryEntity? removedCategory;
 
     if (index != -1) {
-      removedCategory = fetchedCategories.removeAt(index);
-      emit(ChangeCategoryAppearanceState(items: fetchedCategories));
+      removedCategory = fetchedCategoriesList.removeAt(index);
+      emit(ChangeCategoryAppearanceState(items: fetchedCategoriesList));
     }
 
     final useCase = DeleteCategoryDataUseCase(
@@ -123,9 +123,9 @@ class CategoryCubit extends Cubit<CategoryStates> {
 
         // استعادة الفئة المحذوفة إذا فشلت عملية الحذف
         if (removedCategory != null) {
-          fetchedCategories.insert(index, removedCategory);
+          fetchedCategoriesList.insert(index, removedCategory);
           _ensureSavingCategoryIsLast();
-          emit(ChangeCategoryAppearanceState(items: fetchedCategories));
+          emit(ChangeCategoryAppearanceState(items: fetchedCategoriesList));
         }
       },
           (_) {
@@ -141,14 +141,14 @@ class CategoryCubit extends Cubit<CategoryStates> {
     emit(CategoryUpdateLoadingState()); // حالة التحميل
 
     // تحديث الفئة مؤقتًا في القائمة
-    int index = fetchedCategories.indexWhere((category) => category.categoryId == categoryId);
+    int index = fetchedCategoriesList.indexWhere((category) => category.categoryId == categoryId);
     CategoryEntity? oldCategory;
 
     if (index != -1) {
-      oldCategory = fetchedCategories[index];
-      fetchedCategories[index] = item;
+      oldCategory = fetchedCategoriesList[index];
+      fetchedCategoriesList[index] = item;
       _ensureSavingCategoryIsLast();
-      emit(ChangeCategoryAppearanceState(items: fetchedCategories));
+      emit(ChangeCategoryAppearanceState(items: fetchedCategoriesList));
     }
 
     final useCase = UpdateCategoryDataUseCase(
@@ -165,9 +165,9 @@ class CategoryCubit extends Cubit<CategoryStates> {
 
         // استعادة الفئة القديمة إذا فشل التحديث
         if (oldCategory != null && index != -1) {
-          fetchedCategories[index] = oldCategory;
+          fetchedCategoriesList[index] = oldCategory;
           _ensureSavingCategoryIsLast();
-          emit(ChangeCategoryAppearanceState(items: fetchedCategories));
+          emit(ChangeCategoryAppearanceState(items: fetchedCategoriesList));
         }
       },
           (_) {
@@ -183,18 +183,18 @@ class CategoryCubit extends Cubit<CategoryStates> {
 
   void updateCategoryIcon(String updatedCategoryIcon) {
     _categoryIcon = updatedCategoryIcon;
-    emit(ChangeCategoryAppearanceState(items: fetchedCategories));
+    emit(ChangeCategoryAppearanceState(items: fetchedCategoriesList));
   }
 
   Color categoryColor = Colors.blueAccent;
 
   void updateCategoryColor(Color color) {
     categoryColor = color;
-    emit(ChangeCategoryAppearanceState(items: fetchedCategories));
+    emit(ChangeCategoryAppearanceState(items: fetchedCategoriesList));
   }
 
   void addNewSettingUpCategory(CategoryEntity newCategoryEntity) {
-    fetchedCategories.add(newCategoryEntity);
+    fetchedCategoriesList.add(newCategoryEntity);
     _ensureSavingCategoryIsLast();
     emit(AddSettingUpCategoryState());
   }
@@ -203,16 +203,16 @@ class CategoryCubit extends Cubit<CategoryStates> {
 
   void saveUpdatedCategory(
       nameController, CategoryEntity item, budgetController) {
-    final updatedName = nameController.isEmpty ? item.name : nameController;
+    final updatedName = nameController.isEmpty ? item.categoryName : nameController;
     final updatedAmount = budgetController.isEmpty
         ? item.allocatedAmount
         : double.tryParse(budgetController) ?? item.allocatedAmount;
 
     CategoryEntity updatedItem = CategoryModel(
-      name: updatedName,
+      categoryName: updatedName,
       allocatedAmount: updatedAmount,
-      color: categoryColor.toString(),
-      icon: categoryIcon,
+      categoryColor: categoryColor.toString(),
+      categoryIcon: categoryIcon,
     );
 
     updateCategoryData(updatedItem, item.categoryId!);

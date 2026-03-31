@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'main_categories_list_widget.dart';
+import '../../../settings_screen.dart';
+import 'explore_screen/main_categories_list_widget.dart';
 
 class TabBarViewWidget extends StatelessWidget {
   const TabBarViewWidget({Key? key}) : super(key: key);
@@ -14,14 +15,7 @@ class TabBarViewWidget extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 18),
           child: MainCategoriesListWidget(),
         ),
-        SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Column(
-            children: [
-              Text("Categories Content"),
-            ],
-          ),
-        ),
+        SettingsScreen(),
       ],
     );
   }

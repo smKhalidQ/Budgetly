@@ -1,5 +1,8 @@
 import 'dart:ui';
 import 'package:budget_buddy/core/domain/entities/category_entity.dart';
+import 'package:budget_buddy/core/domain/entities/subcategory-entity.dart';
+import 'package:budget_buddy/features/subcategory/presentation/cubit/subcategory_cubit.dart';
+import 'package:budget_buddy/features/subcategory/presentation/cubit/subcategory_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,102 +11,90 @@ import '../../../../core/constances.dart';
 import '../../../../core/themes/app_color.dart';
 import '../../../category/presentation/screens/explore_screen.dart';
 import '../../../category/presentation/widgets/selected_category_header.dart';
-import '../../../subcategory/presentation/widgets/subcategories_widget.dart';
+import '../../../subcategory/presentation/widgets/subcategories_list_widget.dart';
 import '../cubit/transaction_cubit.dart';
 import '../cubit/transaction_states.dart';
 
 
 class NewExpenseEntryScreen extends StatelessWidget {
   final CategoryEntity categoryEntity;
-  final List<Subcategory> subCategories;
 
   const NewExpenseEntryScreen({
     super.key,
-    required this.subCategories,
     required this.categoryEntity,
   });
 
   @override
   Widget build(BuildContext context) {
-    final Color categoryColor = parseColorFromString(categoryEntity.color ?? '#1E88E5');
+    final subcategoryCubit = context.watch<SubcategoryCubit>();
+    final Color categoryColor = parseColorFromString(categoryEntity.categoryColor ?? '#1E88E5');
     final double remainingAmount = categoryEntity.allocatedAmount! - categoryEntity.storedSpentAmount;
 
     return BlocProvider(
       create: (context) => TransactionCubit(),
-      child: BlocBuilder<TransactionCubit, TransactionStates>(
-        builder: (context, state) {
-          final cubit = TransactionCubit.get(context);
-          final bool isEditMode = state is TransactionEditModeState;
-
-          return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ExploreScreen()));
-                  },
-                  icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white)
-              ),
-              title: Text(
-                categoryEntity.name!,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              elevation: 0,
-              backgroundColor: AppColor.primaryColor,
-              foregroundColor: Colors.black,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ExploreScreen()));
+              },
+              icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white)
+          ),
+          title: Text(
+            categoryEntity.categoryName!,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             ),
-            backgroundColor: Colors.white,
-            body: Column(
-              children: [
-                // Category Header Widget
-                SelectedCategoryHeaderWidget(
-                  categoryEntity: categoryEntity,
-                  categoryColor: categoryColor,
-                  remainingAmount: remainingAmount,
-                  showPieChart: cubit.showPieChart,
-                  onTogglePieChart: () => cubit.togglePieChart(),
-                  onEditCategory: () {
-                    // Edit category action
-                  },
-                ),
-
-                // Subcategories Widget
-                Expanded(
-                  child: SubcategoriesWidget(
-                    subcategories: subCategories,
-                    isEditMode: isEditMode,
-                    categoryColor: categoryColor,
-                    onToggleEditMode: () {
-                      if (isEditMode) {
-                        cubit.emit(TransactionInitialState());
-                      } else {
-                        cubit.emit(TransactionEditModeState());
-                      }
-                    },
-                    onEditSubcategory: (subCat, index) {
-                      _showEditSubcategoryDialog(cubit, subCat, index, context, categoryColor);
-                    },
-                    onSubcategoryTap: (subCat) {
-                      // Navigate to subcategory details or add transaction
-                    },
-                  ),
-                ),
-              ],
+          ),
+          elevation: 0,
+          backgroundColor: AppColor.primaryColor,
+          foregroundColor: Colors.black,
+        ),
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            SelectedCategoryHeaderWidget(
+              categoryEntity: categoryEntity,
+              categoryColor: categoryColor,
+              remainingAmount: remainingAmount,
+              showPieChart: subcategoryCubit.showPieChart,
+              onTogglePieChart: () => subcategoryCubit.togglePieChart(),
+              onEditCategory: () {
+                // Edit category action
+              },
             ),
-            floatingActionButton: isEditMode ? FloatingActionButton(
-              onPressed: () => _showAddSubcategoryDialog(cubit, context, categoryColor),
-              backgroundColor: categoryColor,
-              child: const Icon(Icons.add),
-            ) : null,
-          );
-        },
-      ),
+            Expanded(
+              child: SubcategoriesListWidget(
+                parentCategoryId: categoryEntity.categoryId!,
+                onSubcategoryTap: (SubcategoryEntity ) {  },
+
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton: BlocBuilder<SubcategoryCubit, SubcategoryStates>(
+          builder: (context, state) {
+            final subcategoryCubit = SubcategoryCubit.get(context);
+            if (subcategoryCubit.isEditMode) {
+              return FloatingActionButton(
+                onPressed: () => _showAddSubcategoryDialog(
+                  context,
+                ),
+                backgroundColor:AppColor.primaryColor,
+                child: const Icon(Icons.add),
+              );
+            } else {
+              return const SizedBox.shrink(); // بدل null
+            }
+          },
+        ),
+
+      )
     );
   }
 
-  void _showEditSubcategoryDialog(TransactionCubit cubit, Subcategory subCat, int index, BuildContext context, Color categoryColor) async {
+  void _showEditSubcategoryDialog(TransactionCubit cubit, SubcategoryEntity subCat, int index, BuildContext context, Color categoryColor) async {
     // final result = await PickerDialogHelpers.showEditPickerDialog(
     //   pickerFunction: (){},
     //   context: context,
@@ -116,16 +107,24 @@ class NewExpenseEntryScreen extends StatelessWidget {
     //
     // if (result != null) {
     //   // Here you would update the subcategory in your data model
-    //   // cubit.updateSubcategory(index, result['name'], result['color'], result['icon']);
+    //   // cubit.updateSubcategory(index, resul t['name'], result['color'], result['icon']);
     // }
   }
 
-  void _showAddSubcategoryDialog(TransactionCubit cubit, BuildContext context, Color categoryColor) async {
+  void _showAddSubcategoryDialog( BuildContext context) async {
     final result = await PickerDialogHelpers.showSubcategoryPickerDialog(
       context: context,
       title: "Add New Subcategory",
-      parentCategory: categoryEntity,
-      pickerFunction: (){},
+      parentCategoryId: categoryEntity.categoryId!,
+      pickerFunction: (SubcategoryEntity newSubcategory){
+        print("categoryEntity.categoryId is ${categoryEntity.categoryId!}");
+
+        SubcategoryCubit.get(context).insertNewSubcategory( newSubcategory);
+
+
+        print("Add New Subcategory");
+
+      },
     );
 
     if (result != null) {
