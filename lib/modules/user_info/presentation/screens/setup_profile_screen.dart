@@ -1,5 +1,6 @@
-import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/screens/category_slicing_screen.dart';
 import 'package:budget_buddy/modules/user_info/domain/models/user_info.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -12,196 +13,284 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SetupProfileScreen extends StatelessWidget {
-  SetupProfileScreen({super.key});
+  const SetupProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.primaryColor,
-      body: SettingBody(),
+      body: _SetupBody(),
     );
   }
 }
 
-class SettingBody extends StatelessWidget {
-  SettingBody({Key? key}) : super(key: key);
-  final TextEditingController salaryController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
+class _SetupBody extends StatelessWidget {
+  _SetupBody();
+
+  final _nameController = TextEditingController();
+  final _salaryController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tr;
     final settingCubit = SettingCubit.get(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Expanded(child: SizedBox()),
-            Text(
-              "We just need a few details to set things up",
-              style: GoogleFonts.abel(
-                textStyle: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColor.textWhite,
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Gap(24),
+              // Header
+              Center(
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.account_balance_wallet_rounded,
+                    color: Colors.white,
+                    size: 36,
+                  ),
                 ),
               ),
-              textAlign: TextAlign.center,
-            ),
-            const Gap(20),
-            BlocBuilder<SettingCubit, SettingState>(
-              builder: (context, state) {
-                final selectedCurrency = state.selectedCurrency ?? currencies.keys.first;
-                if (!currencies.containsKey(selectedCurrency)) {
-                  settingCubit.selectCurrency(currencies.keys.first);
-                }
-                return Container(
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColor.lightGray),
+              const Gap(24),
+              Center(
+                child: Text(
+                  t.setupTitle,
+                  style: GoogleFonts.cairo(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                  child: GestureDetector(
-                    onTap: () => _showCurrencyBottomSheet(context, settingCubit),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Currency: ",
-                          style: GoogleFonts.abel(
-                            textStyle: const TextStyle(
-                              fontSize: 20,
-                              color: AppColor.textWhite,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const Gap(6),
+              Center(
+                child: Text(
+                  t.setupSubtitle,
+                  style: GoogleFonts.cairo(
+                    fontSize: 14,
+                    color: Colors.white.withValues(alpha: 0.65),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const Gap(40),
+
+              // Name field
+              _FieldLabel(label: t.yourName),
+              const Gap(8),
+              TextFormField(
+                controller: _nameController,
+                style: const TextStyle(color: Colors.white),
+                textInputAction: TextInputAction.next,
+                decoration: _inputDecoration(
+                  hint: t.yourNameHint,
+                  icon: Icons.person_outline_rounded,
+                ),
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? t.pleaseEnterName : null,
+              ),
+              const Gap(20),
+
+              // Currency field
+              _FieldLabel(label: t.currency),
+              const Gap(8),
+              BlocBuilder<SettingCubit, SettingState>(
+                builder: (context, state) {
+                  final key = state.selectedCurrency ?? currencies.keys.first;
+                  final info = currencies[key]!;
+                  return GestureDetector(
+                    onTap: () => _showCurrencySheet(context, settingCubit),
+                    child: Container(
+                      height: 56,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.currency_exchange_rounded,
+                            color: Colors.white.withValues(alpha: 0.7),
+                            size: 20,
+                          ),
+                          const Gap(12),
+                          Text(
+                            '${info['flag']}  ${info['currencyName']} (${info['currencySymbol']})',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 15,
                             ),
                           ),
-                        ),
-                        const Gap(10),
-                        Text(
-                          "${currencies[selectedCurrency]!['currencyName']} (${currencies[selectedCurrency]!['currencySymbol']})",
-                          style: const TextStyle(color: AppColor.textWhite),
-                        ),
-                        Expanded(child: Container()),
-                        const Icon(
-                          CupertinoIcons.arrowtriangle_down_fill,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            const Gap(20),
-            TextFormField(
-              controller: salaryController,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                prefixText: "Salary: ",
-                prefixStyle: GoogleFonts.abel(
-                  textStyle: const TextStyle(
-                    color: AppColor.textWhite,
-                    fontSize: 20,
-                  ),
-                ),
-                labelText: "Monthly Salary",
-                labelStyle: GoogleFonts.abel(
-                  textStyle: const TextStyle(
-                    color: AppColor.textWhite,
-                    fontSize: 20,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: AppColor.cardBackground, width: 1.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: AppColor.accentColor, width: 2.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: AppColor.expenseColor, width: 1.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: AppColor.expenseColor, width: 2.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                filled: true,
-                fillColor: AppColor.backgroundGlass,
-                errorStyle: const TextStyle(color: Colors.white),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) return 'Please enter your salary';
-                final salary = int.tryParse(value);
-                if (salary == null || salary <= 0) return 'Please enter a valid salary';
-                return null;
-              },
-            ),
-            const Expanded(child: SizedBox()),
-            GestureDetector(
-              onTap: () {
-                if (formKey.currentState!.validate()) {
-                  final salary = int.parse(salaryController.text);
-                  final selectedCurrency =
-                      settingCubit.state.selectedCurrency ?? currencies.keys.first;
-                  final user = UserInfo(
-                    monthlySalary: salaryController.text,
-                    currency: selectedCurrency,
-                  );
-                  settingCubit.setMonthlySalary(salary);
-                  settingCubit.insertUserInfo(user);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CategorySlicingScreen(
-                        monthlySalary: salary,
-                        currency: selectedCurrency,
+                          const Spacer(),
+                          Icon(
+                            CupertinoIcons.chevron_down,
+                            color: Colors.white.withValues(alpha: 0.6),
+                            size: 16,
+                          ),
+                        ],
                       ),
                     ),
                   );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Please enter a valid salary to proceed."),
-                      backgroundColor: AppColor.expenseColor,
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: AppColor.cardBackground,
-                  borderRadius: BorderRadius.circular(15),
+                },
+              ),
+              const Gap(20),
+
+              // Salary field
+              _FieldLabel(label: t.monthlySalary),
+              const Gap(8),
+              TextFormField(
+                controller: _salaryController,
+                keyboardType: TextInputType.number,
+                style: const TextStyle(color: Colors.white),
+                textInputAction: TextInputAction.done,
+                decoration: _inputDecoration(
+                  hint: t.salaryHint,
+                  icon: Icons.payments_outlined,
                 ),
-                child: Center(
-                  child: Text(
-                    "Next",
-                    style: GoogleFonts.abel(
-                      textStyle: const TextStyle(
-                        fontSize: 20,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return t.pleaseEnterSalary;
+                  final n = int.tryParse(v);
+                  if (n == null || n <= 0) return t.invalidSalary;
+                  return null;
+                },
+              ),
+              const Gap(48),
+
+              // Next button
+              GestureDetector(
+                onTap: () => _onNext(context, settingCubit),
+                child: Container(
+                  width: double.infinity,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      t.next,
+                      style: GoogleFonts.cairo(
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColor.textPrimary,
+                        color: AppColor.primaryColor,
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              const Gap(20),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _showCurrencyBottomSheet(BuildContext context, SettingCubit settingCubit) {
+  void _onNext(BuildContext context, SettingCubit settingCubit) {
+    if (!_formKey.currentState!.validate()) return;
+
+    final salary = int.parse(_salaryController.text);
+    final name = _nameController.text.trim();
+    final currency =
+        settingCubit.state.selectedCurrency ?? currencies.keys.first;
+
+    settingCubit.setMonthlySalary(salary);
+    settingCubit.insertUserInfo(
+      UserInfo(name: name, monthlySalary: _salaryController.text, currency: currency),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CategorySlicingScreen(
+          monthlySalary: salary,
+          currency: currency,
+        ),
+      ),
+    );
+  }
+
+  void _showCurrencySheet(BuildContext context, SettingCubit settingCubit) {
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) => CurrencyBottomSheet(settingCubit: settingCubit),
+      builder: (_) => CurrencyBottomSheet(settingCubit: settingCubit),
+    );
+  }
+
+  InputDecoration _inputDecoration({
+    required String hint,
+    required IconData icon,
+  }) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: GoogleFonts.poppins(
+        color: Colors.white.withValues(alpha: 0.4),
+        fontSize: 14,
+      ),
+      prefixIcon: Icon(icon, color: Colors.white.withValues(alpha: 0.7), size: 20),
+      filled: true,
+      fillColor: Colors.white.withValues(alpha: 0.08),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppColor.accentColor, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppColor.expenseColor),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppColor.expenseColor, width: 2),
+      ),
+      errorStyle: const TextStyle(color: Colors.white70),
+    );
+  }
+}
+
+class _FieldLabel extends StatelessWidget {
+  final String label;
+  const _FieldLabel({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: GoogleFonts.cairo(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.white.withValues(alpha: 0.8),
+      ),
     );
   }
 }

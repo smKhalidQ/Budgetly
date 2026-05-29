@@ -1,5 +1,6 @@
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/utilities/listener_mixin.dart';
+import 'package:budget_buddy/modules/category/domain/default_categories.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
@@ -14,7 +15,7 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
 
   CategoryCubit(this._repository) : super(const CategoryState());
 
-  static CategoryCubit get(context) => BlocProvider.of(context);
+  static CategoryCubit get(BuildContext context) => BlocProvider.of(context);
 
   Color get categoryColor => parseColorFromString(state.selectedColor);
   String get categoryIcon => state.selectedIcon.isEmpty
@@ -35,7 +36,11 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
   Future<void> fetchCategories() async {
     emit(state.copyWith(status: CategoryStatus.loading));
     try {
-      final categories = await _repository.getAll();
+      List<Category> categories = await _repository.getAll();
+      if (categories.isEmpty) {
+        await _repository.initializeAll(defaultCategories);
+        categories = await _repository.getAll();
+      }
       emit(state.copyWith(
         status: CategoryStatus.success,
         categories: _sortWithSavingLast(categories),

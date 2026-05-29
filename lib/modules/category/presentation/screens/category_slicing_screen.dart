@@ -34,7 +34,10 @@ class CategorySlicingScreen extends StatelessWidget {
                   currency: currency,
                 ),
                 Expanded(
-                  child: CategorySlicingCardList(monthlySalary: monthlySalary),
+                  child: CategorySlicingCardList(
+                    monthlySalary: monthlySalary,
+                    currency: currency,
+                  ),
                 ),
               ],
             ),

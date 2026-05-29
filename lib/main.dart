@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; // needed for Bloc.observer
 
 import 'app.dart';
 import 'core/database/database_helper.dart';
 import 'core/di/injection_container.dart';
-import 'core/utilities/bloc_observer.dart';
+import 'modules/user_info/data/data_sources/cache_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseHelper.db;
-  Bloc.observer = MyBlocObserver();
+  await CacheHelper.init();
+  // Bloc.observer = MyBlocObserver();
   initializeDependencies();
 
   runApp(const App());

@@ -1,153 +1,99 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/modules/settings/presentation/screens/settings_screen.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
 
 class BuildHeaderSection extends StatelessWidget {
   const BuildHeaderSection({
-    Key? key,
+    super.key,
     required this.monthlySalary,
     required this.currency,
-  }) : super(key: key);
+  });
 
   final int monthlySalary;
   final String currency;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColor.primaryColor,
-            AppColor.primaryColor.withOpacity(0.8),
-          ],
-        ),
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColor.primaryColor.withOpacity(0.2),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
+    final t = context.tr;
+    final symbol = currencies[currency]?['currencySymbol'] ?? '';
+
+    return BlocBuilder<CategoryCubit, CategoryState>(
+      builder: (context, state) {
+        final remaining = state.remainingBudget;
+        final allocated = monthlySalary - remaining;
+        final progress = (allocated / monthlySalary).clamp(0.0, 1.0);
+        final isOver = remaining < 0;
+
+        return Container(
+          padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
+          decoration: const BoxDecoration(
+            color: AppColor.primaryColor,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    "Distribute Your Monthly Budget",
+                    '$symbol$monthlySalary',
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.8),
-                    ),
-                  ),
-                  const Gap(4),
-                  Text(
-                    "${currencies[currency]!['currencySymbol']}$monthlySalary",
-                    style: GoogleFonts.poppins(
-                      fontSize: 28,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.remaining}: ',
+                        style: GoogleFonts.cairo(
+                          fontSize: 12,
+                          color: Colors.white.withValues(alpha: 0.6),
+                        ),
+                      ),
+                      Text(
+                        '$symbol${remaining.toStringAsFixed(0)}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: isOver
+                              ? AppColor.expenseColor
+                              : Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Icon(
-                    Icons.account_balance_wallet,
-                    color: Colors.white,
-                    size: 28,
+              const SizedBox(height: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: progress,
+                  minHeight: 5,
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isOver ? AppColor.expenseColor : AppColor.accentColor,
                   ),
                 ),
               ),
             ],
           ),
-          const Gap(20),
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-            child: BlocBuilder<CategoryCubit, CategoryState>(
-              builder: (context, state) {
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Remaining",
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        Text(
-                          "${currencies[currency]!['currencySymbol']}${state.remainingBudget.toStringAsFixed(2)}",
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: state.remainingBudget > 0
-                                ? AppColor.primaryColor
-                                : Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Gap(10),
-                    LinearProgressIndicator(
-                      value: (monthlySalary - state.remainingBudget) / monthlySalary,
-                      backgroundColor: Colors.grey[200],
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        state.remainingBudget > 0 ? AppColor.primaryColor : Colors.red,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                      minHeight: 8,
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

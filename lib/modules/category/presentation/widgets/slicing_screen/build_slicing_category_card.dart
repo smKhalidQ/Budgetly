@@ -12,6 +12,7 @@ class BuildSlicingCategoryCard extends StatelessWidget {
   final TextEditingController controller;
   final int index;
   final int monthlySalary;
+  final String currency;
   final Map<int, int> previousValue;
   final Function(CategoryCubit, Category, int) onUpdateCategory;
 
@@ -21,153 +22,97 @@ class BuildSlicingCategoryCard extends StatelessWidget {
     required this.controller,
     required this.index,
     required this.monthlySalary,
+    required this.currency,
     required this.previousValue,
     required this.onUpdateCategory,
   });
 
   @override
   Widget build(BuildContext context) {
-    CategoryCubit categoryCubit = CategoryCubit.get(context);
+    final categoryCubit = CategoryCubit.get(context);
     final categoryColor = parseColorFromString(category.color);
+    final currencySymbol = currencies[currency]?['currencySymbol'] ?? '';
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: categoryColor.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(
-          color: categoryColor.withOpacity(0.1),
-          width: 1,
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              controller.selection = TextSelection(
-                baseOffset: 0,
-                extentOffset: controller.text.length,
-              );
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            splashColor: categoryColor.withOpacity(0.1),
-            highlightColor: categoryColor.withOpacity(0.05),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              child: Row(
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: categoryColor.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      IconData(
-                        int.parse(category.icon),
-                        fontFamily: 'MaterialIcons',
-                      ),
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      category.name,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: TextField(
-                      controller: controller,
-                      onTap: () {
-                        controller.selection = TextSelection(
-                          baseOffset: 0,
-                          extentOffset: controller.text.length,
-                        );
-                      },
-                      textAlign: TextAlign.end,
-                      decoration: InputDecoration(
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.only(left: 12, right: 4),
-                          child: Text(
-                            '﷼',
-                            style: GoogleFonts.poppins(
-                              color: categoryColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        prefixIconConstraints: const BoxConstraints(
-                          minWidth: 0,
-                          minHeight: 0,
-                        ),
-                        hintText: '0.00',
-                        hintStyle: GoogleFonts.poppins(
-                          color: Colors.grey[400],
-                          fontWeight: FontWeight.w500,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                            color: categoryColor.withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                            color: categoryColor.withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                            color: categoryColor,
-                            width: 2,
-                          ),
-                        ),
-                        filled: true,
-                        fillColor: categoryColor.withOpacity(0.05),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 12,
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
-                      style: GoogleFonts.poppins(
-                        color: Colors.grey[800],
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                      onChanged: (value) {
-                        _handleValueChange(value, categoryCubit, context);
-                      },
-                    ),
-                  ),
-                ],
+    return InkWell(
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: categoryColor.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                IconData(int.parse(category.icon), fontFamily: 'MaterialIcons'),
+                color: categoryColor,
+                size: 20,
               ),
             ),
-          ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                category.name,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF263238),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 116,
+              child: TextField(
+                controller: controller,
+                onTap: () => controller.selection = TextSelection(
+                  baseOffset: 0,
+                  extentOffset: controller.text.length,
+                ),
+                textAlign: TextAlign.end,
+                keyboardType: TextInputType.number,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: categoryColor,
+                ),
+                decoration: InputDecoration(
+                  prefixText: '$currencySymbol ',
+                  prefixStyle: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: categoryColor.withValues(alpha: 0.7),
+                  ),
+                  hintText: '0',
+                  hintStyle: GoogleFonts.poppins(
+                    color: Colors.grey[400],
+                    fontSize: 15,
+                  ),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade200,
+                      width: 1.5,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: categoryColor, width: 1.5),
+                  ),
+                  filled: true,
+                  fillColor: categoryColor.withValues(alpha: 0.04),
+                ),
+                onChanged: (v) => _handleValueChange(v, categoryCubit, context),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -179,42 +124,45 @@ class BuildSlicingCategoryCard extends StatelessWidget {
     BuildContext context,
   ) {
     if (value.isEmpty) {
-      int difference = previousValue[index] ?? 0;
+      final difference = previousValue[index] ?? 0;
       categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(difference);
       previousValue[index] = 0;
       categoryCubit.allocatedBudgetMap[index] = 0;
       onUpdateCategory(categoryCubit, category, 0);
       return;
     }
-
     try {
-      int newAllocation = int.parse(value);
-      int previousAllocation = -(categoryCubit.allocatedBudgetMap[index] ?? 0);
-      int difference = previousAllocation - newAllocation;
-      categoryCubit.updateCategoryAllocationAndTotalBudgetInSettingUpstage(index, difference);
+      final newAllocation = int.parse(value);
+      final previousAllocation = -(categoryCubit.allocatedBudgetMap[index] ?? 0);
+      final difference = previousAllocation - newAllocation;
+      categoryCubit.updateCategoryAllocationAndTotalBudgetInSettingUpstage(
+          index, difference);
 
       if (categoryCubit.state.remainingBudget + difference < 0) {
-        categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(difference);
+        categoryCubit
+            .updateRemainingBudgetForProgressBarInSettingUpstage(difference);
         _showBudgetAlertDialog(context, categoryCubit);
       } else {
-        categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(difference);
+        categoryCubit
+            .updateRemainingBudgetForProgressBarInSettingUpstage(difference);
         previousValue[index] = newAllocation;
         onUpdateCategory(categoryCubit, category, newAllocation);
       }
     } catch (e) {
-      debugPrint('Invalid number format in field $index: ${e.toString()}');
+      debugPrint('Invalid number in field $index: $e');
     }
   }
 
-  void _showBudgetAlertDialog(BuildContext context, CategoryCubit categoryCubit) {
+  void _showBudgetAlertDialog(
+      BuildContext context, CategoryCubit categoryCubit) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: '',
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, animation1, animation2) => Container(),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
+      pageBuilder: (_, __, ___) => Container(),
+      transitionBuilder: (context, animation, _, __) {
         return ScaleTransition(
           scale: Tween<double>(begin: 0.5, end: 1.0).animate(
             CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
