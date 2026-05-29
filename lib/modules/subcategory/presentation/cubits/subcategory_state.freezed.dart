@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,107 +9,69 @@ part of 'subcategory_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$SubcategoryState {
-  SubcategoryStatus get status => throw _privateConstructorUsedError;
-  List<Subcategory> get subcategories => throw _privateConstructorUsedError;
-  String? get errorMessage => throw _privateConstructorUsedError;
-  String get selectedIcon => throw _privateConstructorUsedError;
-  String get selectedColor => throw _privateConstructorUsedError;
-  bool get isEditMode => throw _privateConstructorUsedError;
-  bool get showPieChart => throw _privateConstructorUsedError;
+  SubcategoryStatus get status;
+  List<Subcategory> get subcategories;
+  String? get errorMessage;
+  String get selectedIcon;
+  String get selectedColor;
+  bool get isEditMode;
+  bool get showPieChart;
 
   /// Create a copy of SubcategoryState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $SubcategoryStateCopyWith<SubcategoryState> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $SubcategoryStateCopyWith<$Res> {
-  factory $SubcategoryStateCopyWith(
-          SubcategoryState value, $Res Function(SubcategoryState) then) =
-      _$SubcategoryStateCopyWithImpl<$Res, SubcategoryState>;
-  @useResult
-  $Res call(
-      {SubcategoryStatus status,
-      List<Subcategory> subcategories,
-      String? errorMessage,
-      String selectedIcon,
-      String selectedColor,
-      bool isEditMode,
-      bool showPieChart});
-}
-
-/// @nodoc
-class _$SubcategoryStateCopyWithImpl<$Res, $Val extends SubcategoryState>
-    implements $SubcategoryStateCopyWith<$Res> {
-  _$SubcategoryStateCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of SubcategoryState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $SubcategoryStateCopyWith<SubcategoryState> get copyWith =>
+      _$SubcategoryStateCopyWithImpl<SubcategoryState>(
+          this as SubcategoryState, _$identity);
+
   @override
-  $Res call({
-    Object? status = null,
-    Object? subcategories = null,
-    Object? errorMessage = freezed,
-    Object? selectedIcon = null,
-    Object? selectedColor = null,
-    Object? isEditMode = null,
-    Object? showPieChart = null,
-  }) {
-    return _then(_value.copyWith(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as SubcategoryStatus,
-      subcategories: null == subcategories
-          ? _value.subcategories
-          : subcategories // ignore: cast_nullable_to_non_nullable
-              as List<Subcategory>,
-      errorMessage: freezed == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
-      selectedIcon: null == selectedIcon
-          ? _value.selectedIcon
-          : selectedIcon // ignore: cast_nullable_to_non_nullable
-              as String,
-      selectedColor: null == selectedColor
-          ? _value.selectedColor
-          : selectedColor // ignore: cast_nullable_to_non_nullable
-              as String,
-      isEditMode: null == isEditMode
-          ? _value.isEditMode
-          : isEditMode // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showPieChart: null == showPieChart
-          ? _value.showPieChart
-          : showPieChart // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SubcategoryState &&
+            (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality()
+                .equals(other.subcategories, subcategories) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage) &&
+            (identical(other.selectedIcon, selectedIcon) ||
+                other.selectedIcon == selectedIcon) &&
+            (identical(other.selectedColor, selectedColor) ||
+                other.selectedColor == selectedColor) &&
+            (identical(other.isEditMode, isEditMode) ||
+                other.isEditMode == isEditMode) &&
+            (identical(other.showPieChart, showPieChart) ||
+                other.showPieChart == showPieChart));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      status,
+      const DeepCollectionEquality().hash(subcategories),
+      errorMessage,
+      selectedIcon,
+      selectedColor,
+      isEditMode,
+      showPieChart);
+
+  @override
+  String toString() {
+    return 'SubcategoryState(status: $status, subcategories: $subcategories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart)';
   }
 }
 
 /// @nodoc
-abstract class _$$SubcategoryStateImplCopyWith<$Res>
-    implements $SubcategoryStateCopyWith<$Res> {
-  factory _$$SubcategoryStateImplCopyWith(_$SubcategoryStateImpl value,
-          $Res Function(_$SubcategoryStateImpl) then) =
-      __$$SubcategoryStateImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $SubcategoryStateCopyWith<$Res> {
+  factory $SubcategoryStateCopyWith(
+          SubcategoryState value, $Res Function(SubcategoryState) _then) =
+      _$SubcategoryStateCopyWithImpl;
   @useResult
   $Res call(
       {SubcategoryStatus status,
@@ -122,12 +84,12 @@ abstract class _$$SubcategoryStateImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$SubcategoryStateImplCopyWithImpl<$Res>
-    extends _$SubcategoryStateCopyWithImpl<$Res, _$SubcategoryStateImpl>
-    implements _$$SubcategoryStateImplCopyWith<$Res> {
-  __$$SubcategoryStateImplCopyWithImpl(_$SubcategoryStateImpl _value,
-      $Res Function(_$SubcategoryStateImpl) _then)
-      : super(_value, _then);
+class _$SubcategoryStateCopyWithImpl<$Res>
+    implements $SubcategoryStateCopyWith<$Res> {
+  _$SubcategoryStateCopyWithImpl(this._self, this._then);
+
+  final SubcategoryState _self;
+  final $Res Function(SubcategoryState) _then;
 
   /// Create a copy of SubcategoryState
   /// with the given fields replaced by the non-null parameter values.
@@ -142,43 +104,241 @@ class __$$SubcategoryStateImplCopyWithImpl<$Res>
     Object? isEditMode = null,
     Object? showPieChart = null,
   }) {
-    return _then(_$SubcategoryStateImpl(
+    return _then(_self.copyWith(
       status: null == status
-          ? _value.status
+          ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as SubcategoryStatus,
       subcategories: null == subcategories
-          ? _value._subcategories
+          ? _self.subcategories
           : subcategories // ignore: cast_nullable_to_non_nullable
               as List<Subcategory>,
       errorMessage: freezed == errorMessage
-          ? _value.errorMessage
+          ? _self.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
       selectedIcon: null == selectedIcon
-          ? _value.selectedIcon
+          ? _self.selectedIcon
           : selectedIcon // ignore: cast_nullable_to_non_nullable
               as String,
       selectedColor: null == selectedColor
-          ? _value.selectedColor
+          ? _self.selectedColor
           : selectedColor // ignore: cast_nullable_to_non_nullable
               as String,
       isEditMode: null == isEditMode
-          ? _value.isEditMode
+          ? _self.isEditMode
           : isEditMode // ignore: cast_nullable_to_non_nullable
               as bool,
       showPieChart: null == showPieChart
-          ? _value.showPieChart
+          ? _self.showPieChart
           : showPieChart // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
 }
 
+/// Adds pattern-matching-related methods to [SubcategoryState].
+extension SubcategoryStatePatterns on SubcategoryState {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_SubcategoryState value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _SubcategoryState() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_SubcategoryState value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _SubcategoryState():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_SubcategoryState value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _SubcategoryState() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            SubcategoryStatus status,
+            List<Subcategory> subcategories,
+            String? errorMessage,
+            String selectedIcon,
+            String selectedColor,
+            bool isEditMode,
+            bool showPieChart)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _SubcategoryState() when $default != null:
+        return $default(
+            _that.status,
+            _that.subcategories,
+            _that.errorMessage,
+            _that.selectedIcon,
+            _that.selectedColor,
+            _that.isEditMode,
+            _that.showPieChart);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            SubcategoryStatus status,
+            List<Subcategory> subcategories,
+            String? errorMessage,
+            String selectedIcon,
+            String selectedColor,
+            bool isEditMode,
+            bool showPieChart)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _SubcategoryState():
+        return $default(
+            _that.status,
+            _that.subcategories,
+            _that.errorMessage,
+            _that.selectedIcon,
+            _that.selectedColor,
+            _that.isEditMode,
+            _that.showPieChart);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            SubcategoryStatus status,
+            List<Subcategory> subcategories,
+            String? errorMessage,
+            String selectedIcon,
+            String selectedColor,
+            bool isEditMode,
+            bool showPieChart)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _SubcategoryState() when $default != null:
+        return $default(
+            _that.status,
+            _that.subcategories,
+            _that.errorMessage,
+            _that.selectedIcon,
+            _that.selectedColor,
+            _that.isEditMode,
+            _that.showPieChart);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 
-class _$SubcategoryStateImpl implements _SubcategoryState {
-  const _$SubcategoryStateImpl(
+class _SubcategoryState implements SubcategoryState {
+  const _SubcategoryState(
       {this.status = SubcategoryStatus.initial,
       final List<Subcategory> subcategories = const [],
       this.errorMessage,
@@ -215,16 +375,19 @@ class _$SubcategoryStateImpl implements _SubcategoryState {
   @JsonKey()
   final bool showPieChart;
 
+  /// Create a copy of SubcategoryState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'SubcategoryState(status: $status, subcategories: $subcategories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SubcategoryStateCopyWith<_SubcategoryState> get copyWith =>
+      __$SubcategoryStateCopyWithImpl<_SubcategoryState>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SubcategoryStateImpl &&
+            other is _SubcategoryState &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other._subcategories, _subcategories) &&
@@ -251,45 +414,82 @@ class _$SubcategoryStateImpl implements _SubcategoryState {
       isEditMode,
       showPieChart);
 
+  @override
+  String toString() {
+    return 'SubcategoryState(status: $status, subcategories: $subcategories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$SubcategoryStateCopyWith<$Res>
+    implements $SubcategoryStateCopyWith<$Res> {
+  factory _$SubcategoryStateCopyWith(
+          _SubcategoryState value, $Res Function(_SubcategoryState) _then) =
+      __$SubcategoryStateCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {SubcategoryStatus status,
+      List<Subcategory> subcategories,
+      String? errorMessage,
+      String selectedIcon,
+      String selectedColor,
+      bool isEditMode,
+      bool showPieChart});
+}
+
+/// @nodoc
+class __$SubcategoryStateCopyWithImpl<$Res>
+    implements _$SubcategoryStateCopyWith<$Res> {
+  __$SubcategoryStateCopyWithImpl(this._self, this._then);
+
+  final _SubcategoryState _self;
+  final $Res Function(_SubcategoryState) _then;
+
   /// Create a copy of SubcategoryState
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$SubcategoryStateImplCopyWith<_$SubcategoryStateImpl> get copyWith =>
-      __$$SubcategoryStateImplCopyWithImpl<_$SubcategoryStateImpl>(
-          this, _$identity);
+  $Res call({
+    Object? status = null,
+    Object? subcategories = null,
+    Object? errorMessage = freezed,
+    Object? selectedIcon = null,
+    Object? selectedColor = null,
+    Object? isEditMode = null,
+    Object? showPieChart = null,
+  }) {
+    return _then(_SubcategoryState(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as SubcategoryStatus,
+      subcategories: null == subcategories
+          ? _self._subcategories
+          : subcategories // ignore: cast_nullable_to_non_nullable
+              as List<Subcategory>,
+      errorMessage: freezed == errorMessage
+          ? _self.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      selectedIcon: null == selectedIcon
+          ? _self.selectedIcon
+          : selectedIcon // ignore: cast_nullable_to_non_nullable
+              as String,
+      selectedColor: null == selectedColor
+          ? _self.selectedColor
+          : selectedColor // ignore: cast_nullable_to_non_nullable
+              as String,
+      isEditMode: null == isEditMode
+          ? _self.isEditMode
+          : isEditMode // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showPieChart: null == showPieChart
+          ? _self.showPieChart
+          : showPieChart // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 }
 
-abstract class _SubcategoryState implements SubcategoryState {
-  const factory _SubcategoryState(
-      {final SubcategoryStatus status,
-      final List<Subcategory> subcategories,
-      final String? errorMessage,
-      final String selectedIcon,
-      final String selectedColor,
-      final bool isEditMode,
-      final bool showPieChart}) = _$SubcategoryStateImpl;
-
-  @override
-  SubcategoryStatus get status;
-  @override
-  List<Subcategory> get subcategories;
-  @override
-  String? get errorMessage;
-  @override
-  String get selectedIcon;
-  @override
-  String get selectedColor;
-  @override
-  bool get isEditMode;
-  @override
-  bool get showPieChart;
-
-  /// Create a copy of SubcategoryState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SubcategoryStateImplCopyWith<_$SubcategoryStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

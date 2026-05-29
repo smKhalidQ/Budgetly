@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,86 +9,57 @@ part of 'transaction_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$TransactionState {
-  TransactionStatus get status => throw _privateConstructorUsedError;
-  List<Transaction> get transactions => throw _privateConstructorUsedError;
-  String? get errorMessage => throw _privateConstructorUsedError;
-  bool get isEditMode => throw _privateConstructorUsedError;
+  TransactionStatus get status;
+  List<Transaction> get transactions;
+  String? get errorMessage;
+  bool get isEditMode;
 
   /// Create a copy of TransactionState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $TransactionStateCopyWith<TransactionState> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $TransactionStateCopyWith<$Res> {
-  factory $TransactionStateCopyWith(
-          TransactionState value, $Res Function(TransactionState) then) =
-      _$TransactionStateCopyWithImpl<$Res, TransactionState>;
-  @useResult
-  $Res call(
-      {TransactionStatus status,
-      List<Transaction> transactions,
-      String? errorMessage,
-      bool isEditMode});
-}
-
-/// @nodoc
-class _$TransactionStateCopyWithImpl<$Res, $Val extends TransactionState>
-    implements $TransactionStateCopyWith<$Res> {
-  _$TransactionStateCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of TransactionState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $TransactionStateCopyWith<TransactionState> get copyWith =>
+      _$TransactionStateCopyWithImpl<TransactionState>(
+          this as TransactionState, _$identity);
+
   @override
-  $Res call({
-    Object? status = null,
-    Object? transactions = null,
-    Object? errorMessage = freezed,
-    Object? isEditMode = null,
-  }) {
-    return _then(_value.copyWith(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as TransactionStatus,
-      transactions: null == transactions
-          ? _value.transactions
-          : transactions // ignore: cast_nullable_to_non_nullable
-              as List<Transaction>,
-      errorMessage: freezed == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isEditMode: null == isEditMode
-          ? _value.isEditMode
-          : isEditMode // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is TransactionState &&
+            (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality()
+                .equals(other.transactions, transactions) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage) &&
+            (identical(other.isEditMode, isEditMode) ||
+                other.isEditMode == isEditMode));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      status,
+      const DeepCollectionEquality().hash(transactions),
+      errorMessage,
+      isEditMode);
+
+  @override
+  String toString() {
+    return 'TransactionState(status: $status, transactions: $transactions, errorMessage: $errorMessage, isEditMode: $isEditMode)';
   }
 }
 
 /// @nodoc
-abstract class _$$TransactionStateImplCopyWith<$Res>
-    implements $TransactionStateCopyWith<$Res> {
-  factory _$$TransactionStateImplCopyWith(_$TransactionStateImpl value,
-          $Res Function(_$TransactionStateImpl) then) =
-      __$$TransactionStateImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $TransactionStateCopyWith<$Res> {
+  factory $TransactionStateCopyWith(
+          TransactionState value, $Res Function(TransactionState) _then) =
+      _$TransactionStateCopyWithImpl;
   @useResult
   $Res call(
       {TransactionStatus status,
@@ -98,12 +69,12 @@ abstract class _$$TransactionStateImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TransactionStateImplCopyWithImpl<$Res>
-    extends _$TransactionStateCopyWithImpl<$Res, _$TransactionStateImpl>
-    implements _$$TransactionStateImplCopyWith<$Res> {
-  __$$TransactionStateImplCopyWithImpl(_$TransactionStateImpl _value,
-      $Res Function(_$TransactionStateImpl) _then)
-      : super(_value, _then);
+class _$TransactionStateCopyWithImpl<$Res>
+    implements $TransactionStateCopyWith<$Res> {
+  _$TransactionStateCopyWithImpl(this._self, this._then);
+
+  final TransactionState _self;
+  final $Res Function(TransactionState) _then;
 
   /// Create a copy of TransactionState
   /// with the given fields replaced by the non-null parameter values.
@@ -115,31 +86,193 @@ class __$$TransactionStateImplCopyWithImpl<$Res>
     Object? errorMessage = freezed,
     Object? isEditMode = null,
   }) {
-    return _then(_$TransactionStateImpl(
+    return _then(_self.copyWith(
       status: null == status
-          ? _value.status
+          ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as TransactionStatus,
       transactions: null == transactions
-          ? _value._transactions
+          ? _self.transactions
           : transactions // ignore: cast_nullable_to_non_nullable
               as List<Transaction>,
       errorMessage: freezed == errorMessage
-          ? _value.errorMessage
+          ? _self.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
       isEditMode: null == isEditMode
-          ? _value.isEditMode
+          ? _self.isEditMode
           : isEditMode // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
 }
 
+/// Adds pattern-matching-related methods to [TransactionState].
+extension TransactionStatePatterns on TransactionState {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_TransactionState value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _TransactionState() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_TransactionState value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _TransactionState():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_TransactionState value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _TransactionState() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(TransactionStatus status, List<Transaction> transactions,
+            String? errorMessage, bool isEditMode)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _TransactionState() when $default != null:
+        return $default(_that.status, _that.transactions, _that.errorMessage,
+            _that.isEditMode);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(TransactionStatus status, List<Transaction> transactions,
+            String? errorMessage, bool isEditMode)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _TransactionState():
+        return $default(_that.status, _that.transactions, _that.errorMessage,
+            _that.isEditMode);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(TransactionStatus status, List<Transaction> transactions,
+            String? errorMessage, bool isEditMode)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _TransactionState() when $default != null:
+        return $default(_that.status, _that.transactions, _that.errorMessage,
+            _that.isEditMode);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 
-class _$TransactionStateImpl implements _TransactionState {
-  const _$TransactionStateImpl(
+class _TransactionState implements TransactionState {
+  const _TransactionState(
       {this.status = TransactionStatus.initial,
       final List<Transaction> transactions = const [],
       this.errorMessage,
@@ -164,16 +297,19 @@ class _$TransactionStateImpl implements _TransactionState {
   @JsonKey()
   final bool isEditMode;
 
+  /// Create a copy of TransactionState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'TransactionState(status: $status, transactions: $transactions, errorMessage: $errorMessage, isEditMode: $isEditMode)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$TransactionStateCopyWith<_TransactionState> get copyWith =>
+      __$TransactionStateCopyWithImpl<_TransactionState>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TransactionStateImpl &&
+            other is _TransactionState &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other._transactions, _transactions) &&
@@ -191,36 +327,64 @@ class _$TransactionStateImpl implements _TransactionState {
       errorMessage,
       isEditMode);
 
+  @override
+  String toString() {
+    return 'TransactionState(status: $status, transactions: $transactions, errorMessage: $errorMessage, isEditMode: $isEditMode)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$TransactionStateCopyWith<$Res>
+    implements $TransactionStateCopyWith<$Res> {
+  factory _$TransactionStateCopyWith(
+          _TransactionState value, $Res Function(_TransactionState) _then) =
+      __$TransactionStateCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {TransactionStatus status,
+      List<Transaction> transactions,
+      String? errorMessage,
+      bool isEditMode});
+}
+
+/// @nodoc
+class __$TransactionStateCopyWithImpl<$Res>
+    implements _$TransactionStateCopyWith<$Res> {
+  __$TransactionStateCopyWithImpl(this._self, this._then);
+
+  final _TransactionState _self;
+  final $Res Function(_TransactionState) _then;
+
   /// Create a copy of TransactionState
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TransactionStateImplCopyWith<_$TransactionStateImpl> get copyWith =>
-      __$$TransactionStateImplCopyWithImpl<_$TransactionStateImpl>(
-          this, _$identity);
+  $Res call({
+    Object? status = null,
+    Object? transactions = null,
+    Object? errorMessage = freezed,
+    Object? isEditMode = null,
+  }) {
+    return _then(_TransactionState(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as TransactionStatus,
+      transactions: null == transactions
+          ? _self._transactions
+          : transactions // ignore: cast_nullable_to_non_nullable
+              as List<Transaction>,
+      errorMessage: freezed == errorMessage
+          ? _self.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isEditMode: null == isEditMode
+          ? _self.isEditMode
+          : isEditMode // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 }
 
-abstract class _TransactionState implements TransactionState {
-  const factory _TransactionState(
-      {final TransactionStatus status,
-      final List<Transaction> transactions,
-      final String? errorMessage,
-      final bool isEditMode}) = _$TransactionStateImpl;
-
-  @override
-  TransactionStatus get status;
-  @override
-  List<Transaction> get transactions;
-  @override
-  String? get errorMessage;
-  @override
-  bool get isEditMode;
-
-  /// Create a copy of TransactionState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TransactionStateImplCopyWith<_$TransactionStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

@@ -30,22 +30,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bloc: ^8.1.6
-  get_it: ^8.0.0
-  freezed_annotation: ^2.4.4
+  flutter_bloc: ^9.1.1
+  get_it: ^8.2.0
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
   sqflite: ^2.3.3+1
   path: ^1.9.0
-  fl_chart: ^0.71.0
   gap: ^3.0.1
+  shimmer: ^3.0.0
   flutter_staggered_animations: ^1.1.1
   spincircle_bottom_bar: ^2.0.0
   flutter_custom_clippers: ^2.1.0
   google_fonts: ^6.2.1
   expressions: ^0.2.5+1
   flutter_colorpicker: ^1.1.0
-  flutter_svg: ^2.0.10+1
+  flutter_svg: ^2.2.0
   intl: ^0.20.0
-  shared_preferences: ^2.2.3
+  shared_preferences: ^2.5.3
   percent_indicator: ^4.2.5
 
   # The following adds the Cupertino Icons font to your application.
@@ -55,9 +56,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
-  build_runner: ^2.4.8
-  freezed: ^2.4.7
+  flutter_lints: ^6.0.0
+  build_runner: ^2.6.0
+  freezed: ^3.2.0
+  json_serializable: ^6.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
