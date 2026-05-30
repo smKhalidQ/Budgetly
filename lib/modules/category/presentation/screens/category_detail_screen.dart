@@ -3,7 +3,7 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/widgets/pickers/picker_dialog_helpers.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/presentation/screens/explore_screen.dart';
+import 'package:budget_buddy/modules/home/presentation/screens/home_screen.dart';
 import 'package:budget_buddy/modules/category/presentation/widgets/selected_category_header.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
@@ -14,10 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-class NewExpenseEntryScreen extends StatelessWidget {
+class CategoryDetailScreen extends StatelessWidget {
   final Category category;
 
-  const NewExpenseEntryScreen({super.key, required this.category});
+  const CategoryDetailScreen({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class NewExpenseEntryScreen extends StatelessWidget {
           leading: IconButton(
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ExploreScreen()),
+              MaterialPageRoute(builder: (context) => HomeScreen()),
             ),
             icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
           ),

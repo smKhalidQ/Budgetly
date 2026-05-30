@@ -3,7 +3,7 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
-import 'package:budget_buddy/modules/transaction/presentation/screens/new_expense_entry_screen.dart';
+import 'package:budget_buddy/modules/category/presentation/screens/category_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,7 +28,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NewExpenseEntryScreen(category: category),
+                    builder: (context) => CategoryDetailScreen(category: category),
                   ),
                 ),
                 child: _categoryListItem(category, context),

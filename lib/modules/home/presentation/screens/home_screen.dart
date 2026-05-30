@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../widgets/explore_screen/explore_header_widget.dart';
-import '../widgets/tab_bar_view_widget.dart';
+import '../widgets/home_header_widget.dart';
+import '../widgets/home_tab_bar_widget.dart';
 
-class ExploreScreen extends StatelessWidget {
-  ExploreScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class ExploreScreen extends StatelessWidget {
                               ),
                             )
                           : null,
-                      background: ExploreHeaderWidget(),
+                      background: HomeHeaderWidget(),
                       collapseMode: CollapseMode.parallax,
                     );
                   },
@@ -54,7 +54,7 @@ class ExploreScreen extends StatelessWidget {
                     unselectedLabelColor: Colors.grey,
                     tabs: [
                       Tab(text: "Categories"),
-                      Tab(text: "Transactions"),
+                      Tab(text: "Settings"),
                     ],
                   ),
                 ),
@@ -62,7 +62,7 @@ class ExploreScreen extends StatelessWidget {
               ),
             ];
           },
-          body: const TabBarViewWidget(),
+          body: const HomeTabBarWidget(),
         ),
       ),
     );

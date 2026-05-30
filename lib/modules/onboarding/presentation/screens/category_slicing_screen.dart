@@ -1,11 +1,11 @@
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:budget_buddy/modules/category/presentation/widgets/slicing_screen/build_header_section.dart';
+import 'package:budget_buddy/modules/category/presentation/widgets/slicing_screen/category_slicing_card_list.dart';
+import 'package:budget_buddy/modules/category/presentation/widgets/slicing_screen/custom_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import '../widgets/slicing_screen/build_header_section.dart';
-import '../widgets/slicing_screen/category_slicing_card_list.dart';
-import '../widgets/slicing_screen/custom_bottom_nav_bar.dart';
 
 class CategorySlicingScreen extends StatelessWidget {
   final int monthlySalary;

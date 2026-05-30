@@ -2,24 +2,24 @@ import 'package:budget_buddy/core/database/database_helper.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   Future<void> _removeCategoryTable(BuildContext context) async {
-    final db = await DatabaseHelper.db;
-    await db?.delete('category');
+    await DatabaseHelper.clearCategoryTable();
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('Category table cleared')));
   }
 
   Future<void> _removeSubcategoryTable(BuildContext context) async {
-    final db = await DatabaseHelper.db;
-    await db?.delete('subcategory');
+    await DatabaseHelper.clearSubcategoryTable();
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('Subcategory table cleared')));
   }
 
   Future<void> _removeDatabase(BuildContext context) async {
-    bool? confirm = await showDialog<bool>(
+    final confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -42,23 +42,25 @@ class SettingsScreen extends StatelessWidget {
         );
       },
     );
-    if (confirm == true) {
-      try {
-        await DatabaseHelper.removeDatabase();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('تم حذف قاعدة البيانات بنجاح'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('فشل في حذف قاعدة البيانات: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+    if (confirm != true) return;
+    if (!context.mounted) return;
+    try {
+      await DatabaseHelper.removeDatabase();
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('تم حذف قاعدة البيانات بنجاح'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('فشل في حذف قاعدة البيانات: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 

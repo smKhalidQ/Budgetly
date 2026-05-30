@@ -1,11 +1,11 @@
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/presentation/screens/category_slicing_screen.dart';
+import 'package:budget_buddy/modules/onboarding/presentation/screens/category_slicing_screen.dart';
 import 'package:budget_buddy/modules/user_info/domain/models/user_info.dart';
-import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
-import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_state.dart';
-import 'package:budget_buddy/modules/user_info/presentation/widgets/currency_modal_bottom_sheet.dart';
+import 'package:budget_buddy/modules/onboarding/presentation/cubits/setting_cubit.dart';
+import 'package:budget_buddy/modules/onboarding/presentation/cubits/setting_state.dart';
+import 'package:budget_buddy/modules/onboarding/presentation/widgets/currency_modal_bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,7 +45,6 @@ class _SetupBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Gap(24),
-              // Header
               Center(
                 child: Container(
                   width: 72,
@@ -86,7 +85,6 @@ class _SetupBody extends StatelessWidget {
               ),
               const Gap(40),
 
-              // Name field
               _FieldLabel(label: t.yourName),
               const Gap(8),
               TextFormField(
@@ -102,7 +100,6 @@ class _SetupBody extends StatelessWidget {
               ),
               const Gap(20),
 
-              // Currency field
               _FieldLabel(label: t.currency),
               const Gap(8),
               BlocBuilder<SettingCubit, SettingState>(
@@ -150,7 +147,6 @@ class _SetupBody extends StatelessWidget {
               ),
               const Gap(20),
 
-              // Salary field
               _FieldLabel(label: t.monthlySalary),
               const Gap(8),
               TextFormField(
@@ -171,7 +167,6 @@ class _SetupBody extends StatelessWidget {
               ),
               const Gap(48),
 
-              // Next button
               GestureDetector(
                 onTap: () => _onNext(context, settingCubit),
                 child: Container(

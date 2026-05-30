@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:budget_buddy/modules/settings/presentation/screens/settings_screen.dart';
 
-class ExploreHeaderWidget extends StatelessWidget {
-  ExploreHeaderWidget({super.key});
+class HomeHeaderWidget extends StatelessWidget {
+  HomeHeaderWidget({super.key});
   final double spentAmount = 560;
   final double totalBudget = 1000;
 

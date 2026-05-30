@@ -6,7 +6,7 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/widgets/pickers/picker_dialog_helpers.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/category/presentation/screens/explore_screen.dart';
+import 'package:budget_buddy/modules/home/presentation/screens/home_screen.dart';
 import 'package:budget_buddy/modules/user_info/data/data_sources/cache_helper.dart';
 import 'saving_balance_dialog.dart';
 
@@ -63,7 +63,7 @@ class CustomSetUpBottomBar extends StatelessWidget {
                       if (context.mounted) {
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (_) => ExploreScreen()),
+                          MaterialPageRoute(builder: (_) => HomeScreen()),
                           (_) => false,
                         );
                       }
