@@ -34,6 +34,12 @@
   "savingReminderMsg": "لديك رصيد متبقٍّ. فكّر في إضافته للادخار.",
   "continueAnyway": "المتابعة على أي حال",
   "goBack": "الرجوع",
+  "adjustBudget": "تعديل",
+  "addToSavings": "أضف للادخار",
+  "remainingBalance": "رصيد متبقٍّ",
+  "youHaveRemainingOf": "لديك",
+  "unallocated": "غير موزَّع",
+  "editCategoriesLater": "يمكنك تعديل الفئات لاحقاً من الإعدادات",
 
   "save": "حفظ",
   "cancel": "إلغاء",

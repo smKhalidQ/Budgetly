@@ -278,6 +278,42 @@ abstract class AppLocalizations {
   /// **'Go Back'**
   String get goBack;
 
+  /// No description provided for @adjustBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust'**
+  String get adjustBudget;
+
+  /// No description provided for @addToSavings.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Savings'**
+  String get addToSavings;
+
+  /// No description provided for @remainingBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining Balance'**
+  String get remainingBalance;
+
+  /// No description provided for @youHaveRemainingOf.
+  ///
+  /// In en, this message translates to:
+  /// **'You still have'**
+  String get youHaveRemainingOf;
+
+  /// No description provided for @unallocated.
+  ///
+  /// In en, this message translates to:
+  /// **'unallocated'**
+  String get unallocated;
+
+  /// No description provided for @editCategoriesLater.
+  ///
+  /// In en, this message translates to:
+  /// **'You can edit categories later from Settings'**
+  String get editCategoriesLater;
+
   /// No description provided for @save.
   ///
   /// In en, this message translates to:

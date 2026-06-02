@@ -1,4 +1,6 @@
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/widgets/pickers/color_picker_widget.dart';
+import 'package:budget_buddy/core/widgets/pickers/icon_picker_widget.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
@@ -8,17 +10,13 @@ import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'color_picker_widget.dart';
-import 'icon_picker_widget.dart';
 
 class PickerDialogHelpers {
-
   static Future<Map<String, dynamic>?> showCategoryPickerDialog({
     required BuildContext context,
     required String title,
     required Function(Category) pickerFunction,
   }) async {
-
     TextEditingController nameController = TextEditingController();
     final PageController pageController = PageController();
     final categoryCubit = CategoryCubit.get(context);
@@ -31,50 +29,49 @@ class PickerDialogHelpers {
       builder: (BuildContext context) {
         return BlocProvider.value(
           value: categoryCubit,
-          child: StatefulBuilder(
-              builder: (context, setState) {
-                return BlocBuilder<CategoryCubit, CategoryState>(
-                  builder: (context, state) {
-                    return _buildDialogContent(
-                      context: context,
-                      title: title,
-                      nameController: nameController,
-                      hasValidationError: hasValidationError,
-                      validationErrorMessage: validationErrorMessage,
-                      pageController: pageController,
-                      currentPage: currentPage,
-                      isCategory: true,
-                      categoryCubit: categoryCubit,
-                      onIconSelected: (icon) {
-                        categoryCubit.updateCategoryIcon(icon.codePoint.toString());
-                      },
-                      onColorSelected: (color) {
-                        categoryCubit.updateCategoryColor(color);
-                      },
-                      onSavePressed: () {
-                        if (nameController.text.isEmpty) {
-                          setState(() {
-                            hasValidationError = true;
-                            validationErrorMessage = 'Name is required';
-                          });
-                          return;
-                        }
-                        final listLength = categoryCubit.state.categories.length;
-                        final newCategory = Category(
-                          id: listLength,
-                          name: nameController.text,
-                          allocatedAmount: 0.0,
-                          color: categoryCubit.categoryColor.value.toRadixString(16),
-                          icon: categoryCubit.categoryIcon,
-                        );
-                        pickerFunction(newCategory);
-                        Navigator.pop(context);
-                      },
+          child: StatefulBuilder(builder: (context, setState) {
+            return BlocBuilder<CategoryCubit, CategoryState>(
+              builder: (context, state) {
+                return _buildDialogContent(
+                  context: context,
+                  title: title,
+                  nameController: nameController,
+                  hasValidationError: hasValidationError,
+                  validationErrorMessage: validationErrorMessage,
+                  pageController: pageController,
+                  currentPage: currentPage,
+                  isCategory: true,
+                  categoryCubit: categoryCubit,
+                  onIconSelected: (icon) {
+                    categoryCubit.updateCategoryIcon(icon.codePoint.toString());
+                  },
+                  onColorSelected: (color) {
+                    categoryCubit.updateCategoryColor(color);
+                  },
+                  onSavePressed: () {
+                    if (nameController.text.isEmpty) {
+                      setState(() {
+                        hasValidationError = true;
+                        validationErrorMessage = 'Name is required';
+                      });
+                      return;
+                    }
+                    final listLength = categoryCubit.state.categories.length;
+                    final newCategory = Category(
+                      id: listLength,
+                      name: nameController.text,
+                      allocatedAmount: 0.0,
+                      color:
+                          categoryCubit.categoryColor.value.toRadixString(16),
+                      icon: categoryCubit.categoryIcon,
                     );
+                    pickerFunction(newCategory);
+                    Navigator.pop(context);
                   },
                 );
-              }
-          ),
+              },
+            );
+          }),
         );
       },
     );
@@ -82,14 +79,12 @@ class PickerDialogHelpers {
     return result;
   }
 
-
   static Future<Map<String, dynamic>?> showSubcategoryPickerDialog({
     required BuildContext context,
     required String title,
     required int parentCategoryId,
     required Function(Subcategory newSubcategory) pickerFunction,
   }) async {
-
     final TextEditingController nameController = TextEditingController();
     final PageController pageController = PageController();
     SubcategoryCubit subcategoryCubit = SubcategoryCubit.get(context);
@@ -118,7 +113,8 @@ class PickerDialogHelpers {
                 if (nameController.text.trim().isNotEmpty) {
                   final newSubcategory = Subcategory(
                     name: nameController.text,
-                    color: subcategoryCubit.subcategoryColor.value.toRadixString(16),
+                    color: subcategoryCubit.subcategoryColor.value
+                        .toRadixString(16),
                     icon: subcategoryCubit.subcategoryIcon,
                     parentCategoryId: parentCategoryId,
                   );
@@ -134,7 +130,6 @@ class PickerDialogHelpers {
 
     return result;
   }
-
 
   static Widget _buildDialogContent({
     required BuildContext context,
@@ -183,19 +178,21 @@ class PickerDialogHelpers {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Select Icon",
-                            style: GoogleFonts.roboto(fontWeight: FontWeight.w500)),
+                            style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w500)),
                         const SizedBox(height: 10),
                         IconPickerWidget(
                           currentIcon: IconData(
-                              int.tryParse(
-                                  isCategory && categoryCubit != null ?
-                                  categoryCubit.categoryIcon :
-                                  subcategoryCubit?.subcategoryIcon ?? '0xe000') ?? 0xe000,
-                              fontFamily: 'MaterialIcons'
-                          ),
-                          currentColor: isCategory && categoryCubit != null ?
-                          categoryCubit.categoryColor :
-                          subcategoryCubit?.subcategoryColor ?? Colors.blue,
+                              int.tryParse(isCategory && categoryCubit != null
+                                      ? categoryCubit.categoryIcon
+                                      : subcategoryCubit?.subcategoryIcon ??
+                                          '0xe000') ??
+                                  0xe000,
+                              fontFamily: 'MaterialIcons'),
+                          currentColor: isCategory && categoryCubit != null
+                              ? categoryCubit.categoryColor
+                              : subcategoryCubit?.subcategoryColor ??
+                                  Colors.blue,
                           onIconSelected: onIconSelected,
                         ),
                       ],
@@ -206,12 +203,14 @@ class PickerDialogHelpers {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Select Color",
-                            style: GoogleFonts.roboto(fontWeight: FontWeight.w500)),
+                            style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w500)),
                         const SizedBox(height: 10),
                         ColorPickerWidget(
-                          currentColor: isCategory && categoryCubit != null ?
-                          categoryCubit.categoryColor :
-                          subcategoryCubit?.subcategoryColor ?? Colors.blue,
+                          currentColor: isCategory && categoryCubit != null
+                              ? categoryCubit.categoryColor
+                              : subcategoryCubit?.subcategoryColor ??
+                                  Colors.blue,
                           onColorSelected: onColorSelected,
                         ),
                       ],
@@ -257,5 +256,4 @@ class PickerDialogHelpers {
       ],
     );
   }
-
 }

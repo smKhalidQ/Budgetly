@@ -105,6 +105,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goBack => 'Go Back';
 
   @override
+  String get adjustBudget => 'Adjust';
+
+  @override
+  String get addToSavings => 'Add to Savings';
+
+  @override
+  String get remainingBalance => 'Remaining Balance';
+
+  @override
+  String get youHaveRemainingOf => 'You still have';
+
+  @override
+  String get unallocated => 'unallocated';
+
+  @override
+  String get editCategoriesLater =>
+      'You can edit categories later from Settings';
+
+  @override
   String get save => 'Save';
 
   @override

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 
 class InsufficientBalanceDialog extends StatelessWidget {
@@ -13,126 +13,118 @@ class InsufficientBalanceDialog extends StatelessWidget {
   final int index;
 
   const InsufficientBalanceDialog({
-    Key? key,
+    super.key,
     required this.monthlySalary,
     required this.totalAllocatedBudgetBasedOnMap,
     required this.controller,
     required this.categoryCubit,
     required this.index,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      backgroundColor: AppColor.backgroundColor,
-      contentPadding: EdgeInsets.zero,
-      content: Container(
+    final t = context.tr;
+    final maxAvailable = monthlySalary + totalAllocatedBudgetBasedOnMap;
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Icon
             Container(
-              padding: const EdgeInsets.all(16),
+              width: 64,
+              height: 64,
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
+                color: AppColor.expenseColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.warning_rounded,
-                color: Colors.red,
-                size: 32,
+                color: AppColor.expenseColor,
+                size: 30,
               ),
             ),
-            const Gap(16),
+            const SizedBox(height: 16),
             Text(
-              "Insufficient Balance",
-              style: GoogleFonts.roboto(
-                fontSize: 20,
+              t.insufficientBudgetTitle,
+              style: GoogleFonts.cairo(
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColor.textPrimary,
               ),
             ),
-            const Gap(8),
+            const SizedBox(height: 6),
             Text(
-              "Your remaining balance is",
+              t.insufficientBudgetMsg,
               textAlign: TextAlign.center,
-              style: GoogleFonts.roboto(
-                color: AppColor.textPrimary,
-                fontSize: 16,
+              style: GoogleFonts.cairo(
+                fontSize: 13,
+                color: AppColor.textSecondary,
+                height: 1.5,
               ),
             ),
-            const Gap(8),
-            Text(
-              "\$${(monthlySalary + totalAllocatedBudgetBasedOnMap).toString()}",
-              style: GoogleFonts.roboto(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-            ),
-            const Gap(24),
+            const SizedBox(height: 24),
             Row(
               children: [
+                // Adjust — clears to 0
                 Expanded(
-                  child: TextButton(
+                  child: OutlinedButton(
                     onPressed: () {
                       controller.clear();
                       categoryCubit.allocatedBudgetMap[index] = 0;
-                      categoryCubit.setRemainingBudget(
-                          monthlySalary + totalAllocatedBudgetBasedOnMap);
+                      categoryCubit.setRemainingBudget(maxAvailable);
                       Navigator.of(context).pop();
                     },
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 13),
+                      side: const BorderSide(color: AppColor.primaryColor),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(
-                          color: AppColor.primaryColor.withOpacity(0.5),
-                        ),
                       ),
                     ),
                     child: Text(
-                      "Adjust Categories",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.roboto(
+                      t.adjustBudget,
+                      style: GoogleFonts.cairo(
                         color: AppColor.primaryColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
                       ),
                     ),
                   ),
                 ),
-                const Gap(12),
+                const SizedBox(width: 12),
+                // Set max available
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      final theOnChangedNewSetValue =
-                          monthlySalary + totalAllocatedBudgetBasedOnMap;
-                      theOnChangedNewSetValue == 0
-                          ? controller.clear()
-                          : controller.text = theOnChangedNewSetValue.toString();
-                      categoryCubit.allocatedBudgetMap[index] =
-                          -theOnChangedNewSetValue;
+                      if (maxAvailable == 0) {
+                        controller.clear();
+                      } else {
+                        controller.text = maxAvailable.toString();
+                      }
+                      categoryCubit.allocatedBudgetMap[index] = -maxAvailable;
                       categoryCubit.setRemainingBudget(0);
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      foregroundColor: Colors.white,
                       elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 13),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: Text(
-                      "Set \$${(monthlySalary + totalAllocatedBudgetBasedOnMap).toString()}",
-                      style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
+                      'Set $maxAvailable',
+                      style: GoogleFonts.cairo(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
                       ),
                     ),
                   ),

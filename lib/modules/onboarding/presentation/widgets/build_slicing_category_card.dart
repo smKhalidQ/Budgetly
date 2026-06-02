@@ -124,30 +124,35 @@ class BuildSlicingCategoryCard extends StatelessWidget {
     BuildContext context,
   ) {
     if (value.isEmpty) {
-      final difference = previousValue[index] ?? 0;
-      categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(difference);
-      previousValue[index] = 0;
-      categoryCubit.allocatedBudgetMap[index] = 0;
-      onUpdateCategory(categoryCubit, category, 0);
+      // Read from map (not previousValue) to avoid stale values after dialog reset
+      final currentAlloc = -(categoryCubit.allocatedBudgetMap[index] ?? 0);
+      if (currentAlloc > 0) {
+        categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(currentAlloc);
+        categoryCubit.allocatedBudgetMap[index] = 0;
+        previousValue[index] = 0;
+        onUpdateCategory(categoryCubit, category, 0);
+      }
       return;
     }
+
     try {
       final newAllocation = int.parse(value);
+      if (newAllocation < 0) return;
+
       final previousAllocation = -(categoryCubit.allocatedBudgetMap[index] ?? 0);
       final difference = previousAllocation - newAllocation;
-      categoryCubit.updateCategoryAllocationAndTotalBudgetInSettingUpstage(
-          index, difference);
 
+      // Guard: check BEFORE touching state — remaining must never go negative
       if (categoryCubit.state.remainingBudget + difference < 0) {
-        categoryCubit
-            .updateRemainingBudgetForProgressBarInSettingUpstage(difference);
         _showBudgetAlertDialog(context, categoryCubit);
-      } else {
-        categoryCubit
-            .updateRemainingBudgetForProgressBarInSettingUpstage(difference);
-        previousValue[index] = newAllocation;
-        onUpdateCategory(categoryCubit, category, newAllocation);
+        return;
       }
+
+      // Valid — update state
+      categoryCubit.updateCategoryAllocationAndTotalBudgetInSettingUpstage(index, difference);
+      categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(difference);
+      previousValue[index] = newAllocation;
+      onUpdateCategory(categoryCubit, category, newAllocation);
     } catch (e) {
       debugPrint('Invalid number in field $index: $e');
     }

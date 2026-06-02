@@ -34,6 +34,12 @@
   "savingReminderMsg": "You still have remaining budget. Consider adding it to Saving.",
   "continueAnyway": "Continue Anyway",
   "goBack": "Go Back",
+  "adjustBudget": "Adjust",
+  "addToSavings": "Add to Savings",
+  "remainingBalance": "Remaining Balance",
+  "youHaveRemainingOf": "You still have",
+  "unallocated": "unallocated",
+  "editCategoriesLater": "You can edit categories later from Settings",
 
   "save": "Save",
   "cancel": "Cancel",

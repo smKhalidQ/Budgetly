@@ -1,10 +1,10 @@
-import 'package:budget_buddy/core/theming/app_color.dart';
+﻿import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/screens/category_slicing_screen.dart';
 import 'package:budget_buddy/modules/user_info/domain/models/user_info.dart';
-import 'package:budget_buddy/modules/onboarding/presentation/cubits/setting_cubit.dart';
-import 'package:budget_buddy/modules/onboarding/presentation/cubits/setting_state.dart';
+import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
+import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_state.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/widgets/currency_modal_bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,17 +19,29 @@ class SetupProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.primaryColor,
-      body: _SetupBody(),
+      body: const _SetupBody(),
     );
   }
 }
 
-class _SetupBody extends StatelessWidget {
-  _SetupBody();
+class _SetupBody extends StatefulWidget {
+  const _SetupBody();
 
+  @override
+  State<_SetupBody> createState() => _SetupBodyState();
+}
+
+class _SetupBodyState extends State<_SetupBody> {
   final _nameController = TextEditingController();
   final _salaryController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _salaryController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,3 +301,4 @@ class _FieldLabel extends StatelessWidget {
     );
   }
 }
+

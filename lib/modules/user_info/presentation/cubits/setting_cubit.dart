@@ -1,7 +1,7 @@
-import 'package:budget_buddy/core/utilities/listener_mixin.dart';
+﻿import 'package:budget_buddy/core/utilities/listener_mixin.dart';
 import 'package:budget_buddy/modules/user_info/domain/models/user_info.dart';
 import 'package:budget_buddy/modules/user_info/domain/repositories/user_info_repository.dart';
-import 'package:budget_buddy/modules/onboarding/presentation/cubits/setting_state.dart';
+import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingCubit extends Cubit<SettingState> with StreamListener {
@@ -28,3 +28,4 @@ class SettingCubit extends Cubit<SettingState> with StreamListener {
 
   void setMonthlySalary(int value) => emit(state.copyWith(monthlySalary: value));
 }
+

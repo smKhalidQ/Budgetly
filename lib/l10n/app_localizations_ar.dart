@@ -102,6 +102,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goBack => 'الرجوع';
 
   @override
+  String get adjustBudget => 'تعديل';
+
+  @override
+  String get addToSavings => 'أضف للادخار';
+
+  @override
+  String get remainingBalance => 'رصيد متبقٍّ';
+
+  @override
+  String get youHaveRemainingOf => 'لديك';
+
+  @override
+  String get unallocated => 'غير موزَّع';
+
+  @override
+  String get editCategoriesLater => 'يمكنك تعديل الفئات لاحقاً من الإعدادات';
+
+  @override
   String get save => 'حفظ';
 
   @override

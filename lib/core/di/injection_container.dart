@@ -1,4 +1,4 @@
-import 'package:get_it/get_it.dart';
+﻿import 'package:get_it/get_it.dart';
 
 import 'package:budget_buddy/modules/category/data/data_sources/category_data_source.dart';
 import 'package:budget_buddy/modules/subcategory/data/data_sources/subcategory_data_source.dart';
@@ -13,7 +13,7 @@ import 'package:budget_buddy/modules/user_info/domain/repositories/user_info_rep
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_cubit.dart';
-import 'package:budget_buddy/modules/onboarding/presentation/cubits/setting_cubit.dart';
+import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 
 void initializeDependencies() {
   GetIt.I.registerLazySingleton(() => CategoryManagementDataSource());

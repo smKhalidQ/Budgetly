@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
@@ -6,7 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'core/router/app_router.dart';
 import 'l10n/app_localizations.dart';
 import 'modules/category/presentation/cubits/category_cubit.dart';
-import 'modules/onboarding/presentation/cubits/setting_cubit.dart';
+import 'modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'modules/subcategory/presentation/cubits/subcategory_cubit.dart';
 
 class App extends StatelessWidget {

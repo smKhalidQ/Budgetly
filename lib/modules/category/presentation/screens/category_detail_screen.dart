@@ -1,9 +1,7 @@
-import 'dart:ui';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/core/widgets/pickers/picker_dialog_helpers.dart';
+import 'package:budget_buddy/modules/category/presentation/widgets/picker_dialog_helpers.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/home/presentation/screens/home_screen.dart';
 import 'package:budget_buddy/modules/category/presentation/widgets/selected_category_header.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
@@ -30,10 +28,7 @@ class CategoryDetailScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-            ),
+            onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
           ),
           title: Text(
