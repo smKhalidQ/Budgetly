@@ -178,6 +178,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get budget => 'Budget';
 
   @override
+  String get budgetOverview => 'Budget Overview';
+
+  @override
+  String get totalBudget => 'Total';
+
+  @override
+  String get noTransactionsYet => 'No transactions yet';
+
+  @override
+  String get startTracking => 'Start tracking your expenses';
+
+  @override
+  String get myBudget => 'My Budget';
+
+  @override
+  String get monthlyBudget => 'Monthly Budget';
+
+  @override
+  String get leftOf => 'left of';
+
+  @override
   String get saving => 'Saving';
 
   @override

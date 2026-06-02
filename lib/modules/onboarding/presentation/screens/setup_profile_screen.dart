@@ -1,6 +1,7 @@
 ﻿import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
+import 'package:budget_buddy/core/utilities/cache_helper.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/screens/category_slicing_screen.dart';
 import 'package:budget_buddy/modules/user_info/domain/models/user_info.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -223,6 +224,7 @@ class _SetupBodyState extends State<_SetupBody> {
     final currency =
         settingCubit.state.selectedCurrency ?? currencies.keys.first;
 
+    CacheHelper.saveData(key: 'user_name', value: name);
     settingCubit.setMonthlySalary(salary);
     settingCubit.insertUserInfo(
       UserInfo(name: name, monthlySalary: _salaryController.text, currency: currency),

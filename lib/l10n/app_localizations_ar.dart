@@ -174,6 +174,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get budget => 'الميزانية';
 
   @override
+  String get budgetOverview => 'نظرة على الميزانية';
+
+  @override
+  String get totalBudget => 'الإجمالي';
+
+  @override
+  String get noTransactionsYet => 'لا توجد معاملات بعد';
+
+  @override
+  String get startTracking => 'ابدأ بتسجيل مصاريفك';
+
+  @override
+  String get myBudget => 'ميزانيتي';
+
+  @override
+  String get monthlyBudget => 'الميزانية الشهرية';
+
+  @override
+  String get leftOf => 'متبقٍّ من';
+
+  @override
   String get saving => 'الادخار';
 
   @override

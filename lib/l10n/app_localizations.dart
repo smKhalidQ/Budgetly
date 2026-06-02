@@ -422,6 +422,48 @@ abstract class AppLocalizations {
   /// **'Budget'**
   String get budget;
 
+  /// No description provided for @budgetOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Overview'**
+  String get budgetOverview;
+
+  /// No description provided for @totalBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get totalBudget;
+
+  /// No description provided for @noTransactionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions yet'**
+  String get noTransactionsYet;
+
+  /// No description provided for @startTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Start tracking your expenses'**
+  String get startTracking;
+
+  /// No description provided for @myBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'My Budget'**
+  String get myBudget;
+
+  /// No description provided for @monthlyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Budget'**
+  String get monthlyBudget;
+
+  /// No description provided for @leftOf.
+  ///
+  /// In en, this message translates to:
+  /// **'left of'**
+  String get leftOf;
+
   /// No description provided for @saving.
   ///
   /// In en, this message translates to:
