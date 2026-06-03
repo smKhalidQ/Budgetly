@@ -1,0 +1,6 @@
+{
+  "dart.flutterSdkPath": "C:\\Users\\khale\\fvm\\versions\\3.44.1",
+  "terminal.integrated.env.windows": {
+    "PATH": "${workspaceFolder}\\.fvm\\flutter_sdk\\bin;${env:PATH}"
+  }
+}

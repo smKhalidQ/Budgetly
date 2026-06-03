@@ -1,16 +1,3 @@
-buildscript {
-    ext.kotlin_version = '1.9.10' // Correct Kotlin version format
-
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.0' // A more stable version
-    }
-}
-
 allprojects {
     repositories {
         google()
