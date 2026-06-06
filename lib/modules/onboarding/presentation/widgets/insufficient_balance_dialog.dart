@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
@@ -22,47 +23,47 @@ class InsufficientBalanceDialog extends StatelessWidget {
     final t = context.tr;
 
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
       backgroundColor: Colors.white,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      insetPadding: EdgeInsets.symmetric(horizontal: 32.w),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24.r),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 64,
-              height: 64,
+              width: 64.w,
+              height: 64.w,
               decoration: BoxDecoration(
                 color: AppColor.expenseColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.warning_rounded,
                 color: AppColor.expenseColor,
-                size: 30,
+                size: 30.sp,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               t.insufficientBudgetTitle,
               style: GoogleFonts.cairo(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColor.textPrimary,
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
             Text(
               t.insufficientBudgetMsg,
               textAlign: TextAlign.center,
               style: GoogleFonts.cairo(
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: AppColor.textSecondary,
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             Row(
               children: [
                 Expanded(
@@ -73,10 +74,10 @@ class InsufficientBalanceDialog extends StatelessWidget {
                       Navigator.of(context).pop();
                     },
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 13),
+                      padding: EdgeInsets.symmetric(vertical: 13.h),
                       side: const BorderSide(color: AppColor.primaryColor),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
                     child: Text(
@@ -84,12 +85,12 @@ class InsufficientBalanceDialog extends StatelessWidget {
                       style: GoogleFonts.cairo(
                         color: AppColor.primaryColor,
                         fontWeight: FontWeight.w700,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -105,16 +106,16 @@ class InsufficientBalanceDialog extends StatelessWidget {
                       backgroundColor: AppColor.primaryColor,
                       foregroundColor: Colors.white,
                       elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 13),
+                      padding: EdgeInsets.symmetric(vertical: 13.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
                     child: Text(
                       'Set $maxAvailable',
                       style: GoogleFonts.cairo(
                         fontWeight: FontWeight.w700,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                       ),
                     ),
                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
@@ -17,21 +18,21 @@ class CustomSetUpBottomBar extends StatelessWidget {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 12.h),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
               width: double.infinity,
-              height: 48,
+              height: 48.h,
               child: ElevatedButton.icon(
                 onPressed: () => _onConfirm(context),
-                icon: const Icon(Icons.check_rounded, size: 18),
+                icon: Icon(Icons.check_rounded, size: 18.sp),
                 label: Text(
                   t.confirmBudget,
                   style: GoogleFonts.cairo(
                     fontWeight: FontWeight.w700,
-                    fontSize: 15,
+                    fontSize: 15.sp,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -39,16 +40,16 @@ class CustomSetUpBottomBar extends StatelessWidget {
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               t.editCategoriesLater,
               style: GoogleFonts.cairo(
-                fontSize: 12,
+                fontSize: 12.sp,
                 color: AppColor.textSecondary,
               ),
               textAlign: TextAlign.center,

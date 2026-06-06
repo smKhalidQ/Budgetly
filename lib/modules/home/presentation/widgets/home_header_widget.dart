@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
@@ -43,9 +44,9 @@ class HomeHeaderWidget extends StatelessWidget {
                 : (totalSpent / salary).clamp(0.0, 1.0);
 
             return Container(
-              margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(24.r),
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -60,16 +61,15 @@ class HomeHeaderWidget extends StatelessWidget {
                 ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(24.r),
                 child: Stack(
                   children: [
-                    // Decorative circles
                     Positioned(
                       right: -30,
                       top: -30,
                       child: Container(
-                        width: 140,
-                        height: 140,
+                        width: 140.w,
+                        height: 140.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white.withValues(alpha: 0.05),
@@ -80,8 +80,8 @@ class HomeHeaderWidget extends StatelessWidget {
                       right: 40,
                       top: -60,
                       child: Container(
-                        width: 180,
-                        height: 180,
+                        width: 180.w,
+                        height: 180.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white.withValues(alpha: 0.03),
@@ -92,21 +92,19 @@ class HomeHeaderWidget extends StatelessWidget {
                       left: -20,
                       bottom: -40,
                       child: Container(
-                        width: 120,
-                        height: 120,
+                        width: 120.w,
+                        height: 120.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white.withValues(alpha: 0.04),
                         ),
                       ),
                     ),
-                    // Content
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+                      padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 16.h),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Top row
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -114,57 +112,55 @@ class HomeHeaderWidget extends StatelessWidget {
                                 t.budgetOverview,
                                 style: GoogleFonts.cairo(
                                   color: Colors.white.withValues(alpha: 0.55),
-                                  fontSize: 11,
+                                  fontSize: 11.sp,
                                   letterSpacing: 0.4,
                                 ),
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 3),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w, vertical: 3.h),
                                 decoration: BoxDecoration(
                                   color: Colors.white.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(20.r),
                                 ),
                                 child: Text(
                                   monthYear,
                                   style: GoogleFonts.poppins(
                                     color: Colors.white.withValues(alpha: 0.7),
-                                    fontSize: 10,
+                                    fontSize: 10.sp,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          // Remaining amount
+                          SizedBox(height: 8.h),
                           Text(
                             '$symbol${remaining.abs().toStringAsFixed(0)}',
                             style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontSize: 28,
+                              fontSize: 28.sp,
                               fontWeight: FontWeight.bold,
                               height: 1,
                               letterSpacing: -0.5,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          SizedBox(height: 2.h),
                           Text(
                             isOver ? '⚠ ${t.remaining}' : t.remaining,
                             style: GoogleFonts.cairo(
                               color: isOver
                                   ? AppColor.expenseColor
                                   : Colors.white.withValues(alpha: 0.5),
-                              fontSize: 11,
+                              fontSize: 11.sp,
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          // Progress bar
+                          SizedBox(height: 12.h),
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(6.r),
                             child: LinearProgressIndicator(
                               value: progress,
-                              minHeight: 5,
+                              minHeight: 5.h,
                               backgroundColor:
                                   Colors.white.withValues(alpha: 0.12),
                               valueColor: AlwaysStoppedAnimation<Color>(
@@ -174,8 +170,7 @@ class HomeHeaderWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          // Spent / Total row
+                          SizedBox(height: 10.h),
                           Row(
                             children: [
                               _CardStat(
@@ -185,11 +180,11 @@ class HomeHeaderWidget extends StatelessWidget {
                                 color: AppColor.expenseColor,
                               ),
                               Container(
-                                width: 1,
-                                height: 28,
+                                width: 1.w,
+                                height: 28.h,
                                 color: Colors.white.withValues(alpha: 0.15),
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 16),
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 16.w),
                               ),
                               _CardStat(
                                 label: t.totalBudget,
@@ -197,17 +192,16 @@ class HomeHeaderWidget extends StatelessWidget {
                                 color: Colors.white,
                               ),
                               const Spacer(),
-                              // Percentage badge
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10.w, vertical: 5.h),
                                 decoration: BoxDecoration(
                                   color: isOver
                                       ? AppColor.expenseColor
                                           .withValues(alpha: 0.2)
                                       : AppColor.accentColor
                                           .withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 child: Text(
                                   '${(progress * 100).toStringAsFixed(0)}%',
@@ -215,7 +209,7 @@ class HomeHeaderWidget extends StatelessWidget {
                                     color: isOver
                                         ? AppColor.expenseColor
                                         : AppColor.accentColor,
-                                    fontSize: 12,
+                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -256,7 +250,7 @@ class _CardStat extends StatelessWidget {
           value,
           style: GoogleFonts.poppins(
             color: color,
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -264,7 +258,7 @@ class _CardStat extends StatelessWidget {
           label,
           style: GoogleFonts.cairo(
             color: Colors.white.withValues(alpha: 0.45),
-            fontSize: 11,
+            fontSize: 11.sp,
           ),
         ),
       ],

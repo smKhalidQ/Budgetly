@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'responsive_manager.dart';
 
 class AdaptiveLayoutConfig {
   static const double tabletBreakpoint = 600.0;
@@ -15,12 +14,10 @@ class AdaptiveLayoutConfig {
         mq.orientation == Orientation.landscape;
   }
 
-  static double getMaxContentWidth(BuildContext context) {
+  static double? getMaxContentWidth(BuildContext context) {
+    if (!isTabletLandscape(context)) return null;
     final width = MediaQuery.of(context).size.width;
-    if (isTabletLandscape(context)) {
-      return width * tabletContentWidthFactor;
-    }
-    return width;
+    return width * tabletContentWidthFactor;
   }
 }
 
@@ -36,15 +33,14 @@ class AdaptiveLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!ResponsiveManager.instance.isTablet) return child;
+    final maxWidth = AdaptiveLayoutConfig.getMaxContentWidth(context);
+    if (maxWidth == null) return child;
 
     return ColoredBox(
       color: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       child: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: AdaptiveLayoutConfig.getMaxContentWidth(context),
-          ),
+          constraints: BoxConstraints(maxWidth: maxWidth),
           child: child,
         ),
       ),

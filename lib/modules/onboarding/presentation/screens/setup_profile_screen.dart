@@ -1,4 +1,5 @@
-﻿import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
+import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/screens/category_slicing_screen.dart';
@@ -51,7 +52,7 @@ class _SetupBodyState extends State<_SetupBody> {
 
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+        padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 20.h),
         child: Form(
           key: _formKey,
           autovalidateMode: _hasAttemptedSubmit
@@ -60,49 +61,49 @@ class _SetupBodyState extends State<_SetupBody> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Gap(24),
+              Gap(24.h),
               Center(
                 child: Container(
-                  width: 72,
-                  height: 72,
+                  width: 72.w,
+                  height: 72.w,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.12),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.account_balance_wallet_rounded,
                     color: Colors.white,
-                    size: 36,
+                    size: 36.sp,
                   ),
                 ),
               ),
-              const Gap(24),
+              Gap(24.h),
               Center(
                 child: Text(
                   t.setupTitle,
                   style: GoogleFonts.cairo(
-                    fontSize: 26,
+                    fontSize: 26.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              const Gap(6),
+              Gap(6.h),
               Center(
                 child: Text(
                   t.setupSubtitle,
                   style: GoogleFonts.cairo(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: Colors.white.withValues(alpha: 0.65),
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              const Gap(40),
+              Gap(40.h),
 
               _FieldLabel(label: t.yourName),
-              const Gap(8),
+              Gap(8.h),
               TextFormField(
                 controller: _nameController,
                 style: const TextStyle(color: Colors.white),
@@ -114,10 +115,10 @@ class _SetupBodyState extends State<_SetupBody> {
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? t.pleaseEnterName : null,
               ),
-              const Gap(20),
+              Gap(20.h),
 
               _FieldLabel(label: t.currency),
-              const Gap(8),
+              Gap(8.h),
               BlocBuilder<SettingCubit, SettingState>(
                 buildWhen: (prev, curr) =>
                     prev.selectedCurrency != curr.selectedCurrency,
@@ -127,11 +128,11 @@ class _SetupBodyState extends State<_SetupBody> {
                   return GestureDetector(
                     onTap: () => _showCurrencySheet(context, settingCubit),
                     child: Container(
-                      height: 56,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      height: 56.h,
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(
                           color: Colors.white.withValues(alpha: 0.2),
                         ),
@@ -141,21 +142,21 @@ class _SetupBodyState extends State<_SetupBody> {
                           Icon(
                             Icons.currency_exchange_rounded,
                             color: Colors.white.withValues(alpha: 0.7),
-                            size: 20,
+                            size: 20.sp,
                           ),
-                          const Gap(12),
+                          Gap(12.w),
                           Text(
                             '${info['flag']}  ${info['currencyName']} (${info['currencySymbol']})',
                             style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontSize: 15,
+                              fontSize: 15.sp,
                             ),
                           ),
                           const Spacer(),
                           Icon(
                             CupertinoIcons.chevron_down,
                             color: Colors.white.withValues(alpha: 0.6),
-                            size: 16,
+                            size: 16.sp,
                           ),
                         ],
                       ),
@@ -163,10 +164,10 @@ class _SetupBodyState extends State<_SetupBody> {
                   );
                 },
               ),
-              const Gap(20),
+              Gap(20.h),
 
               _FieldLabel(label: t.monthlySalary),
-              const Gap(8),
+              Gap(8.h),
               TextFormField(
                 controller: _salaryController,
                 keyboardType: TextInputType.number,
@@ -183,16 +184,16 @@ class _SetupBodyState extends State<_SetupBody> {
                   return null;
                 },
               ),
-              const Gap(48),
+              Gap(48.h),
 
               GestureDetector(
                 onTap: () => _onNext(context, settingCubit),
                 child: Container(
                   width: double.infinity,
-                  height: 56,
+                  height: 56.h,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(18.r),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.15),
@@ -205,7 +206,7 @@ class _SetupBodyState extends State<_SetupBody> {
                     child: Text(
                       t.next,
                       style: GoogleFonts.cairo(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                         color: AppColor.primaryColor,
                       ),
@@ -213,7 +214,7 @@ class _SetupBodyState extends State<_SetupBody> {
                   ),
                 ),
               ),
-              const Gap(20),
+              Gap(20.h),
             ],
           ),
         ),
@@ -261,30 +262,30 @@ class _SetupBodyState extends State<_SetupBody> {
       hintText: hint,
       hintStyle: GoogleFonts.poppins(
         color: Colors.white.withValues(alpha: 0.4),
-        fontSize: 14,
+        fontSize: 14.sp,
       ),
-      prefixIcon: Icon(icon, color: Colors.white.withValues(alpha: 0.7), size: 20),
+      prefixIcon: Icon(icon, color: Colors.white.withValues(alpha: 0.7), size: 20.sp),
       filled: true,
       fillColor: Colors.white.withValues(alpha: 0.08),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         borderSide: const BorderSide(color: AppColor.accentColor, width: 2),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         borderSide: const BorderSide(color: AppColor.expenseColor),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         borderSide: const BorderSide(color: AppColor.expenseColor, width: 2),
       ),
       errorStyle: const TextStyle(color: Colors.white70),
@@ -301,11 +302,10 @@ class _FieldLabel extends StatelessWidget {
     return Text(
       label,
       style: GoogleFonts.cairo(
-        fontSize: 14,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w600,
         color: Colors.white.withValues(alpha: 0.8),
       ),
     );
   }
 }
-

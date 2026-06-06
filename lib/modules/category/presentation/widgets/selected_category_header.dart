@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
@@ -31,10 +32,10 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
         (category.spentAmount / category.allocatedAmount).clamp(0.0, 1.0);
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+      margin: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 8.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withValues(alpha: 0.1),
@@ -46,11 +47,11 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
+            padding: EdgeInsets.symmetric(vertical: 14.h),
             child: Row(
               children: [
                 _buildCategoryIcon(progressValue),
-                const SizedBox(width: 16),
+                SizedBox(width: 16.w),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,29 +93,29 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
         .toList();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
       child: Column(
         children: [
           Divider(color: Colors.grey.withValues(alpha: 0.15), height: 1),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           if (spentSubs.isEmpty)
             _buildEmptyChart()
           else
             Row(
               children: [
                 SizedBox(
-                  width: 140,
-                  height: 140,
+                  width: 140.w,
+                  height: 140.w,
                   child: PieChart(
                     PieChartData(
                       sectionsSpace: 2,
-                      centerSpaceRadius: 28,
+                      centerSpaceRadius: 28.r,
                       sections: spentSubs
                           .map(
                             (e) => PieChartSectionData(
                               value: e.amount,
                               color: e.color,
-                              radius: 42,
+                              radius: 42.r,
                               title: '',
                             ),
                           )
@@ -122,7 +123,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,29 +147,29 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: 140,
-          height: 140,
+          width: 140.w,
+          height: 140.w,
           child: PieChart(
             PieChartData(
               sectionsSpace: 0,
-              centerSpaceRadius: 28,
+              centerSpaceRadius: 28.r,
               sections: [
                 PieChartSectionData(
                   value: 1,
                   color: categoryColor.withValues(alpha: 0.2),
-                  radius: 42,
+                  radius: 42.r,
                   title: '',
                 ),
               ],
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16.w),
         Text(
           "No spending yet",
           style: GoogleFonts.roboto(
             color: AppColor.textSecondary,
-            fontSize: 13,
+            fontSize: 13.sp,
           ),
         ),
       ],
@@ -177,26 +178,26 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
 
   Widget _buildLegendItem(String name, double amount, Color color) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
         children: [
           Container(
-            width: 10,
-            height: 10,
+            width: 10.w,
+            height: 10.w,
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Expanded(
             child: Text(
               name,
-              style: GoogleFonts.roboto(fontSize: 12),
+              style: GoogleFonts.roboto(fontSize: 12.sp),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           Text(
             amount.toStringAsFixed(0),
             style: GoogleFonts.roboto(
-              fontSize: 12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w600,
               color: color,
             ),
@@ -211,8 +212,8 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: 60,
-          height: 60,
+          width: 60.w,
+          height: 60.w,
           child: CircularProgressIndicator(
             value: progressValue,
             strokeWidth: 5,
@@ -223,13 +224,13 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
           ),
         ),
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.all(8.r),
           decoration:
               BoxDecoration(color: categoryColor, shape: BoxShape.circle),
           child: Icon(
             IconData(int.parse(category.icon), fontFamily: 'MaterialIcons'),
             color: Colors.white,
-            size: 24,
+            size: 24.sp,
           ),
         ),
       ],
@@ -241,21 +242,21 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(category.name,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 4),
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+        SizedBox(height: 4.h),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
           decoration: BoxDecoration(
             color: remainingAmount < 0
                 ? Colors.red.withValues(alpha: 0.15)
                 : categoryColor.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
           ),
           child: Text(
             "\$${remainingAmount.toStringAsFixed(0)} ${remainingAmount < 0 ? 'over' : 'left'}",
             style: TextStyle(
               color: Colors.black.withValues(alpha: 0.9),
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -279,14 +280,14 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(20.r),
       child: Container(
-        padding: const EdgeInsets.all(6),
+        padding: EdgeInsets.all(6.r),
         decoration: BoxDecoration(
           color: Colors.grey.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
-        child: Icon(icon, color: color, size: 20),
+        child: Icon(icon, color: color, size: 20.sp),
       ),
     );
   }

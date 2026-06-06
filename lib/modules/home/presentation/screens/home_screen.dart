@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/home_header_widget.dart';
@@ -47,8 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: SafeArea(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -64,12 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   isSelected: _currentIndex == 1,
                   onTap: () => setState(() => _currentIndex = 1),
                 ),
-                // Add / Income button
                 GestureDetector(
                   onTap: () => setState(() => _currentIndex = 2),
                   child: Container(
-                    width: 52,
-                    height: 52,
+                    width: 52.w,
+                    height: 52.w,
                     decoration: BoxDecoration(
                       color: _currentIndex == 2
                           ? AppColor.primaryColor
@@ -83,10 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.add_rounded,
                       color: Colors.white,
-                      size: 28,
+                      size: 28.sp,
                     ),
                   ),
                 ),
@@ -126,111 +125,106 @@ class _HomeTab extends StatelessWidget {
     return SafeArea(
       bottom: false,
       child: CustomScrollView(
-      slivers: [
-        // ── SliverAppBar = Greeting + Bank Card ──
-        SliverAppBar(
-          expandedHeight: 280,
-          pinned: false,
-          floating: false,
-          backgroundColor: AppColor.primaryColor,
-          surfaceTintColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          flexibleSpace: LayoutBuilder(
-            builder: (context, constraints) {
-              final collapsed = constraints.biggest.height <=
-                  kToolbarHeight + topPad + 1;
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 280.h,
+            pinned: false,
+            floating: false,
+            backgroundColor: AppColor.primaryColor,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                final collapsed = constraints.biggest.height <=
+                    kToolbarHeight + topPad + 1;
 
-              return FlexibleSpaceBar(
-                collapseMode: CollapseMode.pin,
-                titlePadding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 14),
-                title: collapsed
-                    ? Text(
-                        name.isNotEmpty
-                            ? '${_greeting()}, $name'
-                            : _greeting(),
-                        style: GoogleFonts.cairo(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      )
-                    : null,
-                background: Container(
-                  color: AppColor.backgroundColor,
-                  alignment: Alignment.bottomCenter,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Greeting row
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _greeting(),
-                                    style: GoogleFonts.cairo(
-                                      fontSize: 12,
-                                      color: AppColor.textSecondary,
-                                    ),
-                                  ),
-                                  if (name.isNotEmpty)
+                return FlexibleSpaceBar(
+                  collapseMode: CollapseMode.pin,
+                  titlePadding: EdgeInsets.symmetric(
+                      horizontal: 20.w, vertical: 14.h),
+                  title: collapsed
+                      ? Text(
+                          name.isNotEmpty
+                              ? '${_greeting()}, $name'
+                              : _greeting(),
+                          style: GoogleFonts.cairo(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        )
+                      : null,
+                  background: Container(
+                    color: AppColor.backgroundColor,
+                    alignment: Alignment.bottomCenter,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 4.h),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     Text(
-                                      name,
+                                      _greeting(),
                                       style: GoogleFonts.cairo(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColor.primaryColor,
-                                        height: 1.1,
+                                        fontSize: 12.sp,
+                                        color: AppColor.textSecondary,
                                       ),
                                     ),
-                                ],
+                                    if (name.isNotEmpty)
+                                      Text(
+                                        name,
+                                        style: GoogleFonts.cairo(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColor.primaryColor,
+                                          height: 1.1,
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              width: 38,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                color: AppColor.primaryColor
-                                    .withValues(alpha: 0.08),
-                                shape: BoxShape.circle,
+                              Container(
+                                width: 38.w,
+                                height: 38.w,
+                                decoration: BoxDecoration(
+                                  color: AppColor.primaryColor
+                                      .withValues(alpha: 0.08),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.person_rounded,
+                                  color: AppColor.primaryColor,
+                                  size: 20.sp,
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.person_rounded,
-                                color: AppColor.primaryColor,
-                                size: 20,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      // Bank card
-                      const HomeHeaderWidget(),
-                    ],
+                        const HomeHeaderWidget(),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-        // ── Sticky Categories Header ──
-        SliverPersistentHeader(
-          pinned: true,
-          delegate: _StickyHeader(label: context.tr.categories),
-        ),
-        // ── Categories List ──
-        const SliverPadding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          sliver: SliverToBoxAdapter(child: MainCategoriesListWidget()),
-        ),
-      ],
-    ),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _StickyHeader(label: context.tr.categories),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            sliver: const SliverToBoxAdapter(child: MainCategoriesListWidget()),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -251,7 +245,7 @@ class _TransactionsTab extends StatelessWidget {
           style: GoogleFonts.cairo(
             color: AppColor.primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: 18.sp,
           ),
         ),
       ),
@@ -276,7 +270,7 @@ class _IncomeTab extends StatelessWidget {
           style: GoogleFonts.cairo(
             color: AppColor.primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: 18.sp,
           ),
         ),
       ),
@@ -286,14 +280,14 @@ class _IncomeTab extends StatelessWidget {
           children: [
             Icon(
               Icons.add_circle_outline_rounded,
-              size: 72,
+              size: 72.sp,
               color: AppColor.accentColor.withValues(alpha: 0.3),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               'Add Income',
               style: GoogleFonts.cairo(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColor.textSecondary,
               ),
@@ -309,7 +303,6 @@ class _IncomeTab extends StatelessWidget {
 
 class _StickyHeader extends SliverPersistentHeaderDelegate {
   final String label;
-  static const double height = 52;
 
   const _StickyHeader({required this.label});
 
@@ -320,11 +313,11 @@ class _StickyHeader extends SliverPersistentHeaderDelegate {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       color: isSticky ? AppColor.primaryColor : AppColor.backgroundColor,
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
+      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 10.h),
       child: Text(
         label,
         style: GoogleFonts.cairo(
-          fontSize: 17,
+          fontSize: 17.sp,
           fontWeight: FontWeight.bold,
           color: isSticky ? Colors.white : AppColor.textPrimary,
         ),
@@ -333,10 +326,10 @@ class _StickyHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => height;
+  double get maxExtent => 52.h;
 
   @override
-  double get minExtent => height;
+  double get minExtent => 52.h;
 
   @override
   bool shouldRebuild(_StickyHeader old) => old.label != label;
@@ -363,32 +356,32 @@ class _NavItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
-        width: 64,
+        width: 64.w,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppColor.primaryColor.withValues(alpha: 0.1)
                     : Colors.transparent,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 icon,
-                size: 22,
+                size: 22.sp,
                 color: isSelected
                     ? AppColor.primaryColor
                     : AppColor.textSecondary,
               ),
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: 2.h),
             Text(
               label,
               style: GoogleFonts.cairo(
-                fontSize: 10,
+                fontSize: 10.sp,
                 fontWeight:
                     isSelected ? FontWeight.w700 : FontWeight.normal,
                 color: isSelected

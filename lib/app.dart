@@ -1,8 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 
+import 'core/responsive/adaptive_layout.dart';
+import 'core/responsive/responsive_manager.dart';
 import 'core/router/app_router.dart';
 import 'l10n/app_localizations.dart';
 import 'modules/category/presentation/cubits/category_cubit.dart';
@@ -29,6 +31,14 @@ class App extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Budget Buddy',
+        builder: (context, child) {
+          if (ResponsiveManager.isInitialized) {
+            ResponsiveManager.instance.forceRecalculate(context);
+          } else {
+            ResponsiveManager.initialize(context);
+          }
+          return AdaptiveLayout(child: child!);
+        },
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

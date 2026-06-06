@@ -1,4 +1,5 @@
-﻿import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
+import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/screens/setup_profile_screen.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -58,14 +59,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Align(
               alignment: AlignmentDirectional.topEnd,
               child: Padding(
-                padding: const EdgeInsets.only(top: 12, right: 20, left: 20),
+                padding: EdgeInsets.only(top: 12.h, right: 20.w, left: 20.w),
                 child: TextButton(
                   onPressed: _finish,
                   child: Text(
                     t.skip,
                     style: GoogleFonts.cairo(
                       color: Colors.white.withValues(alpha: 0.6),
-                      fontSize: 14,
+                      fontSize: 14.sp,
                     ),
                   ),
                 ),
@@ -98,18 +99,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
             _DotsIndicator(count: _pageCount, current: _currentPage),
-            const Gap(32),
+            Gap(32.h),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
+              padding: EdgeInsets.symmetric(horizontal: 32.w),
               child: GestureDetector(
                 onTap: _next,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   width: double.infinity,
-                  height: 56,
+                  height: 56.h,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(18.r),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.15),
@@ -122,7 +123,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Text(
                       isLast ? t.getStarted : t.next,
                       style: GoogleFonts.cairo(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                         color: AppColor.primaryColor,
                       ),
@@ -131,7 +132,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
               ),
             ),
-            const Gap(40),
+            Gap(40.h),
           ],
         ),
       ),
@@ -155,45 +156,45 @@ class _SlidePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      padding: EdgeInsets.symmetric(horizontal: 40.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 150,
-            height: 150,
+            width: 150.w,
+            height: 150.w,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Container(
-                width: 104,
-                height: 104,
+                width: 104.w,
+                height: 104.w,
                 decoration: BoxDecoration(
                   color: iconColor.withValues(alpha: 0.18),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, size: 54, color: iconColor),
+                child: Icon(icon, size: 54.sp, color: iconColor),
               ),
             ),
           ),
-          const Gap(48),
+          Gap(48.h),
           Text(
             title,
             style: GoogleFonts.cairo(
-              fontSize: 30,
+              fontSize: 30.sp,
               fontWeight: FontWeight.bold,
               color: Colors.white,
               height: 1.3,
             ),
             textAlign: TextAlign.center,
           ),
-          const Gap(16),
+          Gap(16.h),
           Text(
             subtitle,
             style: GoogleFonts.poppins(
-              fontSize: 15,
+              fontSize: 15.sp,
               color: Colors.white.withValues(alpha: 0.7),
               height: 1.7,
             ),
@@ -219,12 +220,12 @@ class _DotsIndicator extends StatelessWidget {
         final active = i == current;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          width: active ? 28 : 8,
-          height: 8,
+          margin: EdgeInsets.symmetric(horizontal: 5.w),
+          width: active ? 28.w : 8.w,
+          height: 8.h,
           decoration: BoxDecoration(
             color: active ? Colors.white : Colors.white.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(4.r),
           ),
         );
       }),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
@@ -36,11 +37,11 @@ class BuildHeaderSection extends StatelessWidget {
             isOver ? const Color(0xFFFFEBEE) : const Color(0xFFE8F5E9);
 
         return Container(
-          margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          padding: const EdgeInsets.all(20),
+          margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
+          padding: EdgeInsets.all(20.r),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20.r),
             boxShadow: [
               BoxShadow(
                 color: AppColor.primaryColor.withValues(alpha: 0.08),
@@ -52,16 +53,14 @@ class BuildHeaderSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Label
               Text(
                 t.distributeYourBudget,
                 style: GoogleFonts.cairo(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   color: AppColor.textSecondary,
                 ),
               ),
-              const SizedBox(height: 6),
-              // Amounts row
+              SizedBox(height: 6.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,23 +68,23 @@ class BuildHeaderSection extends StatelessWidget {
                   Text(
                     '$symbol$monthlySalary',
                     style: GoogleFonts.poppins(
-                      fontSize: 26,
+                      fontSize: 26.sp,
                       fontWeight: FontWeight.bold,
                       color: AppColor.primaryColor,
                       height: 1,
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 12.w, vertical: 6.h),
                     decoration: BoxDecoration(
                       color: remainingBg,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text(
                       '$symbol$remaining ${t.remaining}',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                         color: remainingColor,
                       ),
@@ -93,27 +92,25 @@ class BuildHeaderSection extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 14),
-              // Progress bar
+              SizedBox(height: 14.h),
               ClipRRect(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(6.r),
                 child: LinearProgressIndicator(
                   value: progress,
-                  minHeight: 6,
+                  minHeight: 6.h,
                   backgroundColor: AppColor.dividerColor,
                   valueColor: AlwaysStoppedAnimation<Color>(
                     isOver ? AppColor.expenseColor : AppColor.accentColor,
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-              // Percentage label
+              SizedBox(height: 8.h),
               Align(
                 alignment: AlignmentDirectional.centerEnd,
                 child: Text(
                   '${(progress * 100).toStringAsFixed(0)}% ${t.allocated}',
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     color: AppColor.textSecondary,
                   ),
                 ),

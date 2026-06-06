@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
@@ -56,19 +57,19 @@ class SubcategoriesListWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.category_outlined,
-              size: 48, color: Colors.grey.withValues(alpha: 0.4)),
-          const SizedBox(height: 12),
+              size: 48.sp, color: Colors.grey.withValues(alpha: 0.4)),
+          SizedBox(height: 12.h),
           Text(
             "No subcategories yet",
             style: GoogleFonts.roboto(
-                fontSize: 15, color: AppColor.textSecondary),
+                fontSize: 15.sp, color: AppColor.textSecondary),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           TextButton.icon(
             onPressed: () => cubit.resetToDefaults(category),
-            icon: const Icon(Icons.refresh_rounded, size: 18),
+            icon: Icon(Icons.refresh_rounded, size: 18.sp),
             label: Text("Restore defaults",
-                style: GoogleFonts.roboto(fontSize: 13)),
+                style: GoogleFonts.roboto(fontSize: 13.sp)),
             style: TextButton.styleFrom(
               foregroundColor: AppColor.primaryColor,
             ),
@@ -81,8 +82,8 @@ class SubcategoriesListWidget extends StatelessWidget {
   Widget _buildBar(
       BuildContext context, bool isEditMode, SubcategoryCubit cubit) {
     return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      height: 40.h,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
       width: double.infinity,
       color: Colors.grey[200],
       child: Row(
@@ -91,7 +92,7 @@ class SubcategoriesListWidget extends StatelessWidget {
           Text(
             "SUBCATEGORIES",
             style: GoogleFonts.roboto(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.bold,
               color: AppColor.textPrimary,
             ),
@@ -100,7 +101,7 @@ class SubcategoriesListWidget extends StatelessWidget {
             icon: Icon(
               isEditMode ? Icons.close : Icons.settings,
               color: Colors.blueGrey[700],
-              size: 20,
+              size: 20.sp,
             ),
             onPressed: cubit.toggleSubCategoryEditModeState,
             padding: EdgeInsets.zero,
@@ -114,7 +115,7 @@ class SubcategoriesListWidget extends StatelessWidget {
   Widget _buildList(
       bool isEditMode, SubcategoryCubit cubit, List<Subcategory> items) {
     return ListView.separated(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: 16.h),
       itemCount: items.length,
       separatorBuilder: (_, __) => Divider(
         color: Colors.grey[200],
@@ -133,63 +134,60 @@ class SubcategoriesListWidget extends StatelessWidget {
     final spent = double.tryParse(item.spentAmount ?? '0') ?? 0;
 
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            // Icon
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                IconData(int.parse(item.icon), fontFamily: 'MaterialIcons'),
-                color: color,
-                size: 24,
-              ),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      child: Row(
+        children: [
+          Container(
+            width: 48.w,
+            height: 48.w,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
-            const SizedBox(width: 16),
-            // Name + amount
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            child: Icon(
+              IconData(int.parse(item.icon), fontFamily: 'MaterialIcons'),
+              color: color,
+              size: 24.sp,
+            ),
+          ),
+          SizedBox(width: 16.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.name,
+                  style: GoogleFonts.roboto(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if (spent > 0)
                   Text(
-                    item.name,
+                    spent.toStringAsFixed(0),
                     style: GoogleFonts.roboto(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 12.sp,
+                      color: AppColor.textSecondary,
                     ),
                   ),
-                  if (spent > 0)
-                    Text(
-                      spent.toStringAsFixed(0),
-                      style: GoogleFonts.roboto(
-                        fontSize: 12,
-                        color: AppColor.textSecondary,
-                      ),
-                    ),
-                ],
-              ),
+              ],
             ),
-            // Edit mode actions
-            if (isEditMode) ...[
-              _svgActionBtn(
-                assetPath: 'assets/image/edit.svg',
-                color: Colors.blueGrey,
-                onTap: () => _showEditDialog(context, cubit, item),
-              ),
-              const SizedBox(width: 8),
-              _svgActionBtn(
-                assetPath: 'assets/image/trash-can.svg',
-                color: Colors.redAccent,
-                onTap: () => _confirmDelete(context, cubit, item),
-              ),
-            ],
+          ),
+          if (isEditMode) ...[
+            _svgActionBtn(
+              assetPath: 'assets/image/edit.svg',
+              color: Colors.blueGrey,
+              onTap: () => _showEditDialog(context, cubit, item),
+            ),
+            SizedBox(width: 8.w),
+            _svgActionBtn(
+              assetPath: 'assets/image/trash-can.svg',
+              color: Colors.redAccent,
+              onTap: () => _confirmDelete(context, cubit, item),
+            ),
           ],
-        ),
+        ],
+      ),
     );
   }
 
@@ -201,15 +199,15 @@ class SubcategoriesListWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(6),
+        padding: EdgeInsets.all(6.r),
         decoration: BoxDecoration(
           color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
         ),
         child: SvgPicture.asset(
           assetPath,
-          width: 18,
-          height: 18,
+          width: 18.w,
+          height: 18.w,
           colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
         ),
       ),
@@ -306,7 +304,7 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Expanded(
               child: PageView(
                 controller: _pageCtrl,
@@ -318,7 +316,7 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
                         Text("Select Icon",
                             style:
                                 GoogleFonts.roboto(fontWeight: FontWeight.w500)),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         IconPickerWidget(
                           key: ValueKey(_icon),
                           currentIcon: IconData(
@@ -338,7 +336,7 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
                         Text("Select Color",
                             style:
                                 GoogleFonts.roboto(fontWeight: FontWeight.w500)),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         ColorPickerWidget(
                           key: ValueKey(_color.toARGB32()),
                           currentColor: _color,
@@ -350,15 +348,15 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
                 ],
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 2,
                 (i) => Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: 8.w,
+                  height: 8.w,
+                  margin: EdgeInsets.symmetric(horizontal: 4.w),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _page == i

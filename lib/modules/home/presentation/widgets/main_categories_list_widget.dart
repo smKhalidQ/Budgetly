@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
@@ -46,11 +47,11 @@ class MainCategoriesListWidget extends StatelessWidget {
             }
 
             return Padding(
-              padding: const EdgeInsets.only(top: 16, bottom: 24),
+              padding: EdgeInsets.only(top: 16.h, bottom: 24.h),
               child: Column(
                 children: [
                   for (int index = 0; index < categories.length; index++) ...[
-                    if (index > 0) const SizedBox(height: 12),
+                    if (index > 0) SizedBox(height: 12.h),
                     Builder(builder: (context) {
                       final category = categories[index];
                       final color = parseColorFromString(category.color);
@@ -61,127 +62,120 @@ class MainCategoriesListWidget extends StatelessWidget {
                       final remaining =
                           category.allocatedAmount - category.spentAmount;
                       return Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  shadowColor: Colors.black.withValues(alpha: 0.05),
-                  elevation: 3,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(16),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CategoryDetailScreen(category: category),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        // Color bar
-                        Container(
-                          width: 5,
-                          height: 76,
-                          decoration: BoxDecoration(
-                            color: color,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(16),
-                              bottomLeft: Radius.circular(16),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16.r),
+                        shadowColor: Colors.black.withValues(alpha: 0.05),
+                        elevation: 3,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16.r),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CategoryDetailScreen(category: category),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 14),
-                        // Icon
-                        Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color: color.withValues(alpha: 0.12),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            IconData(
-                              int.parse(category.icon),
-                              fontFamily: 'MaterialIcons',
-                            ),
-                            color: color,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        // Info
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Name
-                                Text(
-                                  category.name,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColor.textPrimary,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 8),
-                                // Progress bar
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: LinearProgressIndicator(
-                                    value: progress,
-                                    minHeight: 4,
-                                    backgroundColor:
-                                        Colors.grey.withValues(alpha: 0.12),
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        color),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 5.w,
+                                height: 76.h,
+                                decoration: BoxDecoration(
+                                  color: color,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(16.r),
+                                    bottomLeft: Radius.circular(16.r),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                // Spent | Remaining
-                                Row(
-                                  children: [
-                                    _AmountChip(
-                                      label: context.tr.spent,
-                                      value:
-                                          '$symbol${category.spentAmount.toStringAsFixed(0)}',
-                                      color: AppColor.textSecondary,
-                                    ),
-                                    Container(
-                                      width: 1,
-                                      height: 14,
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      color: Colors.grey
-                                          .withValues(alpha: 0.2),
-                                    ),
-                                    _AmountChip(
-                                      label: context.tr.remaining,
-                                      value:
-                                          '$symbol${remaining.toStringAsFixed(0)}',
-                                      color: remaining == 0
-                                          ? AppColor.textSecondary
-                                          : color,
-                                    ),
-                                  ],
+                              ),
+                              SizedBox(width: 14.w),
+                              Container(
+                                width: 42.w,
+                                height: 42.w,
+                                decoration: BoxDecoration(
+                                  color: color.withValues(alpha: 0.12),
+                                  shape: BoxShape.circle,
                                 ),
-                              ],
-                            ),
+                                child: Icon(
+                                  IconData(
+                                    int.parse(category.icon),
+                                    fontFamily: 'MaterialIcons',
+                                  ),
+                                  color: color,
+                                  size: 20.sp,
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        category.name,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColor.textPrimary,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(4.r),
+                                        child: LinearProgressIndicator(
+                                          value: progress,
+                                          minHeight: 4.h,
+                                          backgroundColor:
+                                              Colors.grey.withValues(alpha: 0.12),
+                                          valueColor: AlwaysStoppedAnimation<Color>(
+                                              color),
+                                        ),
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      Row(
+                                        children: [
+                                          _AmountChip(
+                                            label: context.tr.spent,
+                                            value:
+                                                '$symbol${category.spentAmount.toStringAsFixed(0)}',
+                                            color: AppColor.textSecondary,
+                                          ),
+                                          Container(
+                                            width: 1.w,
+                                            height: 14.h,
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 8.w),
+                                            color: Colors.grey
+                                                .withValues(alpha: 0.2),
+                                          ),
+                                          _AmountChip(
+                                            label: context.tr.remaining,
+                                            value:
+                                                '$symbol${remaining.toStringAsFixed(0)}',
+                                            color: remaining == 0
+                                                ? AppColor.textSecondary
+                                                : color,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(right: 12.w),
+                                child: Icon(
+                                  Icons.chevron_right_rounded,
+                                  color: AppColor.textSecondary.withValues(alpha: 0.4),
+                                  size: 20.sp,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        // Tap indicator
-                        Padding(
-                          padding: const EdgeInsets.only(right: 12),
-                          child: Icon(
-                            Icons.chevron_right_rounded,
-                            color: AppColor.textSecondary.withValues(alpha: 0.4),
-                            size: 20,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                    );
+                      );
                     }),
                   ],
                 ],
@@ -213,14 +207,14 @@ class _AmountChip extends StatelessWidget {
           TextSpan(
             text: '$label: ',
             style: GoogleFonts.poppins(
-              fontSize: 11,
+              fontSize: 11.sp,
               color: AppColor.textSecondary,
             ),
           ),
           TextSpan(
             text: value,
             style: GoogleFonts.poppins(
-              fontSize: 11,
+              fontSize: 11.sp,
               fontWeight: FontWeight.w600,
               color: color,
             ),

@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -12,21 +13,21 @@ class CurrencyBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.r),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'Select Currency',
             style: GoogleFonts.abel(
-              textStyle: const TextStyle(
-                fontSize: 20,
+              textStyle: TextStyle(
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColor.primaryColor,
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Expanded(
             child: ListView.separated(
               itemCount: currencies.length,
