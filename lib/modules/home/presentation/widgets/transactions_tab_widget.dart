@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:flutter/material.dart';
@@ -16,23 +17,23 @@ class TransactionsTabWidget extends StatelessWidget {
         children: [
           Icon(
             Icons.receipt_long_rounded,
-            size: 72,
+            size: 72.sp,
             color: AppColor.primaryColor.withValues(alpha: 0.15),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             t.noTransactionsYet,
             style: GoogleFonts.cairo(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w600,
               color: AppColor.textSecondary,
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           Text(
             t.startTracking,
             style: GoogleFonts.cairo(
-              fontSize: 13,
+              fontSize: 13.sp,
               color: AppColor.textSecondary.withValues(alpha: 0.6),
             ),
           ),

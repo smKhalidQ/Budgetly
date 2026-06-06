@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:flutter/material.dart';
 
 class ColorPickerWidget extends StatelessWidget {
@@ -16,27 +17,27 @@ class ColorPickerWidget extends StatelessWidget {
     Colors.purple,
     Colors.deepPurple,
     Colors.indigo,
-    Color(0xff1565c0), // Housing blue
+    Color(0xff1565c0),
     Colors.blue,
     Colors.lightBlue,
     Colors.cyan,
     Colors.teal,
-    Color(0xff2e7d32), // Healthcare green
+    Color(0xff2e7d32),
     Colors.green,
     Colors.lightGreen,
     Colors.lime,
     Colors.yellow,
     Colors.amber,
-    Color(0xfff9a825), // Saving amber
+    Color(0xfff9a825),
     Colors.orange,
-    Color(0xfff57c00), // Food orange
+    Color(0xfff57c00),
     Colors.deepOrange,
     Colors.brown,
-    Color(0xff546e7a), // Transportation blue-grey
+    Color(0xff546e7a),
     Colors.blueGrey,
     Colors.grey,
-    Color(0xff90a4ae), // Other grey
-    Color(0xff6a1b9a), // Entertainment purple
+    Color(0xff90a4ae),
+    Color(0xff6a1b9a),
   ];
 
   static bool _match(Color a, Color b) {
@@ -49,15 +50,15 @@ class ColorPickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: 8.w,
+      runSpacing: 8.h,
       children: colorOptions.map((color) {
         final isSelected = _match(currentColor, color);
         return GestureDetector(
           onTap: () => onColorSelected(color),
           child: Container(
-            width: 36,
-            height: 36,
+            width: 36.w,
+            height: 36.w,
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
@@ -75,7 +76,7 @@ class ColorPickerWidget extends StatelessWidget {
                   : null,
             ),
             child: isSelected
-                ? const Icon(Icons.check, color: Colors.white, size: 20)
+                ? Icon(Icons.check, color: Colors.white, size: 20.sp)
                 : null,
           ),
         );

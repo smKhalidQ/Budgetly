@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:flutter/material.dart';
 
 class IconPickerWidget extends StatelessWidget {
@@ -70,20 +71,20 @@ class IconPickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 12,
-      runSpacing: 12,
+      spacing: 12.w,
+      runSpacing: 12.h,
       children: iconOptions.map((icon) {
         final isSelected = currentIcon.codePoint == icon.codePoint;
         return GestureDetector(
           onTap: () => onIconSelected(icon),
           child: Container(
-            width: 48,
-            height: 48,
+            width: 48.w,
+            height: 48.w,
             decoration: BoxDecoration(
               color: isSelected
                   ? currentColor.withValues(alpha: 0.2)
                   : Colors.grey.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
                 color: isSelected ? currentColor : Colors.transparent,
                 width: 2,
@@ -92,7 +93,7 @@ class IconPickerWidget extends StatelessWidget {
             child: Icon(
               icon,
               color: isSelected ? currentColor : Colors.grey[600],
-              size: 24,
+              size: 24.sp,
             ),
           ),
         );

@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/widgets/pickers/color_picker_widget.dart';
@@ -261,7 +262,7 @@ class _PickerDialogShell extends StatelessWidget {
                 errorText: hasError ? errorText : null,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Expanded(
               child: PageView(
                 controller: pageCtrl,
@@ -274,7 +275,7 @@ class _PickerDialogShell extends StatelessWidget {
                         Text("Select Icon",
                             style: GoogleFonts.roboto(
                                 fontWeight: FontWeight.w500)),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         IconPickerWidget(
                           key: ValueKey(currentIcon),
                           currentIcon: IconData(
@@ -295,7 +296,7 @@ class _PickerDialogShell extends StatelessWidget {
                         Text("Select Color",
                             style: GoogleFonts.roboto(
                                 fontWeight: FontWeight.w500)),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         ColorPickerWidget(
                           key: ValueKey(currentColor.toARGB32()),
                           currentColor: currentColor,
@@ -307,15 +308,15 @@ class _PickerDialogShell extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 2,
                 (i) => Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: 8.w,
+                  height: 8.w,
+                  margin: EdgeInsets.symmetric(horizontal: 4.w),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: page == i

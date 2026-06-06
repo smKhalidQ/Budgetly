@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
@@ -58,7 +59,7 @@ class _CategorySlicingCardListState extends State<CategorySlicingCardList> {
           return Center(
             child: Text(
               state.errorMessage ?? '',
-              style: GoogleFonts.poppins(color: Colors.red, fontSize: 15),
+              style: GoogleFonts.poppins(color: Colors.red, fontSize: 15.sp),
               textAlign: TextAlign.center,
             ),
           );
@@ -70,28 +71,27 @@ class _CategorySlicingCardListState extends State<CategorySlicingCardList> {
           return Center(
             child: Text(
               t.noCategoriesFound,
-              style: GoogleFonts.cairo(color: Colors.grey[500], fontSize: 15),
+              style: GoogleFonts.cairo(color: Colors.grey[500], fontSize: 15.sp),
               textAlign: TextAlign.center,
             ),
           );
         }
 
         return Container(
-          margin: const EdgeInsets.only(top: 16),
-          decoration: const BoxDecoration(
+          margin: EdgeInsets.only(top: 16.h),
+          decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
           ),
           child: ClipRRect(
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
             child: ListView.separated(
-              padding: const EdgeInsets.only(top: 8, bottom: 20),
+              padding: EdgeInsets.only(top: 8.h, bottom: 20.h),
               itemCount: categories.length,
               separatorBuilder: (_, __) => Divider(
                 height: 1,
-                indent: 74,
-                endIndent: 20,
+                indent: 74.w,
+                endIndent: 20.w,
                 color: Colors.grey.shade100,
               ),
               itemBuilder: (context, index) {

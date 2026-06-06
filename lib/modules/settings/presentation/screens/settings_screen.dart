@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/settings_state.dart';
 import 'package:flutter/material.dart';
@@ -51,14 +52,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         },
         builder: (context, state) {
           return Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.r),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text('Settings',
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 30),
+                Text('Settings',
+                    style: TextStyle(
+                        fontSize: 24.sp, fontWeight: FontWeight.bold)),
+                SizedBox(height: 30.h),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
@@ -69,13 +70,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         state.isLoading ? null : _cubit.clearCategories,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      padding: EdgeInsets.symmetric(vertical: 15.h),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                          borderRadius: BorderRadius.circular(10.r)),
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
+                SizedBox(height: 15.h),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
@@ -86,13 +87,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         state.isLoading ? null : _cubit.clearSubcategories,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepOrange,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      padding: EdgeInsets.symmetric(vertical: 15.h),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                          borderRadius: BorderRadius.circular(10.r)),
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
+                SizedBox(height: 15.h),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
@@ -104,25 +105,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         : () => _confirmAndClearAll(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black87,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      padding: EdgeInsets.symmetric(vertical: 15.h),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                          borderRadius: BorderRadius.circular(10.r)),
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
                 Container(
-                  padding: const EdgeInsets.all(15),
+                  padding: EdgeInsets.all(15.r),
                   decoration: BoxDecoration(
                     color: Colors.amber.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                     border: Border.all(color: Colors.amber),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.warning, color: Colors.amber, size: 20),
-                      SizedBox(width: 10),
-                      Expanded(
+                      Icon(Icons.warning, color: Colors.amber, size: 20.sp),
+                      SizedBox(width: 10.w),
+                      const Expanded(
                         child: Text(
                           'تحذير: حذف البيانات لا يمكن التراجع عنه',
                           style: TextStyle(

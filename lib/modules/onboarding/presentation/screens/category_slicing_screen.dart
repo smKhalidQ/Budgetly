@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/widgets/build_header_section.dart';
@@ -49,10 +50,10 @@ class _CategorySlicingScreenState extends State<CategorySlicingScreen> {
           elevation: 0,
           scrolledUnderElevation: 0,
           leading: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back_ios_new_rounded,
               color: AppColor.primaryColor,
-              size: 20,
+              size: 20.sp,
             ),
             onPressed: () => Navigator.pop(context),
           ),
