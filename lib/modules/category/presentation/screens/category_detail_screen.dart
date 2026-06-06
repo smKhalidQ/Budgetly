@@ -7,91 +7,95 @@ import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart'
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/widgets/subcategories_list_widget.dart';
-import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-class CategoryDetailScreen extends StatelessWidget {
+class CategoryDetailScreen extends StatefulWidget {
   final Category category;
 
   const CategoryDetailScreen({super.key, required this.category});
 
   @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) =>
-              GetIt.I<SubcategoryCubit>()..fetchAndEnsureDefault(category),
-        ),
-        BlocProvider(
-          create: (_) => GetIt.I<TransactionCubit>(),
-        ),
-      ],
-      child: _CategoryDetailView(category: category),
-    );
-  }
+  State<CategoryDetailScreen> createState() => _CategoryDetailScreenState();
 }
 
-class _CategoryDetailView extends StatelessWidget {
-  final Category category;
+class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
+  late final SubcategoryCubit _subcategoryCubit;
 
-  const _CategoryDetailView({required this.category});
+  @override
+  void initState() {
+    super.initState();
+    _subcategoryCubit = GetIt.I<SubcategoryCubit>()
+      ..fetchAndEnsureDefault(widget.category);
+  }
+
+  @override
+  void dispose() {
+    _subcategoryCubit.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final subcategoryCubit = context.watch<SubcategoryCubit>();
-    final Color categoryColor = parseColorFromString(category.color);
+    final Color categoryColor = parseColorFromString(widget.category.color);
     final double remainingAmount =
-        category.allocatedAmount - category.spentAmount;
+        widget.category.allocatedAmount - widget.category.spentAmount;
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios_new_outlined,
-              color: Colors.white),
-        ),
-        title: Text(
-          category.name,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        backgroundColor: AppColor.primaryColor,
-        foregroundColor: Colors.black,
-      ),
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SelectedCategoryHeaderWidget(
-            category: category,
-            categoryColor: categoryColor,
-            remainingAmount: remainingAmount,
-            showPieChart: subcategoryCubit.state.showPieChart,
-            onTogglePieChart: () => subcategoryCubit.togglePieChart(),
-            onEditCategory: () {},
+    return BlocProvider.value(
+      value: _subcategoryCubit,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back_ios_new_outlined,
+                color: Colors.white),
           ),
-          Expanded(
-            child: SubcategoriesListWidget(
-              category: category,
-              onSubcategoryTap: (Subcategory subcategory) {},
-            ),
+          title: Text(
+            widget.category.name,
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
-        ],
-      ),
-      floatingActionButton: BlocBuilder<SubcategoryCubit, SubcategoryState>(
-        builder: (context, state) {
-          if (state.isEditMode) {
-            return FloatingActionButton(
-              onPressed: () => _showAddSubcategoryDialog(context),
-              backgroundColor: AppColor.primaryColor,
-              child: const Icon(Icons.add),
+          elevation: 0,
+          backgroundColor: AppColor.primaryColor,
+          foregroundColor: Colors.black,
+        ),
+        backgroundColor: Colors.white,
+        body: BlocBuilder<SubcategoryCubit, SubcategoryState>(
+          buildWhen: (prev, curr) => prev.showPieChart != curr.showPieChart,
+          builder: (context, state) {
+            return Column(
+              children: [
+                SelectedCategoryHeaderWidget(
+                  category: widget.category,
+                  categoryColor: categoryColor,
+                  remainingAmount: remainingAmount,
+                  showPieChart: state.showPieChart,
+                  onTogglePieChart: () =>
+                      _subcategoryCubit.togglePieChart(),
+                ),
+                Expanded(
+                  child: SubcategoriesListWidget(
+                    category: widget.category,
+                  ),
+                ),
+              ],
             );
-          }
-          return const SizedBox.shrink();
-        },
+          },
+        ),
+        floatingActionButton: BlocBuilder<SubcategoryCubit, SubcategoryState>(
+          buildWhen: (prev, curr) => prev.isEditMode != curr.isEditMode,
+          builder: (context, state) {
+            if (state.isEditMode) {
+              return FloatingActionButton(
+                onPressed: () => _showAddSubcategoryDialog(context),
+                backgroundColor: AppColor.primaryColor,
+                child: const Icon(Icons.add),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
@@ -100,9 +104,9 @@ class _CategoryDetailView extends StatelessWidget {
     await PickerDialogHelpers.showSubcategoryPickerDialog(
       context: context,
       title: "Add New Subcategory",
-      parentCategoryId: category.id!,
+      parentCategoryId: widget.category.id!,
       pickerFunction: (Subcategory newSubcategory) {
-        SubcategoryCubit.get(context).insertNewSubcategory(newSubcategory);
+        _subcategoryCubit.insertNewSubcategory(newSubcategory);
       },
     );
   }

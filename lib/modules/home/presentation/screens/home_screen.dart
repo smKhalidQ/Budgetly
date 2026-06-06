@@ -1,11 +1,12 @@
 import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/utilities/cache_helper.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/home_header_widget.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/main_categories_list_widget.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/transactions_tab_widget.dart';
 import 'package:budget_buddy/modules/settings/presentation/screens/settings_screen.dart';
+import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -118,10 +119,8 @@ class _HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = (CacheHelper.getData(key: 'user_name') as String?)
-            ?.split(' ')
-            .first ??
-        '';
+    final name = context
+        .select<SettingCubit, String>((c) => c.state.userName.split(' ').first);
     final topPad = MediaQuery.of(context).padding.top;
 
     return SafeArea(

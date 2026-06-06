@@ -7,29 +7,24 @@ import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'insufficient_balance_dialog.dart';
 
-class BuildSlicingCategoryCard extends StatelessWidget {
+class SlicingCategoryCard extends StatelessWidget {
   final Category category;
   final TextEditingController controller;
   final int index;
   final int monthlySalary;
   final String currency;
-  final Map<int, int> previousValue;
-  final Function(CategoryCubit, Category, int) onUpdateCategory;
 
-  const BuildSlicingCategoryCard({
+  const SlicingCategoryCard({
     super.key,
     required this.category,
     required this.controller,
     required this.index,
     required this.monthlySalary,
     required this.currency,
-    required this.previousValue,
-    required this.onUpdateCategory,
   });
 
   @override
   Widget build(BuildContext context) {
-    final categoryCubit = CategoryCubit.get(context);
     final categoryColor = parseColorFromString(category.color);
     final currencySymbol = currencies[currency]?['currencySymbol'] ?? '';
 
@@ -109,7 +104,7 @@ class BuildSlicingCategoryCard extends StatelessWidget {
                   filled: true,
                   fillColor: categoryColor.withValues(alpha: 0.04),
                 ),
-                onChanged: (v) => _handleValueChange(v, categoryCubit, context),
+                onChanged: (v) => _handleValueChange(v, context),
               ),
             ),
           ],
@@ -118,20 +113,11 @@ class BuildSlicingCategoryCard extends StatelessWidget {
     );
   }
 
-  void _handleValueChange(
-    String value,
-    CategoryCubit categoryCubit,
-    BuildContext context,
-  ) {
+  void _handleValueChange(String value, BuildContext context) {
+    final cubit = context.read<CategoryCubit>();
+
     if (value.isEmpty) {
-      // Read from map (not previousValue) to avoid stale values after dialog reset
-      final currentAlloc = -(categoryCubit.allocatedBudgetMap[index] ?? 0);
-      if (currentAlloc > 0) {
-        categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(currentAlloc);
-        categoryCubit.allocatedBudgetMap[index] = 0;
-        previousValue[index] = 0;
-        onUpdateCategory(categoryCubit, category, 0);
-      }
+      cubit.clearAllocation(index);
       return;
     }
 
@@ -139,27 +125,15 @@ class BuildSlicingCategoryCard extends StatelessWidget {
       final newAllocation = int.parse(value);
       if (newAllocation < 0) return;
 
-      final previousAllocation = -(categoryCubit.allocatedBudgetMap[index] ?? 0);
-      final difference = previousAllocation - newAllocation;
-
-      // Guard: check BEFORE touching state — remaining must never go negative
-      if (categoryCubit.state.remainingBudget + difference < 0) {
-        _showBudgetAlertDialog(context, categoryCubit);
-        return;
-      }
-
-      // Valid — update state
-      categoryCubit.updateCategoryAllocationAndTotalBudgetInSettingUpstage(index, difference);
-      categoryCubit.updateRemainingBudgetForProgressBarInSettingUpstage(difference);
-      previousValue[index] = newAllocation;
-      onUpdateCategory(categoryCubit, category, newAllocation);
-    } catch (e) {
-      debugPrint('Invalid number in field $index: $e');
-    }
+      final success = cubit.updateAllocation(index, newAllocation, category);
+      if (!success) _showInsufficientBudgetDialog(context, cubit);
+    } catch (_) {}
   }
 
-  void _showBudgetAlertDialog(
-      BuildContext context, CategoryCubit categoryCubit) {
+  void _showInsufficientBudgetDialog(BuildContext context, CategoryCubit cubit) {
+    final currentAllocation = cubit.state.allocations[index] ?? 0;
+    final maxAvailable = cubit.state.remainingBudget + currentAllocation;
+
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
@@ -175,14 +149,11 @@ class BuildSlicingCategoryCard extends StatelessWidget {
           child: FadeTransition(
             opacity: animation,
             child: BlocProvider.value(
-              value: categoryCubit,
+              value: cubit,
               child: InsufficientBalanceDialog(
-                categoryCubit: categoryCubit,
                 index: index,
-                monthlySalary: monthlySalary,
+                maxAvailable: maxAvailable,
                 controller: controller,
-                totalAllocatedBudgetBasedOnMap:
-                    categoryCubit.totalAllocatedBudgetBasedOnMap,
               ),
             ),
           ),

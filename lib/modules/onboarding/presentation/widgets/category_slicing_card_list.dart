@@ -4,28 +4,47 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
 import 'build_slicing_category_card.dart';
 
-class CategorySlicingCardList extends StatelessWidget {
-  CategorySlicingCardList({
+class CategorySlicingCardList extends StatefulWidget {
+  const CategorySlicingCardList({
     super.key,
     required this.monthlySalary,
     required this.currency,
   });
 
-  final Map<int, TextEditingController> controllers = {};
-  final Map<int, int> _previousValues = {};
   final int monthlySalary;
   final String currency;
+
+  @override
+  State<CategorySlicingCardList> createState() =>
+      _CategorySlicingCardListState();
+}
+
+class _CategorySlicingCardListState extends State<CategorySlicingCardList> {
+  final Map<int, TextEditingController> _controllers = {};
+
+  @override
+  void dispose() {
+    for (final c in _controllers.values) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  TextEditingController _controllerFor(int index) {
+    return _controllers.putIfAbsent(index, TextEditingController.new);
+  }
 
   @override
   Widget build(BuildContext context) {
     final t = context.tr;
 
     return BlocBuilder<CategoryCubit, CategoryState>(
+      buildWhen: (prev, curr) =>
+          prev.categories != curr.categories || prev.status != curr.status,
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(
@@ -51,10 +70,7 @@ class CategorySlicingCardList extends StatelessWidget {
           return Center(
             child: Text(
               t.noCategoriesFound,
-              style: GoogleFonts.cairo(
-                color: Colors.grey[500],
-                fontSize: 15,
-              ),
+              style: GoogleFonts.cairo(color: Colors.grey[500], fontSize: 15),
               textAlign: TextAlign.center,
             ),
           );
@@ -67,7 +83,8 @@ class CategorySlicingCardList extends StatelessWidget {
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(24)),
             child: ListView.separated(
               padding: const EdgeInsets.only(top: 8, bottom: 20),
               itemCount: categories.length,
@@ -78,32 +95,18 @@ class CategorySlicingCardList extends StatelessWidget {
                 color: Colors.grey.shade100,
               ),
               itemBuilder: (context, index) {
-                if (!controllers.containsKey(index)) {
-                  controllers[index] = TextEditingController();
-                  _previousValues[index] = 0;
-                }
-                return BuildSlicingCategoryCard(
+                return SlicingCategoryCard(
                   category: categories[index],
-                  controller: controllers[index]!,
+                  controller: _controllerFor(index),
                   index: index,
-                  monthlySalary: monthlySalary,
-                  currency: currency,
-                  previousValue: _previousValues,
-                  onUpdateCategory: _updateCategory,
+                  monthlySalary: widget.monthlySalary,
+                  currency: widget.currency,
                 );
               },
             ),
           ),
         );
       },
-    );
-  }
-
-  void _updateCategory(
-      CategoryCubit cubit, Category old, int newAmount) {
-    cubit.updateLocalCategory(
-      old.id!,
-      old.copyWith(allocatedAmount: newAmount.toDouble()),
     );
   }
 }

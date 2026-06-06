@@ -1,7 +1,6 @@
 ﻿import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/core/utilities/cache_helper.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/screens/category_slicing_screen.dart';
 import 'package:budget_buddy/modules/user_info/domain/models/user_info.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -36,6 +35,7 @@ class _SetupBodyState extends State<_SetupBody> {
   final _nameController = TextEditingController();
   final _salaryController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _hasAttemptedSubmit = false;
 
   @override
   void dispose() {
@@ -54,6 +54,9 @@ class _SetupBodyState extends State<_SetupBody> {
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
         child: Form(
           key: _formKey,
+          autovalidateMode: _hasAttemptedSubmit
+              ? AutovalidateMode.onUserInteraction
+              : AutovalidateMode.disabled,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -116,6 +119,8 @@ class _SetupBodyState extends State<_SetupBody> {
               _FieldLabel(label: t.currency),
               const Gap(8),
               BlocBuilder<SettingCubit, SettingState>(
+                buildWhen: (prev, curr) =>
+                    prev.selectedCurrency != curr.selectedCurrency,
                 builder: (context, state) {
                   final key = state.selectedCurrency ?? currencies.keys.first;
                   final info = currencies[key]!;
@@ -217,6 +222,7 @@ class _SetupBodyState extends State<_SetupBody> {
   }
 
   void _onNext(BuildContext context, SettingCubit settingCubit) {
+    setState(() => _hasAttemptedSubmit = true);
     if (!_formKey.currentState!.validate()) return;
 
     final salary = int.parse(_salaryController.text);
@@ -224,7 +230,6 @@ class _SetupBodyState extends State<_SetupBody> {
     final currency =
         settingCubit.state.selectedCurrency ?? currencies.keys.first;
 
-    CacheHelper.saveData(key: 'user_name', value: name);
     settingCubit.setMonthlySalary(salary);
     settingCubit.insertUserInfo(
       UserInfo(name: name, monthlySalary: _salaryController.text, currency: currency),

@@ -20,6 +20,7 @@ mixin _$CategoryState {
   String get selectedIcon;
   String get selectedColor;
   int get remainingBudget;
+  Map<int, int> get allocations;
 
   /// Create a copy of CategoryState
   /// with the given fields replaced by the non-null parameter values.
@@ -44,7 +45,9 @@ mixin _$CategoryState {
             (identical(other.selectedColor, selectedColor) ||
                 other.selectedColor == selectedColor) &&
             (identical(other.remainingBudget, remainingBudget) ||
-                other.remainingBudget == remainingBudget));
+                other.remainingBudget == remainingBudget) &&
+            const DeepCollectionEquality()
+                .equals(other.allocations, allocations));
   }
 
   @override
@@ -55,11 +58,12 @@ mixin _$CategoryState {
       errorMessage,
       selectedIcon,
       selectedColor,
-      remainingBudget);
+      remainingBudget,
+      const DeepCollectionEquality().hash(allocations));
 
   @override
   String toString() {
-    return 'CategoryState(status: $status, categories: $categories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, remainingBudget: $remainingBudget)';
+    return 'CategoryState(status: $status, categories: $categories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, remainingBudget: $remainingBudget, allocations: $allocations)';
   }
 }
 
@@ -75,7 +79,8 @@ abstract mixin class $CategoryStateCopyWith<$Res> {
       String? errorMessage,
       String selectedIcon,
       String selectedColor,
-      int remainingBudget});
+      int remainingBudget,
+      Map<int, int> allocations});
 }
 
 /// @nodoc
@@ -97,6 +102,7 @@ class _$CategoryStateCopyWithImpl<$Res>
     Object? selectedIcon = null,
     Object? selectedColor = null,
     Object? remainingBudget = null,
+    Object? allocations = null,
   }) {
     return _then(_self.copyWith(
       status: null == status
@@ -123,6 +129,10 @@ class _$CategoryStateCopyWithImpl<$Res>
           ? _self.remainingBudget
           : remainingBudget // ignore: cast_nullable_to_non_nullable
               as int,
+      allocations: null == allocations
+          ? _self.allocations
+          : allocations // ignore: cast_nullable_to_non_nullable
+              as Map<int, int>,
     ));
   }
 }
@@ -224,15 +234,22 @@ extension CategoryStatePatterns on CategoryState {
             String? errorMessage,
             String selectedIcon,
             String selectedColor,
-            int remainingBudget)?
+            int remainingBudget,
+            Map<int, int> allocations)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CategoryState() when $default != null:
-        return $default(_that.status, _that.categories, _that.errorMessage,
-            _that.selectedIcon, _that.selectedColor, _that.remainingBudget);
+        return $default(
+            _that.status,
+            _that.categories,
+            _that.errorMessage,
+            _that.selectedIcon,
+            _that.selectedColor,
+            _that.remainingBudget,
+            _that.allocations);
       case _:
         return orElse();
     }
@@ -259,14 +276,21 @@ extension CategoryStatePatterns on CategoryState {
             String? errorMessage,
             String selectedIcon,
             String selectedColor,
-            int remainingBudget)
+            int remainingBudget,
+            Map<int, int> allocations)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CategoryState():
-        return $default(_that.status, _that.categories, _that.errorMessage,
-            _that.selectedIcon, _that.selectedColor, _that.remainingBudget);
+        return $default(
+            _that.status,
+            _that.categories,
+            _that.errorMessage,
+            _that.selectedIcon,
+            _that.selectedColor,
+            _that.remainingBudget,
+            _that.allocations);
     }
   }
 
@@ -290,14 +314,21 @@ extension CategoryStatePatterns on CategoryState {
             String? errorMessage,
             String selectedIcon,
             String selectedColor,
-            int remainingBudget)?
+            int remainingBudget,
+            Map<int, int> allocations)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CategoryState() when $default != null:
-        return $default(_that.status, _that.categories, _that.errorMessage,
-            _that.selectedIcon, _that.selectedColor, _that.remainingBudget);
+        return $default(
+            _that.status,
+            _that.categories,
+            _that.errorMessage,
+            _that.selectedIcon,
+            _that.selectedColor,
+            _that.remainingBudget,
+            _that.allocations);
       case _:
         return null;
     }
@@ -313,8 +344,10 @@ class _CategoryState implements CategoryState {
       this.errorMessage,
       this.selectedIcon = '',
       this.selectedColor = 'Color(0xff2196f3)',
-      this.remainingBudget = 0})
-      : _categories = categories;
+      this.remainingBudget = 0,
+      final Map<int, int> allocations = const <int, int>{}})
+      : _categories = categories,
+        _allocations = allocations;
 
   @override
   @JsonKey()
@@ -339,6 +372,14 @@ class _CategoryState implements CategoryState {
   @override
   @JsonKey()
   final int remainingBudget;
+  final Map<int, int> _allocations;
+  @override
+  @JsonKey()
+  Map<int, int> get allocations {
+    if (_allocations is EqualUnmodifiableMapView) return _allocations;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_allocations);
+  }
 
   /// Create a copy of CategoryState
   /// with the given fields replaced by the non-null parameter values.
@@ -363,7 +404,9 @@ class _CategoryState implements CategoryState {
             (identical(other.selectedColor, selectedColor) ||
                 other.selectedColor == selectedColor) &&
             (identical(other.remainingBudget, remainingBudget) ||
-                other.remainingBudget == remainingBudget));
+                other.remainingBudget == remainingBudget) &&
+            const DeepCollectionEquality()
+                .equals(other._allocations, _allocations));
   }
 
   @override
@@ -374,11 +417,12 @@ class _CategoryState implements CategoryState {
       errorMessage,
       selectedIcon,
       selectedColor,
-      remainingBudget);
+      remainingBudget,
+      const DeepCollectionEquality().hash(_allocations));
 
   @override
   String toString() {
-    return 'CategoryState(status: $status, categories: $categories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, remainingBudget: $remainingBudget)';
+    return 'CategoryState(status: $status, categories: $categories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, remainingBudget: $remainingBudget, allocations: $allocations)';
   }
 }
 
@@ -396,7 +440,8 @@ abstract mixin class _$CategoryStateCopyWith<$Res>
       String? errorMessage,
       String selectedIcon,
       String selectedColor,
-      int remainingBudget});
+      int remainingBudget,
+      Map<int, int> allocations});
 }
 
 /// @nodoc
@@ -418,6 +463,7 @@ class __$CategoryStateCopyWithImpl<$Res>
     Object? selectedIcon = null,
     Object? selectedColor = null,
     Object? remainingBudget = null,
+    Object? allocations = null,
   }) {
     return _then(_CategoryState(
       status: null == status
@@ -444,6 +490,10 @@ class __$CategoryStateCopyWithImpl<$Res>
           ? _self.remainingBudget
           : remainingBudget // ignore: cast_nullable_to_non_nullable
               as int,
+      allocations: null == allocations
+          ? _self._allocations
+          : allocations // ignore: cast_nullable_to_non_nullable
+              as Map<int, int>,
     ));
   }
 }

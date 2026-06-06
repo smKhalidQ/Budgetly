@@ -13,12 +13,10 @@ import 'package:budget_buddy/core/widgets/pickers/color_picker_widget.dart';
 import 'package:budget_buddy/core/widgets/pickers/icon_picker_widget.dart';
 
 class SubcategoriesListWidget extends StatelessWidget {
-  final Function(Subcategory) onSubcategoryTap;
   final Category category;
 
   const SubcategoriesListWidget({
     super.key,
-    required this.onSubcategoryTap,
     required this.category,
   });
 
@@ -134,11 +132,7 @@ class SubcategoriesListWidget extends StatelessWidget {
     final color = parseColorFromString(item.color);
     final spent = double.tryParse(item.spentAmount ?? '0') ?? 0;
 
-    return InkWell(
-      onTap: () {
-        if (!isEditMode) onSubcategoryTap(item);
-      },
-      child: Padding(
+    return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
@@ -196,7 +190,6 @@ class SubcategoriesListWidget extends StatelessWidget {
             ],
           ],
         ),
-      ),
     );
   }
 

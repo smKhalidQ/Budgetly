@@ -50,6 +50,11 @@ class SubcategoryRepository {
     _changedController.add(const SubcategoryChangedEvent());
   }
 
+  Future<void> clearAll() async {
+    await _dataSource.clearAll();
+    _changedController.add(const SubcategoryChangedEvent());
+  }
+
   Subcategory _fromRow(Map<String, dynamic> row) => Subcategory(
         id: row['subcategoryId'] as int?,
         parentCategoryId: row['parentCategoryId'] as int?,

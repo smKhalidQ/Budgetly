@@ -1,8 +1,7 @@
-﻿import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/home/presentation/screens/home_screen.dart';
-import 'package:budget_buddy/core/utilities/cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,8 +11,7 @@ class SavingBalanceDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.tr;
-    final cubit = CategoryCubit.get(context);
-    final remaining = cubit.state.remainingBudget;
+    final remaining = CategoryCubit.get(context).state.remainingBudget;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -24,7 +22,6 @@ class SavingBalanceDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Icon
             Container(
               width: 64,
               height: 64,
@@ -39,7 +36,6 @@ class SavingBalanceDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            // Title
             Text(
               t.remainingBalance,
               style: GoogleFonts.cairo(
@@ -49,7 +45,6 @@ class SavingBalanceDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            // Subtitle
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -73,7 +68,6 @@ class SavingBalanceDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            // Buttons
             Row(
               children: [
                 Expanded(
@@ -99,7 +93,7 @@ class SavingBalanceDialog extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _addToSavings(cubit, context),
+                    onPressed: () => _addToSavings(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.primaryColor,
                       foregroundColor: Colors.white,
@@ -126,29 +120,12 @@ class SavingBalanceDialog extends StatelessWidget {
     );
   }
 
-  Future<void> _addToSavings(
-      CategoryCubit cubit, BuildContext context) async {
-    final index = cubit.state.categories
-        .indexWhere((c) => c.name == 'Saving');
-    if (index != -1 && cubit.state.remainingBudget > 0) {
-      cubit.allocatedBudgetMap[index] =
-          cubit.state.remainingBudget.round();
-      final saving = cubit.state.categories[index];
-      cubit.updateLocalCategory(
-        saving.id!,
-        saving.copyWith(
-          allocatedAmount: cubit.state.remainingBudget.toDouble(),
-        ),
-      );
-    }
-
-    await cubit.initializeCategoriesStage(cubit.state.categories);
-    await CacheHelper.saveData(key: 'setup_done', value: true);
-
+  Future<void> _addToSavings(BuildContext context) async {
+    await CategoryCubit.get(context).allocateRemainingToSavings();
     if (context.mounted) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => HomeScreen()),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
         (_) => false,
       );
     }

@@ -36,19 +36,41 @@ class UserInfoDataSource {
     }
   }
 
-  Future<int> deleteUserData(String query) async {
+  Future<int> deleteUserData(int userId) async {
     try {
       Database? myDb = await DatabaseHelper.db;
-      return await myDb!.rawDelete(query);
+      return await myDb!.delete(
+        'userInfo',
+        where: 'userId = ?',
+        whereArgs: [userId],
+      );
     } catch (_) {
       throw Exception("data deletion failed");
     }
   }
 
-  Future<int> updateUserData(String sql) async {
+  Future<int> updateUserData({
+    required int userId,
+    required String userName,
+    required String userImg,
+    required String monthlySalary,
+    required String currency,
+    required String spentAmount,
+  }) async {
     try {
       Database? myDb = await DatabaseHelper.db;
-      return await myDb!.rawUpdate(sql);
+      return await myDb!.update(
+        'userInfo',
+        {
+          'userName': userName,
+          'userImg': userImg,
+          'monthlySalary': monthlySalary,
+          'currency': currency,
+          'storedSpentAmount': spentAmount,
+        },
+        where: 'userId = ?',
+        whereArgs: [userId],
+      );
     } catch (_) {
       throw Exception("data update failed");
     }

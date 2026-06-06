@@ -17,6 +17,7 @@ mixin _$SettingState {
   SettingStatus get status;
   String? get selectedCurrency;
   int get monthlySalary;
+  String get userName;
   String? get errorMessage;
 
   /// Create a copy of SettingState
@@ -37,17 +38,19 @@ mixin _$SettingState {
                 other.selectedCurrency == selectedCurrency) &&
             (identical(other.monthlySalary, monthlySalary) ||
                 other.monthlySalary == monthlySalary) &&
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, status, selectedCurrency, monthlySalary, errorMessage);
+  int get hashCode => Object.hash(runtimeType, status, selectedCurrency,
+      monthlySalary, userName, errorMessage);
 
   @override
   String toString() {
-    return 'SettingState(status: $status, selectedCurrency: $selectedCurrency, monthlySalary: $monthlySalary, errorMessage: $errorMessage)';
+    return 'SettingState(status: $status, selectedCurrency: $selectedCurrency, monthlySalary: $monthlySalary, userName: $userName, errorMessage: $errorMessage)';
   }
 }
 
@@ -61,6 +64,7 @@ abstract mixin class $SettingStateCopyWith<$Res> {
       {SettingStatus status,
       String? selectedCurrency,
       int monthlySalary,
+      String userName,
       String? errorMessage});
 }
 
@@ -79,6 +83,7 @@ class _$SettingStateCopyWithImpl<$Res> implements $SettingStateCopyWith<$Res> {
     Object? status = null,
     Object? selectedCurrency = freezed,
     Object? monthlySalary = null,
+    Object? userName = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_self.copyWith(
@@ -94,6 +99,10 @@ class _$SettingStateCopyWithImpl<$Res> implements $SettingStateCopyWith<$Res> {
           ? _self.monthlySalary
           : monthlySalary // ignore: cast_nullable_to_non_nullable
               as int,
+      userName: null == userName
+          ? _self.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String,
       errorMessage: freezed == errorMessage
           ? _self.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -194,7 +203,7 @@ extension SettingStatePatterns on SettingState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(SettingStatus status, String? selectedCurrency,
-            int monthlySalary, String? errorMessage)?
+            int monthlySalary, String userName, String? errorMessage)?
         $default, {
     required TResult orElse(),
   }) {
@@ -202,7 +211,7 @@ extension SettingStatePatterns on SettingState {
     switch (_that) {
       case _SettingState() when $default != null:
         return $default(_that.status, _that.selectedCurrency,
-            _that.monthlySalary, _that.errorMessage);
+            _that.monthlySalary, _that.userName, _that.errorMessage);
       case _:
         return orElse();
     }
@@ -224,14 +233,14 @@ extension SettingStatePatterns on SettingState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(SettingStatus status, String? selectedCurrency,
-            int monthlySalary, String? errorMessage)
+            int monthlySalary, String userName, String? errorMessage)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingState():
         return $default(_that.status, _that.selectedCurrency,
-            _that.monthlySalary, _that.errorMessage);
+            _that.monthlySalary, _that.userName, _that.errorMessage);
     }
   }
 
@@ -250,14 +259,14 @@ extension SettingStatePatterns on SettingState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(SettingStatus status, String? selectedCurrency,
-            int monthlySalary, String? errorMessage)?
+            int monthlySalary, String userName, String? errorMessage)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingState() when $default != null:
         return $default(_that.status, _that.selectedCurrency,
-            _that.monthlySalary, _that.errorMessage);
+            _that.monthlySalary, _that.userName, _that.errorMessage);
       case _:
         return null;
     }
@@ -271,6 +280,7 @@ class _SettingState implements SettingState {
       {this.status = SettingStatus.initial,
       this.selectedCurrency,
       this.monthlySalary = 0,
+      this.userName = '',
       this.errorMessage});
 
   @override
@@ -281,6 +291,9 @@ class _SettingState implements SettingState {
   @override
   @JsonKey()
   final int monthlySalary;
+  @override
+  @JsonKey()
+  final String userName;
   @override
   final String? errorMessage;
 
@@ -302,17 +315,19 @@ class _SettingState implements SettingState {
                 other.selectedCurrency == selectedCurrency) &&
             (identical(other.monthlySalary, monthlySalary) ||
                 other.monthlySalary == monthlySalary) &&
+            (identical(other.userName, userName) ||
+                other.userName == userName) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, status, selectedCurrency, monthlySalary, errorMessage);
+  int get hashCode => Object.hash(runtimeType, status, selectedCurrency,
+      monthlySalary, userName, errorMessage);
 
   @override
   String toString() {
-    return 'SettingState(status: $status, selectedCurrency: $selectedCurrency, monthlySalary: $monthlySalary, errorMessage: $errorMessage)';
+    return 'SettingState(status: $status, selectedCurrency: $selectedCurrency, monthlySalary: $monthlySalary, userName: $userName, errorMessage: $errorMessage)';
   }
 }
 
@@ -328,6 +343,7 @@ abstract mixin class _$SettingStateCopyWith<$Res>
       {SettingStatus status,
       String? selectedCurrency,
       int monthlySalary,
+      String userName,
       String? errorMessage});
 }
 
@@ -347,6 +363,7 @@ class __$SettingStateCopyWithImpl<$Res>
     Object? status = null,
     Object? selectedCurrency = freezed,
     Object? monthlySalary = null,
+    Object? userName = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_SettingState(
@@ -362,6 +379,10 @@ class __$SettingStateCopyWithImpl<$Res>
           ? _self.monthlySalary
           : monthlySalary // ignore: cast_nullable_to_non_nullable
               as int,
+      userName: null == userName
+          ? _self.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String,
       errorMessage: freezed == errorMessage
           ? _self.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable

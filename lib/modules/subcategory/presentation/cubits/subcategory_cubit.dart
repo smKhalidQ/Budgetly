@@ -1,4 +1,3 @@
-import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/utilities/listener_mixin.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/subcategory/domain/default_subcategories.dart';
@@ -15,12 +14,8 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
 
   static SubcategoryCubit get(context) => BlocProvider.of(context);
 
-  Color get subcategoryColor => parseColorFromString(state.selectedColor);
-  String get subcategoryIcon => state.selectedIcon.isEmpty
-      ? Icons.category.codePoint.toString()
-      : state.selectedIcon;
-
-  set subcategoryIcon(String value) => emit(state.copyWith(selectedIcon: value));
+  void updateSubcategoryIcon(String icon) =>
+      emit(state.copyWith(selectedIcon: icon));
 
   Future<void> fetchSubcategories() async {
     emit(state.copyWith(status: SubcategoryStatus.loading));

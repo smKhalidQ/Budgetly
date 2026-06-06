@@ -44,6 +44,15 @@ class SubcategoryDataSource {
     }
   }
 
+  Future<void> clearAll() async {
+    Database? myDb = await DatabaseHelper.db;
+    try {
+      await myDb!.delete('subcategory');
+    } on DatabaseException catch (_) {
+      throw Exception("data deletion failed");
+    }
+  }
+
   Future<int> updateSubcategoryData({
     required int subcategoryId,
     required Map<String, dynamic> updatedFields,

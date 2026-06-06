@@ -23,7 +23,7 @@ class App extends StatelessWidget {
           create: (_) => GetIt.I<SubcategoryCubit>()..fetchSubcategories(),
         ),
         BlocProvider(
-          create: (_) => GetIt.I<SettingCubit>(),
+          create: (_) => GetIt.I<SettingCubit>()..loadUserInfo(),
         ),
       ],
       child: MaterialApp(

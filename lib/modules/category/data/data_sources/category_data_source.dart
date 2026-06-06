@@ -123,6 +123,15 @@ class CategoryManagementDataSource {
     }
   }
 
+  Future<void> clearAll() async {
+    Database? myDb = await DatabaseHelper.db;
+    try {
+      await myDb!.delete('category');
+    } on DatabaseException catch (_) {
+      throw Exception("data deletion failed");
+    }
+  }
+
   Future<Map<String, dynamic>?> getCategoryById(int categoryId) async {
     Database? myDb = await DatabaseHelper.db;
     try {

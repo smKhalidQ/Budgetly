@@ -5,6 +5,7 @@ part 'category_state.freezed.dart';
 
 enum CategoryStatus { initial, loading, success, error }
 
+// run build_runner
 @freezed
 sealed class CategoryState with _$CategoryState {
   const factory CategoryState({
@@ -14,6 +15,7 @@ sealed class CategoryState with _$CategoryState {
     @Default('') String selectedIcon,
     @Default('Color(0xff2196f3)') String selectedColor,
     @Default(0) int remainingBudget,
+    @Default(<int, int>{}) Map<int, int> allocations,
   }) = _CategoryState;
 }
 

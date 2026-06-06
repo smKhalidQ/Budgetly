@@ -24,6 +24,7 @@ class BuildHeaderSection extends StatelessWidget {
     final symbol = currencies[currency]?['currencySymbol'] ?? '';
 
     return BlocBuilder<CategoryCubit, CategoryState>(
+      buildWhen: (prev, curr) => prev.remainingBudget != curr.remainingBudget,
       builder: (context, state) {
         final remaining = state.remainingBudget;
         final allocated = monthlySalary - remaining;

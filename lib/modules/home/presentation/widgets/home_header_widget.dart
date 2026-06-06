@@ -20,6 +20,9 @@ class HomeHeaderWidget extends StatelessWidget {
     final monthYear = DateFormat('MMMM yyyy').format(now);
 
     return BlocBuilder<SettingCubit, SettingState>(
+      buildWhen: (prev, curr) =>
+          prev.monthlySalary != curr.monthlySalary ||
+          prev.selectedCurrency != curr.selectedCurrency,
       builder: (context, settingState) {
         final salary = settingState.monthlySalary;
         final currency =
@@ -27,6 +30,7 @@ class HomeHeaderWidget extends StatelessWidget {
         final symbol = currencies[currency]?['currencySymbol'] ?? '';
 
         return BlocBuilder<CategoryCubit, CategoryState>(
+          buildWhen: (prev, curr) => prev.categories != curr.categories,
           builder: (context, catState) {
             final totalSpent = catState.categories.fold(
               0.0,

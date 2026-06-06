@@ -11,6 +11,7 @@ import 'package:budget_buddy/modules/transaction/domain/repositories/transaction
 import 'package:budget_buddy/modules/user_info/domain/repositories/user_info_repository.dart';
 
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_cubit.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -30,4 +31,5 @@ void initializeDependencies() {
   GetIt.I.registerFactory(() => SubcategoryCubit(GetIt.I()));
   GetIt.I.registerFactory(() => TransactionCubit(GetIt.I()));
   GetIt.I.registerFactory(() => SettingCubit(GetIt.I()));
+  GetIt.I.registerFactory(() => SettingsCubit(GetIt.I(), GetIt.I()));
 }

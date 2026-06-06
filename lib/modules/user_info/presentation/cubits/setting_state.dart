@@ -4,12 +4,14 @@ part 'setting_state.freezed.dart';
 
 enum SettingStatus { initial, loading, success, error }
 
+// run build_runner
 @freezed
 sealed class SettingState with _$SettingState {
   const factory SettingState({
     @Default(SettingStatus.initial) SettingStatus status,
     String? selectedCurrency,
     @Default(0) int monthlySalary,
+    @Default('') String userName,
     String? errorMessage,
   }) = _SettingState;
 }

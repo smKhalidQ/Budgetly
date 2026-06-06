@@ -64,6 +64,11 @@ class CategoryRepository {
     _changedController.add(const CategoryChangedEvent());
   }
 
+  Future<void> clearAll() async {
+    await _dataSource.clearAll();
+    _changedController.add(const CategoryChangedEvent());
+  }
+
   Future<void> updateSpentAmount(int id, double spentAmount) async {
     await _dataSource.updateSpentAmount(
       categoryId: id,

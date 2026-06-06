@@ -1,4 +1,4 @@
-import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/core/utilities/cache_helper.dart';
 import 'package:budget_buddy/core/utilities/listener_mixin.dart';
 import 'package:budget_buddy/modules/category/domain/default_categories.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
@@ -10,19 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CategoryCubit extends Cubit<CategoryState> with StreamListener {
   final CategoryRepository _repository;
 
-  final Map<int, int> _allocatedBudgetMap = {};
-  int _totalAllocatedBudgetBasedOnMap = 0;
-
   CategoryCubit(this._repository) : super(const CategoryState());
 
   static CategoryCubit get(BuildContext context) => BlocProvider.of(context);
-
-  Color get categoryColor => parseColorFromString(state.selectedColor);
-  String get categoryIcon => state.selectedIcon.isEmpty
-      ? Icons.category.codePoint.toString()
-      : state.selectedIcon;
-  int get totalAllocatedBudgetBasedOnMap => _totalAllocatedBudgetBasedOnMap;
-  Map<int, int> get allocatedBudgetMap => _allocatedBudgetMap;
 
   List<Category> _sortWithSavingLast(List<Category> list) {
     final savingIndex = list.indexWhere((c) => c.name == 'Saving');
@@ -131,20 +121,6 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
     updateCategoryData(item.id!, updatedItem);
   }
 
-  Future<void> initializeCategoriesStage(List<Category> categories) async {
-    emit(state.copyWith(status: CategoryStatus.loading));
-    try {
-      await _repository.initializeAll(categories);
-      emit(state.copyWith(status: CategoryStatus.success));
-      fetchCategories();
-    } catch (_) {
-      emit(state.copyWith(
-        status: CategoryStatus.error,
-        errorMessage: 'Failed to initialize categories.',
-      ));
-    }
-  }
-
   void updateLocalCategory(int id, Category updated) {
     final index = state.categories.indexWhere((c) => c.id == id);
     if (index == -1) return;
@@ -154,15 +130,112 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
 
   void setRemainingBudget(int value) => emit(state.copyWith(remainingBudget: value));
 
-  void updateRemainingBudgetForProgressBarInSettingUpstage(int difference) {
-    emit(state.copyWith(remainingBudget: state.remainingBudget + difference));
+  // --- Onboarding allocation methods ---
+
+  /// Updates the allocation for [listIndex] to [newAllocation].
+  /// Returns false if remaining budget would go negative (show alert dialog).
+  bool updateAllocation(int listIndex, int newAllocation, Category category) {
+    final current = state.allocations[listIndex] ?? 0;
+    final delta = newAllocation - current;
+    if (state.remainingBudget - delta < 0) return false;
+
+    final updatedAllocations =
+        Map<int, int>.from(state.allocations)..[listIndex] = newAllocation;
+    final catIdx = state.categories.indexWhere((c) => c.id == category.id);
+    final updatedCategories = catIdx == -1
+        ? state.categories
+        : (List<Category>.from(state.categories)
+          ..[catIdx] = category.copyWith(allocatedAmount: newAllocation.toDouble()));
+
+    emit(state.copyWith(
+      allocations: updatedAllocations,
+      remainingBudget: state.remainingBudget - delta,
+      categories: updatedCategories,
+    ));
+    return true;
   }
 
-  void updateCategoryAllocationAndTotalBudgetInSettingUpstage(int index, int value) {
-    _allocatedBudgetMap[index] = (_allocatedBudgetMap[index] ?? 0) + value;
-    _totalAllocatedBudgetBasedOnMap = 0;
-    _allocatedBudgetMap.forEach((key, val) {
-      if (key != index) _totalAllocatedBudgetBasedOnMap += val;
-    });
+  /// Clears the allocation for [listIndex] back to 0.
+  void clearAllocation(int listIndex) {
+    final current = state.allocations[listIndex] ?? 0;
+    if (current == 0) return;
+    final updatedAllocations =
+        Map<int, int>.from(state.allocations)..[listIndex] = 0;
+    final updatedCategories = listIndex < state.categories.length
+        ? (List<Category>.from(state.categories)
+          ..[listIndex] =
+              state.categories[listIndex].copyWith(allocatedAmount: 0))
+        : state.categories;
+    emit(state.copyWith(
+      allocations: updatedAllocations,
+      remainingBudget: state.remainingBudget + current,
+      categories: updatedCategories,
+    ));
+  }
+
+  /// Sets the allocation for [listIndex] to [maxAvailable].
+  void setAllocationToMax(int listIndex, int maxAvailable) {
+    final current = state.allocations[listIndex] ?? 0;
+    final updatedAllocations =
+        Map<int, int>.from(state.allocations)..[listIndex] = maxAvailable;
+    final updatedCategories = listIndex < state.categories.length
+        ? (List<Category>.from(state.categories)
+          ..[listIndex] = state.categories[listIndex]
+              .copyWith(allocatedAmount: maxAvailable.toDouble()))
+        : state.categories;
+    emit(state.copyWith(
+      allocations: updatedAllocations,
+      remainingBudget: state.remainingBudget + current - maxAvailable,
+      categories: updatedCategories,
+    ));
+  }
+
+  /// Completes the setup flow. Returns false if budget is not fully allocated.
+  Future<bool> completeSetup() async {
+    if (state.remainingBudget > 0) return false;
+    emit(state.copyWith(status: CategoryStatus.loading));
+    try {
+      await _repository.initializeAll(state.categories);
+      await CacheHelper.saveData(key: 'setup_done', value: true);
+      emit(state.copyWith(status: CategoryStatus.success));
+      return true;
+    } catch (_) {
+      emit(state.copyWith(
+        status: CategoryStatus.error,
+        errorMessage: 'Failed to initialize categories.',
+      ));
+      return false;
+    }
+  }
+
+  /// Allocates remaining budget to the Saving category, then completes setup.
+  Future<void> allocateRemainingToSavings() async {
+    final savingIdx = state.categories.indexWhere((c) => c.name == 'Saving');
+    if (savingIdx != -1 && state.remainingBudget > 0) {
+      final remaining = state.remainingBudget;
+      final saving = state.categories[savingIdx];
+      final updatedAllocations = Map<int, int>.from(state.allocations)
+        ..[savingIdx] = (state.allocations[savingIdx] ?? 0) + remaining;
+      final updatedCategories = List<Category>.from(state.categories)
+        ..[savingIdx] = saving.copyWith(
+          allocatedAmount: saving.allocatedAmount + remaining.toDouble(),
+        );
+      emit(state.copyWith(
+        allocations: updatedAllocations,
+        remainingBudget: 0,
+        categories: updatedCategories,
+      ));
+    }
+    emit(state.copyWith(status: CategoryStatus.loading));
+    try {
+      await _repository.initializeAll(state.categories);
+      await CacheHelper.saveData(key: 'setup_done', value: true);
+      emit(state.copyWith(status: CategoryStatus.success));
+    } catch (_) {
+      emit(state.copyWith(
+        status: CategoryStatus.error,
+        errorMessage: 'Failed to initialize categories.',
+      ));
+    }
   }
 }

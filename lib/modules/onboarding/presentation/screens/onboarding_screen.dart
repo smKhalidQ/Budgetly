@@ -1,7 +1,7 @@
 ﻿import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/core/utilities/cache_helper.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/screens/setup_profile_screen.dart';
+import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -37,7 +37,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _finish() async {
-    await CacheHelper.saveData(key: 'onboarding_seen', value: true);
+    await SettingCubit.get(context).markOnboardingSeen();
     if (!mounted) return;
     Navigator.pushReplacement(
       context,

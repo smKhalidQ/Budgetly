@@ -16,11 +16,16 @@ class MainCategoriesListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingCubit, SettingState>(
+      buildWhen: (prev, curr) =>
+          prev.selectedCurrency != curr.selectedCurrency,
       builder: (context, settingState) {
         final currency = settingState.selectedCurrency ?? currencies.keys.first;
         final symbol = currencies[currency]?['currencySymbol'] ?? '';
 
         return BlocBuilder<CategoryCubit, CategoryState>(
+          buildWhen: (prev, curr) =>
+              prev.categories != curr.categories ||
+              prev.status != curr.status,
           builder: (context, state) {
             if (state.isLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -40,24 +45,22 @@ class MainCategoriesListWidget extends StatelessWidget {
               );
             }
 
-            return ListView.separated(
+            return Padding(
               padding: const EdgeInsets.only(top: 16, bottom: 24),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: categories.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                final color = parseColorFromString(category.color);
-                final progress = category.allocatedAmount == 0
-                    ? 0.0
-                    : (category.spentAmount / category.allocatedAmount)
-                        .clamp(0.0, 1.0);
-                final remaining =
-                    category.allocatedAmount - category.spentAmount;
-                final isOver = remaining < 0;
-
-                return Material(
+              child: Column(
+                children: [
+                  for (int index = 0; index < categories.length; index++) ...[
+                    if (index > 0) const SizedBox(height: 12),
+                    Builder(builder: (context) {
+                      final category = categories[index];
+                      final color = parseColorFromString(category.color);
+                      final progress = category.allocatedAmount == 0
+                          ? 0.0
+                          : (category.spentAmount / category.allocatedAmount)
+                              .clamp(0.0, 1.0);
+                      final remaining =
+                          category.allocatedAmount - category.spentAmount;
+                      return Material(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   shadowColor: Colors.black.withValues(alpha: 0.05),
@@ -178,8 +181,11 @@ class MainCategoriesListWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                );
-              },
+                    );
+                    }),
+                  ],
+                ],
+              ),
             );
           },
         );

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -6,13 +6,10 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/home/presentation/screens/home_screen.dart';
-import 'package:budget_buddy/core/utilities/cache_helper.dart';
 import 'saving_balance_dialog.dart';
 
 class CustomSetUpBottomBar extends StatelessWidget {
-  const CustomSetUpBottomBar({super.key, required this.categoryCubit});
-
-  final CategoryCubit categoryCubit;
+  const CustomSetUpBottomBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,23 +25,7 @@ class CustomSetUpBottomBar extends StatelessWidget {
               width: double.infinity,
               height: 48,
               child: ElevatedButton.icon(
-                onPressed: () async {
-                  final cubit = CategoryCubit.get(context);
-                  if (cubit.state.remainingBudget > 0) {
-                    _showBudgetAlertDialog(context, cubit);
-                  } else {
-                    await cubit
-                        .initializeCategoriesStage(cubit.state.categories);
-                    await CacheHelper.saveData(key: 'setup_done', value: true);
-                    if (context.mounted) {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (_) => HomeScreen()),
-                        (_) => false,
-                      );
-                    }
-                  }
-                },
+                onPressed: () => _onConfirm(context),
                 icon: const Icon(Icons.check_rounded, size: 18),
                 label: Text(
                   t.confirmBudget,
@@ -78,8 +59,22 @@ class CustomSetUpBottomBar extends StatelessWidget {
     );
   }
 
-  void _showBudgetAlertDialog(
-      BuildContext context, CategoryCubit categoryCubit) {
+  Future<void> _onConfirm(BuildContext context) async {
+    final cubit = CategoryCubit.get(context);
+    final done = await cubit.completeSetup();
+    if (!context.mounted) return;
+    if (done) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        (_) => false,
+      );
+    } else {
+      _showSavingBalanceDialog(context, cubit);
+    }
+  }
+
+  void _showSavingBalanceDialog(BuildContext context, CategoryCubit cubit) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -95,7 +90,7 @@ class CustomSetUpBottomBar extends StatelessWidget {
           child: FadeTransition(
             opacity: animation,
             child: BlocProvider.value(
-              value: categoryCubit,
+              value: cubit,
               child: const SavingBalanceDialog(),
             ),
           ),

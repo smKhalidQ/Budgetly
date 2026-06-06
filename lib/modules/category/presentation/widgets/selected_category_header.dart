@@ -15,7 +15,6 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
   final double remainingAmount;
   final bool showPieChart;
   final VoidCallback onTogglePieChart;
-  final VoidCallback onEditCategory;
 
   const SelectedCategoryHeaderWidget({
     super.key,
@@ -24,7 +23,6 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     required this.remainingAmount,
     required this.showPieChart,
     required this.onTogglePieChart,
-    required this.onEditCategory,
   });
 
   @override
@@ -67,6 +65,8 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
             curve: Curves.easeInOut,
             child: showPieChart
                 ? BlocBuilder<SubcategoryCubit, SubcategoryState>(
+                    buildWhen: (prev, curr) =>
+                        prev.subcategories != curr.subcategories,
                     builder: (context, state) {
                       final subs = state.subcategories
                           .where((s) => s.parentCategoryId == category.id)
@@ -265,20 +265,10 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
   }
 
   Widget _buildActionButtons() {
-    return Row(
-      children: [
-        _iconBtn(
-          icon: Icons.pie_chart,
-          color: categoryColor,
-          onTap: onTogglePieChart,
-        ),
-        const SizedBox(width: 12),
-        _iconBtn(
-          icon: Icons.edit,
-          color: Colors.grey.shade600,
-          onTap: onEditCategory,
-        ),
-      ],
+    return _iconBtn(
+      icon: Icons.pie_chart,
+      color: categoryColor,
+      onTap: onTogglePieChart,
     );
   }
 

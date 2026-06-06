@@ -21,18 +21,18 @@ class UserInfoRepository {
   }
 
   Future<void> update(UserInfo user) async {
-    await _dataSource.updateUserData('''
-      UPDATE `userInfo`
-      SET `userName` = "${user.name}", `userImg` = "${user.imageUrl ?? ''}", `monthlySalary` = "${user.monthlySalary}", `currency` = "${user.currency}", `spentAmount` = "${user.spentAmount}"
-      WHERE `userId` = ${user.id}
-    ''');
+    await _dataSource.updateUserData(
+      userId: user.id!,
+      userName: user.name,
+      userImg: user.imageUrl ?? '',
+      monthlySalary: user.monthlySalary,
+      currency: user.currency,
+      spentAmount: user.spentAmount,
+    );
   }
 
   Future<void> delete(int id) async {
-    await _dataSource.deleteUserData('''
-      DELETE FROM `userInfo`
-      WHERE `userId` = $id
-    ''');
+    await _dataSource.deleteUserData(id);
   }
 
   UserInfo _fromRow(Map<String, dynamic> row) => UserInfo(

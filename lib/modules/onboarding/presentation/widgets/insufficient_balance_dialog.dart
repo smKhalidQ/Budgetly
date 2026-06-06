@@ -6,25 +6,20 @@ import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 
 class InsufficientBalanceDialog extends StatelessWidget {
-  final int monthlySalary;
-  final int totalAllocatedBudgetBasedOnMap;
-  final CategoryCubit categoryCubit;
+  final int maxAvailable;
   final TextEditingController controller;
   final int index;
 
   const InsufficientBalanceDialog({
     super.key,
-    required this.monthlySalary,
-    required this.totalAllocatedBudgetBasedOnMap,
+    required this.maxAvailable,
     required this.controller,
-    required this.categoryCubit,
     required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
     final t = context.tr;
-    final maxAvailable = monthlySalary + totalAllocatedBudgetBasedOnMap;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -35,7 +30,6 @@ class InsufficientBalanceDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Icon
             Container(
               width: 64,
               height: 64,
@@ -71,13 +65,11 @@ class InsufficientBalanceDialog extends StatelessWidget {
             const SizedBox(height: 24),
             Row(
               children: [
-                // Adjust — clears to 0
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
                       controller.clear();
-                      categoryCubit.allocatedBudgetMap[index] = 0;
-                      categoryCubit.setRemainingBudget(maxAvailable);
+                      CategoryCubit.get(context).clearAllocation(index);
                       Navigator.of(context).pop();
                     },
                     style: OutlinedButton.styleFrom(
@@ -98,7 +90,6 @@ class InsufficientBalanceDialog extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Set max available
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -107,8 +98,7 @@ class InsufficientBalanceDialog extends StatelessWidget {
                       } else {
                         controller.text = maxAvailable.toString();
                       }
-                      categoryCubit.allocatedBudgetMap[index] = -maxAvailable;
-                      categoryCubit.setRemainingBudget(0);
+                      CategoryCubit.get(context).setAllocationToMax(index, maxAvailable);
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
