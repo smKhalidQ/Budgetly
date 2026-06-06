@@ -24,15 +24,22 @@ List<String> iconImages = [
 
 Color parseColorFromString(String colorString) {
   try {
-    colorString = colorString.replaceAll("Color(", "").replaceAll(")", "");
-    if (colorString.startsWith('0x')) {
-      return Color(int.parse(colorString));
+    colorString = colorString.replaceAll("Color(", "").replaceAll(")", "").trim();
+    int value;
+    if (colorString.startsWith('0x') || colorString.startsWith('0X')) {
+      value = int.parse(colorString);
     } else if (colorString.startsWith('MaterialAccent')) {
       return Colors.blueAccent;
     } else {
-      return Color(int.parse('0xff${colorString.padLeft(6, '0')}'));
+      value = int.parse('0xff${colorString.padLeft(6, '0')}');
     }
-  } catch (e) {
-    return Colors.blue;
+    return Color.fromARGB(
+      (value >> 24) & 0xFF,
+      (value >> 16) & 0xFF,
+      (value >> 8) & 0xFF,
+      value & 0xFF,
+    );
+  } catch (_) {
+    return const Color(0xff2196f3);
   }
 }

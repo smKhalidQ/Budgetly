@@ -6,56 +6,83 @@ class IconPickerWidget extends StatelessWidget {
   final Function(IconData) onIconSelected;
 
   const IconPickerWidget({
-    Key? key,
+    super.key,
     required this.currentIcon,
     required this.currentColor,
     required this.onIconSelected,
-  }) : super(key: key);
+  });
+
+  static const List<IconData> iconOptions = [
+    // Housing
+    Icons.home_rounded,
+    Icons.bolt_rounded,
+    Icons.wifi_rounded,
+    Icons.build_rounded,
+    Icons.chair_rounded,
+    // Food & Drinks
+    Icons.restaurant_rounded,
+    Icons.local_grocery_store_rounded,
+    Icons.coffee_rounded,
+    Icons.fastfood_rounded,
+    Icons.delivery_dining_rounded,
+    // Transportation
+    Icons.local_gas_station_rounded,
+    Icons.directions_bus_rounded,
+    Icons.local_parking_rounded,
+    Icons.local_taxi_rounded,
+    Icons.car_repair_rounded,
+    Icons.directions_car_rounded,
+    // Healthcare
+    Icons.medical_services_rounded,
+    Icons.medication_rounded,
+    Icons.fitness_center_rounded,
+    Icons.local_pharmacy_rounded,
+    Icons.sentiment_satisfied_rounded,
+    // Entertainment
+    Icons.movie_rounded,
+    Icons.sports_esports_rounded,
+    Icons.play_circle_rounded,
+    Icons.menu_book_rounded,
+    Icons.celebration_rounded,
+    // Other / Shopping
+    Icons.shopping_bag_rounded,
+    Icons.card_giftcard_rounded,
+    Icons.subscriptions_rounded,
+    Icons.spa_rounded,
+    Icons.school_rounded,
+    // Saving
+    Icons.shield_rounded,
+    Icons.trending_up_rounded,
+    Icons.flight_rounded,
+    Icons.beach_access_rounded,
+    Icons.savings_rounded,
+    // General
+    Icons.category_rounded,
+    Icons.smartphone,
+    Icons.computer,
+    Icons.tv,
+    Icons.airplanemode_active,
+    Icons.hotel,
+    Icons.sports,
+    Icons.book,
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final List<IconData> iconOptions = [
-      Icons.category,
-      Icons.shopping_bag,
-      Icons.shopping_cart,
-      Icons.restaurant,
-      Icons.local_cafe,
-      Icons.directions_car,
-      Icons.directions_bus,
-      Icons.local_taxi,
-      Icons.local_hospital,
-      Icons.school,
-      Icons.book,
-      Icons.movie,
-      Icons.sports_esports,
-      Icons.fitness_center,
-      Icons.sports,
-      Icons.home,
-      Icons.house,
-      Icons.smartphone,
-      Icons.computer,
-      Icons.tv,
-      Icons.card_giftcard,
-      Icons.airplanemode_active,
-      Icons.hotel,
-      Icons.beach_access,
-      Icons.savings,
-      Icons.fastfood
-
-    ];
-
     return Wrap(
       spacing: 12,
       runSpacing: 12,
       children: iconOptions.map((icon) {
-        final isSelected = currentIcon == icon;
+        final isSelected = currentIcon.codePoint == icon.codePoint;
         return GestureDetector(
           onTap: () => onIconSelected(icon),
-          child:Container(
+          child: Container(
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: isSelected ? currentColor.withOpacity(0.2) : Colors.grey.withOpacity(0.1),
+              color: isSelected
+                  ? currentColor.withValues(alpha: 0.2)
+                  : Colors.grey.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected ? currentColor : Colors.transparent,

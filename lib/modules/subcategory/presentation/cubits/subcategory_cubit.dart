@@ -1,5 +1,7 @@
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/utilities/listener_mixin.dart';
+import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/subcategory/domain/default_subcategories.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
 import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
@@ -82,11 +84,85 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
     }
   }
 
-  void updateSubcategoryColor(Color color) =>
-      emit(state.copyWith(selectedColor: color.toString()));
+  void updateSubcategoryColor(Color color) => emit(state.copyWith(
+      selectedColor:
+          '0x${color.toARGB32().toRadixString(16).padLeft(8, '0')}'));
 
   void toggleSubCategoryEditModeState() =>
       emit(state.copyWith(isEditMode: !state.isEditMode));
 
   void togglePieChart() => emit(state.copyWith(showPieChart: !state.showPieChart));
+
+  void resetScreenState() {
+    emit(state.copyWith(isEditMode: false, showPieChart: false));
+  }
+
+  Future<void> fetchAndEnsureDefault(Category category) async {
+    emit(state.copyWith(status: SubcategoryStatus.loading));
+    try {
+      final all = await _repository.getAll();
+      final existing =
+          all.where((s) => s.parentCategoryId == category.id).toList();
+
+      final isPlaceholder =
+          existing.length == 1 && existing.first.name == category.name;
+
+      if (existing.isNotEmpty && !isPlaceholder) {
+        emit(state.copyWith(
+            status: SubcategoryStatus.success, subcategories: all));
+        return;
+      }
+
+      if (isPlaceholder && existing.first.id != null) {
+        await _repository.delete(existing.first.id!);
+      }
+
+      await _seedDefaults(category);
+
+      final updated = await _repository.getAll();
+      emit(state.copyWith(
+          status: SubcategoryStatus.success, subcategories: updated));
+    } catch (_) {
+      emit(state.copyWith(
+          status: SubcategoryStatus.error,
+          errorMessage: 'Failed to load subcategories.'));
+    }
+  }
+
+  Future<void> resetToDefaults(Category category) async {
+    emit(state.copyWith(status: SubcategoryStatus.loading));
+    try {
+      final existing = state.subcategories
+          .where((s) => s.parentCategoryId == category.id)
+          .toList();
+      for (final sub in existing) {
+        if (sub.id != null) await _repository.delete(sub.id!);
+      }
+      await _seedDefaults(category);
+      final updated = await _repository.getAll();
+      emit(state.copyWith(
+          status: SubcategoryStatus.success, subcategories: updated));
+    } catch (_) {
+      emit(state.copyWith(
+          status: SubcategoryStatus.error,
+          errorMessage: 'Failed to restore defaults.'));
+    }
+  }
+
+  Future<void> _seedDefaults(Category category) async {
+    final defaults = getDefaultSubcategories(category);
+    if (defaults.isNotEmpty) {
+      for (final sub in defaults) {
+        await _repository.insert(sub.copyWith(parentCategoryId: category.id));
+      }
+    } else {
+      await _repository.insert(Subcategory(
+        name: category.name,
+        color: category.color,
+        icon: category.icon,
+        parentCategoryId: category.id!,
+        spentAmount: '0',
+      ));
+    }
+  }
 }

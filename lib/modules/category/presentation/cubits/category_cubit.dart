@@ -105,8 +105,9 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
 
   void updateCategoryIcon(String icon) => emit(state.copyWith(selectedIcon: icon));
 
-  void updateCategoryColor(Color color) =>
-      emit(state.copyWith(selectedColor: color.toString()));
+  void updateCategoryColor(Color color) => emit(state.copyWith(
+      selectedColor:
+          '0x${color.toARGB32().toRadixString(16).padLeft(8, '0')}'));
 
   void addNewSettingUpCategory(Category category) {
     emit(state.copyWith(

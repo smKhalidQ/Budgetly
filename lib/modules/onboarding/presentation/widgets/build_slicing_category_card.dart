@@ -162,7 +162,7 @@ class BuildSlicingCategoryCard extends StatelessWidget {
       BuildContext context, CategoryCubit categoryCubit) {
     showGeneralDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       barrierLabel: '',
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 300),

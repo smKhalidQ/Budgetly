@@ -93,9 +93,11 @@ class PickerDialogHelpers {
     final result = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (BuildContext context) {
-        return BlocBuilder<SubcategoryCubit, SubcategoryState>(
-          builder: (context, state) {
-            return _buildDialogContent(
+        return BlocProvider.value(
+          value: subcategoryCubit,
+          child: BlocBuilder<SubcategoryCubit, SubcategoryState>(
+            builder: (context, state) {
+              return _buildDialogContent(
               context: context,
               title: title,
               nameController: nameController,
@@ -113,8 +115,7 @@ class PickerDialogHelpers {
                 if (nameController.text.trim().isNotEmpty) {
                   final newSubcategory = Subcategory(
                     name: nameController.text,
-                    color: subcategoryCubit.subcategoryColor.value
-                        .toRadixString(16),
+                    color: '0x${subcategoryCubit.subcategoryColor.toARGB32().toRadixString(16).padLeft(8, '0')}',
                     icon: subcategoryCubit.subcategoryIcon,
                     parentCategoryId: parentCategoryId,
                   );
@@ -123,7 +124,8 @@ class PickerDialogHelpers {
                 }
               },
             );
-          },
+            },
+          ),
         );
       },
     );
@@ -182,6 +184,9 @@ class PickerDialogHelpers {
                                 fontWeight: FontWeight.w500)),
                         const SizedBox(height: 10),
                         IconPickerWidget(
+                          key: ValueKey(isCategory && categoryCubit != null
+                              ? categoryCubit.categoryIcon
+                              : subcategoryCubit?.subcategoryIcon ?? ''),
                           currentIcon: IconData(
                               int.tryParse(isCategory && categoryCubit != null
                                       ? categoryCubit.categoryIcon
@@ -207,6 +212,9 @@ class PickerDialogHelpers {
                                 fontWeight: FontWeight.w500)),
                         const SizedBox(height: 10),
                         ColorPickerWidget(
+                          key: ValueKey(isCategory && categoryCubit != null
+                              ? categoryCubit.categoryColor.toARGB32()
+                              : subcategoryCubit?.subcategoryColor.toARGB32() ?? 0),
                           currentColor: isCategory && categoryCubit != null
                               ? categoryCubit.categoryColor
                               : subcategoryCubit?.subcategoryColor ??
@@ -232,7 +240,7 @@ class PickerDialogHelpers {
                       shape: BoxShape.circle,
                       color: currentPage == i
                           ? AppColor.primaryColor
-                          : Colors.grey.withOpacity(0.5),
+                          : Colors.grey.withValues(alpha: 0.5),
                     ),
                   ),
               ],

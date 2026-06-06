@@ -110,44 +110,19 @@ class MainCategoriesListWidget extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        category.name,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColor.textPrimary,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: isOver
-                                            ? AppColor.expenseColor
-                                                .withValues(alpha: 0.12)
-                                            : color.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        '$symbol${remaining.toStringAsFixed(0)}',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: isOver
-                                              ? AppColor.expenseColor
-                                              : color,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                // Name
+                                Text(
+                                  category.name,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColor.textPrimary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 8),
+                                // Progress bar
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(4),
                                   child: LinearProgressIndicator(
@@ -156,17 +131,36 @@ class MainCategoriesListWidget extends StatelessWidget {
                                     backgroundColor:
                                         Colors.grey.withValues(alpha: 0.12),
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                      isOver ? AppColor.expenseColor : color,
-                                    ),
+                                        color),
                                   ),
                                 ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  '$symbol${category.spentAmount.toStringAsFixed(0)} / $symbol${category.allocatedAmount.toStringAsFixed(0)}',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 11,
-                                    color: AppColor.textSecondary,
-                                  ),
+                                const SizedBox(height: 8),
+                                // Spent | Remaining
+                                Row(
+                                  children: [
+                                    _AmountChip(
+                                      label: context.tr.spent,
+                                      value:
+                                          '$symbol${category.spentAmount.toStringAsFixed(0)}',
+                                      color: AppColor.textSecondary,
+                                    ),
+                                    Container(
+                                      width: 1,
+                                      height: 14,
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      color: Colors.grey
+                                          .withValues(alpha: 0.2),
+                                    ),
+                                    _AmountChip(
+                                      label: context.tr.remaining,
+                                      value:
+                                          '$symbol${remaining.toStringAsFixed(0)}',
+                                      color: remaining == 0
+                                          ? AppColor.textSecondary
+                                          : color,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -190,6 +184,43 @@ class MainCategoriesListWidget extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _AmountChip extends StatelessWidget {
+  const _AmountChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '$label: ',
+            style: GoogleFonts.poppins(
+              fontSize: 11,
+              color: AppColor.textSecondary,
+            ),
+          ),
+          TextSpan(
+            text: value,
+            style: GoogleFonts.poppins(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -19,57 +19,79 @@ class CategoryDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) =>
+              GetIt.I<SubcategoryCubit>()..fetchAndEnsureDefault(category),
+        ),
+        BlocProvider(
+          create: (_) => GetIt.I<TransactionCubit>(),
+        ),
+      ],
+      child: _CategoryDetailView(category: category),
+    );
+  }
+}
+
+class _CategoryDetailView extends StatelessWidget {
+  final Category category;
+
+  const _CategoryDetailView({required this.category});
+
+  @override
+  Widget build(BuildContext context) {
     final subcategoryCubit = context.watch<SubcategoryCubit>();
     final Color categoryColor = parseColorFromString(category.color);
-    final double remainingAmount = category.allocatedAmount - category.spentAmount;
+    final double remainingAmount =
+        category.allocatedAmount - category.spentAmount;
 
-    return BlocProvider(
-      create: (_) => GetIt.I<TransactionCubit>(),
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
-          ),
-          title: Text(
-            category.name,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          elevation: 0,
-          backgroundColor: AppColor.primaryColor,
-          foregroundColor: Colors.black,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined,
+              color: Colors.white),
         ),
-        backgroundColor: Colors.white,
-        body: Column(
-          children: [
-            SelectedCategoryHeaderWidget(
+        title: Text(
+          category.name,
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        elevation: 0,
+        backgroundColor: AppColor.primaryColor,
+        foregroundColor: Colors.black,
+      ),
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          SelectedCategoryHeaderWidget(
+            category: category,
+            categoryColor: categoryColor,
+            remainingAmount: remainingAmount,
+            showPieChart: subcategoryCubit.state.showPieChart,
+            onTogglePieChart: () => subcategoryCubit.togglePieChart(),
+            onEditCategory: () {},
+          ),
+          Expanded(
+            child: SubcategoriesListWidget(
               category: category,
-              categoryColor: categoryColor,
-              remainingAmount: remainingAmount,
-              showPieChart: subcategoryCubit.state.showPieChart,
-              onTogglePieChart: () => subcategoryCubit.togglePieChart(),
-              onEditCategory: () {},
+              onSubcategoryTap: (Subcategory subcategory) {},
             ),
-            Expanded(
-              child: SubcategoriesListWidget(
-                parentCategoryId: category.id!,
-                onSubcategoryTap: (Subcategory subcategory) {},
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: BlocBuilder<SubcategoryCubit, SubcategoryState>(
-          builder: (context, state) {
-            if (state.isEditMode) {
-              return FloatingActionButton(
-                onPressed: () => _showAddSubcategoryDialog(context),
-                backgroundColor: AppColor.primaryColor,
-                child: const Icon(Icons.add),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
+          ),
+        ],
+      ),
+      floatingActionButton: BlocBuilder<SubcategoryCubit, SubcategoryState>(
+        builder: (context, state) {
+          if (state.isEditMode) {
+            return FloatingActionButton(
+              onPressed: () => _showAddSubcategoryDialog(context),
+              backgroundColor: AppColor.primaryColor,
+              child: const Icon(Icons.add),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
