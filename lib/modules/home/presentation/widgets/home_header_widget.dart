@@ -50,11 +50,11 @@ class HomeHeaderWidget extends StatelessWidget {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF1E3A5F), Color(0xFF0D2137)],
+                  colors: [Color(0xFF2A3F52), Color(0xFF1A2C3D)],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF1E3A5F).withValues(alpha: 0.35),
+                    color: Color(0xFF2A3F52).withValues(alpha: 0.45),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),

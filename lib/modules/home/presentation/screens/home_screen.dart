@@ -104,8 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// ─── Tabs ───────────────────────────────────────────────
-
 class _HomeTab extends StatelessWidget {
   const _HomeTab();
 
@@ -120,111 +118,104 @@ class _HomeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = context
         .select<SettingCubit, String>((c) => c.state.userName.split(' ').first);
-    final topPad = MediaQuery.of(context).padding.top;
 
-    return SafeArea(
-      bottom: false,
-      child: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 280.h,
-            pinned: false,
-            floating: false,
-            backgroundColor: AppColor.primaryColor,
-            surfaceTintColor: Colors.transparent,
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            flexibleSpace: LayoutBuilder(
-              builder: (context, constraints) {
-                final collapsed = constraints.biggest.height <=
-                    kToolbarHeight + topPad + 1;
-
-                return FlexibleSpaceBar(
-                  collapseMode: CollapseMode.pin,
-                  titlePadding: EdgeInsets.symmetric(
-                      horizontal: 20.w, vertical: 14.h),
-                  title: collapsed
-                      ? Text(
-                          name.isNotEmpty
-                              ? '${_greeting()}, $name'
-                              : _greeting(),
-                          style: GoogleFonts.cairo(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        )
-                      : null,
-                  background: Container(
-                    color: AppColor.backgroundColor,
-                    alignment: Alignment.bottomCenter,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 4.h),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _greeting(),
-                                      style: GoogleFonts.cairo(
-                                        fontSize: 12.sp,
-                                        color: AppColor.textSecondary,
-                                      ),
-                                    ),
-                                    if (name.isNotEmpty)
-                                      Text(
-                                        name,
-                                        style: GoogleFonts.cairo(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColor.primaryColor,
-                                          height: 1.1,
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: 38.w,
-                                height: 38.w,
-                                decoration: BoxDecoration(
-                                  color: AppColor.primaryColor
-                                      .withValues(alpha: 0.08),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.person_rounded,
-                                  color: AppColor.primaryColor,
-                                  size: 20.sp,
-                                ),
-                              ),
-                            ],
-                          ),
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          pinned: true,
+          floating: false,
+          backgroundColor: AppColor.primaryColor,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          titleSpacing: 20.w,
+          title: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _greeting(),
+                      style: GoogleFonts.cairo(
+                        fontSize: 12.sp,
+                        color: Colors.white.withValues(alpha: 0.65),
+                      ),
+                    ),
+                    if (name.isNotEmpty)
+                      Text(
+                        name,
+                        style: GoogleFonts.cairo(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          height: 1.1,
                         ),
-                        const HomeHeaderWidget(),
-                      ],
+                      ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 4.w),
+                child: Container(
+                  width: 38.w,
+                  height: 38.w,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.person_rounded,
+                    color: Colors.white,
+                    size: 20.sp,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                // 60% of card visual height (card margin-top 12.h + 60% of ~152.h inner)
+                height: 160.h,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColor.primaryColor,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(32.r),
+                      bottomRight: Radius.circular(32.r),
                     ),
                   ),
-                );
-              },
+                ),
+              ),
+              const HomeHeaderWidget(),
+            ],
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+            child: Text(
+              context.tr.categories,
+              style: GoogleFonts.cairo(
+                fontSize: 17.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColor.textPrimary,
+              ),
             ),
           ),
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _StickyHeader(label: context.tr.categories),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            sliver: const SliverToBoxAdapter(child: MainCategoriesListWidget()),
-          ),
-        ],
-      ),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          sliver: const SliverToBoxAdapter(child: MainCategoriesListWidget()),
+        ),
+      ],
     );
   }
 }
@@ -299,44 +290,6 @@ class _IncomeTab extends StatelessWidget {
   }
 }
 
-// ─── Sticky Header Delegate ──────────────────────────────
-
-class _StickyHeader extends SliverPersistentHeaderDelegate {
-  final String label;
-
-  const _StickyHeader({required this.label});
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final isSticky = shrinkOffset > 0;
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      color: isSticky ? AppColor.primaryColor : AppColor.backgroundColor,
-      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 10.h),
-      child: Text(
-        label,
-        style: GoogleFonts.cairo(
-          fontSize: 17.sp,
-          fontWeight: FontWeight.bold,
-          color: isSticky ? Colors.white : AppColor.textPrimary,
-        ),
-      ),
-    );
-  }
-
-  @override
-  double get maxExtent => 52.h;
-
-  @override
-  double get minExtent => 52.h;
-
-  @override
-  bool shouldRebuild(_StickyHeader old) => old.label != label;
-}
-
-// ─── Nav Item ────────────────────────────────────────────
-
 class _NavItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -372,9 +325,8 @@ class _NavItem extends StatelessWidget {
               child: Icon(
                 icon,
                 size: 22.sp,
-                color: isSelected
-                    ? AppColor.primaryColor
-                    : AppColor.textSecondary,
+                color:
+                    isSelected ? AppColor.primaryColor : AppColor.textSecondary,
               ),
             ),
             SizedBox(height: 2.h),
@@ -382,11 +334,9 @@ class _NavItem extends StatelessWidget {
               label,
               style: GoogleFonts.cairo(
                 fontSize: 10.sp,
-                fontWeight:
-                    isSelected ? FontWeight.w700 : FontWeight.normal,
-                color: isSelected
-                    ? AppColor.primaryColor
-                    : AppColor.textSecondary,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.normal,
+                color:
+                    isSelected ? AppColor.primaryColor : AppColor.textSecondary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
