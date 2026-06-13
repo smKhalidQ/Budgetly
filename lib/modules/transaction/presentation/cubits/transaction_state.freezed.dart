@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$TransactionState {
   TransactionStatus get status;
   List<Transaction> get transactions;
+  Map<int, Category> get categoriesById;
   String? get errorMessage;
   bool get isEditMode;
 
@@ -35,6 +36,8 @@ mixin _$TransactionState {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other.transactions, transactions) &&
+            const DeepCollectionEquality()
+                .equals(other.categoriesById, categoriesById) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
             (identical(other.isEditMode, isEditMode) ||
@@ -46,12 +49,13 @@ mixin _$TransactionState {
       runtimeType,
       status,
       const DeepCollectionEquality().hash(transactions),
+      const DeepCollectionEquality().hash(categoriesById),
       errorMessage,
       isEditMode);
 
   @override
   String toString() {
-    return 'TransactionState(status: $status, transactions: $transactions, errorMessage: $errorMessage, isEditMode: $isEditMode)';
+    return 'TransactionState(status: $status, transactions: $transactions, categoriesById: $categoriesById, errorMessage: $errorMessage, isEditMode: $isEditMode)';
   }
 }
 
@@ -64,6 +68,7 @@ abstract mixin class $TransactionStateCopyWith<$Res> {
   $Res call(
       {TransactionStatus status,
       List<Transaction> transactions,
+      Map<int, Category> categoriesById,
       String? errorMessage,
       bool isEditMode});
 }
@@ -83,6 +88,7 @@ class _$TransactionStateCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? transactions = null,
+    Object? categoriesById = null,
     Object? errorMessage = freezed,
     Object? isEditMode = null,
   }) {
@@ -95,6 +101,10 @@ class _$TransactionStateCopyWithImpl<$Res>
           ? _self.transactions
           : transactions // ignore: cast_nullable_to_non_nullable
               as List<Transaction>,
+      categoriesById: null == categoriesById
+          ? _self.categoriesById
+          : categoriesById // ignore: cast_nullable_to_non_nullable
+              as Map<int, Category>,
       errorMessage: freezed == errorMessage
           ? _self.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -198,16 +208,20 @@ extension TransactionStatePatterns on TransactionState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(TransactionStatus status, List<Transaction> transactions,
-            String? errorMessage, bool isEditMode)?
+    TResult Function(
+            TransactionStatus status,
+            List<Transaction> transactions,
+            Map<int, Category> categoriesById,
+            String? errorMessage,
+            bool isEditMode)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _TransactionState() when $default != null:
-        return $default(_that.status, _that.transactions, _that.errorMessage,
-            _that.isEditMode);
+        return $default(_that.status, _that.transactions, _that.categoriesById,
+            _that.errorMessage, _that.isEditMode);
       case _:
         return orElse();
     }
@@ -228,15 +242,19 @@ extension TransactionStatePatterns on TransactionState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(TransactionStatus status, List<Transaction> transactions,
-            String? errorMessage, bool isEditMode)
+    TResult Function(
+            TransactionStatus status,
+            List<Transaction> transactions,
+            Map<int, Category> categoriesById,
+            String? errorMessage,
+            bool isEditMode)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _TransactionState():
-        return $default(_that.status, _that.transactions, _that.errorMessage,
-            _that.isEditMode);
+        return $default(_that.status, _that.transactions, _that.categoriesById,
+            _that.errorMessage, _that.isEditMode);
     }
   }
 
@@ -254,15 +272,19 @@ extension TransactionStatePatterns on TransactionState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(TransactionStatus status, List<Transaction> transactions,
-            String? errorMessage, bool isEditMode)?
+    TResult? Function(
+            TransactionStatus status,
+            List<Transaction> transactions,
+            Map<int, Category> categoriesById,
+            String? errorMessage,
+            bool isEditMode)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _TransactionState() when $default != null:
-        return $default(_that.status, _that.transactions, _that.errorMessage,
-            _that.isEditMode);
+        return $default(_that.status, _that.transactions, _that.categoriesById,
+            _that.errorMessage, _that.isEditMode);
       case _:
         return null;
     }
@@ -275,9 +297,11 @@ class _TransactionState implements TransactionState {
   const _TransactionState(
       {this.status = TransactionStatus.initial,
       final List<Transaction> transactions = const [],
+      final Map<int, Category> categoriesById = const {},
       this.errorMessage,
       this.isEditMode = false})
-      : _transactions = transactions;
+      : _transactions = transactions,
+        _categoriesById = categoriesById;
 
   @override
   @JsonKey()
@@ -289,6 +313,15 @@ class _TransactionState implements TransactionState {
     if (_transactions is EqualUnmodifiableListView) return _transactions;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_transactions);
+  }
+
+  final Map<int, Category> _categoriesById;
+  @override
+  @JsonKey()
+  Map<int, Category> get categoriesById {
+    if (_categoriesById is EqualUnmodifiableMapView) return _categoriesById;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_categoriesById);
   }
 
   @override
@@ -313,6 +346,8 @@ class _TransactionState implements TransactionState {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other._transactions, _transactions) &&
+            const DeepCollectionEquality()
+                .equals(other._categoriesById, _categoriesById) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
             (identical(other.isEditMode, isEditMode) ||
@@ -324,12 +359,13 @@ class _TransactionState implements TransactionState {
       runtimeType,
       status,
       const DeepCollectionEquality().hash(_transactions),
+      const DeepCollectionEquality().hash(_categoriesById),
       errorMessage,
       isEditMode);
 
   @override
   String toString() {
-    return 'TransactionState(status: $status, transactions: $transactions, errorMessage: $errorMessage, isEditMode: $isEditMode)';
+    return 'TransactionState(status: $status, transactions: $transactions, categoriesById: $categoriesById, errorMessage: $errorMessage, isEditMode: $isEditMode)';
   }
 }
 
@@ -344,6 +380,7 @@ abstract mixin class _$TransactionStateCopyWith<$Res>
   $Res call(
       {TransactionStatus status,
       List<Transaction> transactions,
+      Map<int, Category> categoriesById,
       String? errorMessage,
       bool isEditMode});
 }
@@ -363,6 +400,7 @@ class __$TransactionStateCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? transactions = null,
+    Object? categoriesById = null,
     Object? errorMessage = freezed,
     Object? isEditMode = null,
   }) {
@@ -375,6 +413,10 @@ class __$TransactionStateCopyWithImpl<$Res>
           ? _self._transactions
           : transactions // ignore: cast_nullable_to_non_nullable
               as List<Transaction>,
+      categoriesById: null == categoriesById
+          ? _self._categoriesById
+          : categoriesById // ignore: cast_nullable_to_non_nullable
+              as Map<int, Category>,
       errorMessage: freezed == errorMessage
           ? _self.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable

@@ -13,16 +13,20 @@ class TransactionDataSource {
 
   Future<int> addTransaction({
     required int categoryId,
+    int? subcategoryId,
     required double amount,
     required DateTime date,
+    required String type,
     String? note,
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
       return await myDb!.insert('transaction', {
         'categoryId': categoryId,
+        'subcategoryId': subcategoryId,
         'amount': amount,
         'date': date.toIso8601String(),
+        'type': type,
         'note': note,
       });
     } on DatabaseException catch (_) {
@@ -33,8 +37,10 @@ class TransactionDataSource {
   Future<int> editTransaction(
     int transactionId, {
     required int categoryId,
+    int? subcategoryId,
     required double amount,
     required DateTime date,
+    required String type,
     String? note,
   }) async {
     Database? myDb = await DatabaseHelper.db;
@@ -43,8 +49,10 @@ class TransactionDataSource {
         'transaction',
         {
           'categoryId': categoryId,
+          'subcategoryId': subcategoryId,
           'amount': amount,
           'date': date.toIso8601String(),
+          'type': type,
           'note': note,
         },
         where: 'transactionId = ?',

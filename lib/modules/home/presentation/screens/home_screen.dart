@@ -1,13 +1,17 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
+import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/home_header_widget.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/main_categories_list_widget.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/transactions_tab_widget.dart';
 import 'package:budget_buddy/modules/settings/presentation/screens/settings_screen.dart';
+import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_cubit.dart';
+import 'package:budget_buddy/modules/transaction/presentation/widgets/add_transaction_sheet.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,6 +24,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
+  void _openAddTransactionSheet() {
+    AddTransactionSheet.show(
+      context,
+      onSuccess: () => context.read<CategoryCubit>().fetchCategories(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = context.tr;
@@ -31,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
         children: const [
           _HomeTab(),
           _TransactionsTab(),
-          _IncomeTab(),
           SettingsScreen(),
         ],
       ),
@@ -65,14 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () => setState(() => _currentIndex = 1),
                 ),
                 GestureDetector(
-                  onTap: () => setState(() => _currentIndex = 2),
+                  onTap: _openAddTransactionSheet,
                   child: Container(
                     width: 52.w,
                     height: 52.w,
                     decoration: BoxDecoration(
-                      color: _currentIndex == 2
-                          ? AppColor.primaryColor
-                          : AppColor.accentColor,
+                      color: AppColor.accentColor,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
@@ -92,8 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 _NavItem(
                   icon: Icons.settings_rounded,
                   label: t.settings,
-                  isSelected: _currentIndex == 3,
-                  onTap: () => setState(() => _currentIndex = 3),
+                  isSelected: _currentIndex == 2,
+                  onTap: () => setState(() => _currentIndex = 2),
                 ),
               ],
             ),
@@ -240,55 +248,14 @@ class _TransactionsTab extends StatelessWidget {
           ),
         ),
       ),
-      body: const TransactionsTabWidget(),
-    );
-  }
-}
-
-class _IncomeTab extends StatelessWidget {
-  const _IncomeTab();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColor.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppColor.backgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Text(
-          'Income',
-          style: GoogleFonts.cairo(
-            color: AppColor.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 18.sp,
-          ),
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.add_circle_outline_rounded,
-              size: 72.sp,
-              color: AppColor.accentColor.withValues(alpha: 0.3),
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              'Add Income',
-              style: GoogleFonts.cairo(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColor.textSecondary,
-              ),
-            ),
-          ],
-        ),
+      body: BlocProvider(
+        create: (_) => GetIt.I<TransactionCubit>()..initialize(),
+        child: const TransactionsTabWidget(),
       ),
     );
   }
 }
+
 
 class _NavItem extends StatelessWidget {
   final IconData icon;

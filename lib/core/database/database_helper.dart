@@ -18,7 +18,7 @@ class DatabaseHelper {
     try {
       Database myDb = await openDatabase(
         path,
-        version: 1,
+        version: 2,
         onCreate: _onCreate,
         onUpgrade: _onUpgrade,
         onOpen: (db) async {
@@ -70,10 +70,13 @@ class DatabaseHelper {
       await db.execute('''CREATE TABLE `transaction` (
         transactionId INTEGER PRIMARY KEY AUTOINCREMENT,
         categoryId INTEGER NOT NULL,
+        subcategoryId INTEGER,
         amount REAL NOT NULL,
         date TEXT NOT NULL,
+        type TEXT NOT NULL DEFAULT 'expense',
         note TEXT,
-        FOREIGN KEY (categoryId) REFERENCES category (categoryId) ON DELETE CASCADE
+        FOREIGN KEY (categoryId) REFERENCES category (categoryId) ON DELETE CASCADE,
+        FOREIGN KEY (subcategoryId) REFERENCES subcategory (subcategoryId) ON DELETE SET NULL
       )''');
     } on DatabaseException catch (_) {
       throw Exception("sql syntax error");
@@ -82,11 +85,25 @@ class DatabaseHelper {
 
   static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
-      try {
-        await db.execute('ALTER TABLE userInfo ADD COLUMN userImg TEXT NOT NULL DEFAULT ""');
-      } catch (e) {
-        throw Exception("sql syntax error");
-      }
+      await _addColumnIfMissing(
+        db, 'transaction', 'subcategoryId', 'INTEGER');
+      await _addColumnIfMissing(
+        db, 'transaction', 'type', "TEXT NOT NULL DEFAULT 'expense'");
+    }
+  }
+
+  /// Adds [column] to [table] only when it isn't already present, so reruns of
+  /// a migration on a partially-upgraded database don't crash on duplicates.
+  static Future<void> _addColumnIfMissing(
+    Database db,
+    String table,
+    String column,
+    String definition,
+  ) async {
+    final info = await db.rawQuery('PRAGMA table_info(`$table`)');
+    final exists = info.any((row) => row['name'] == column);
+    if (!exists) {
+      await db.execute('ALTER TABLE `$table` ADD COLUMN $column $definition');
     }
   }
 

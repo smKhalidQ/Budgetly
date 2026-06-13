@@ -16,8 +16,10 @@ T _$identity<T>(T value) => value;
 mixin _$Transaction {
   int? get id;
   int get categoryId;
+  int? get subcategoryId;
   double get amount;
   DateTime get date;
+  TransactionType get type;
   String? get note;
 
   /// Create a copy of Transaction
@@ -35,18 +37,21 @@ mixin _$Transaction {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.categoryId, categoryId) ||
                 other.categoryId == categoryId) &&
+            (identical(other.subcategoryId, subcategoryId) ||
+                other.subcategoryId == subcategoryId) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.date, date) || other.date == date) &&
+            (identical(other.type, type) || other.type == type) &&
             (identical(other.note, note) || other.note == note));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, categoryId, amount, date, note);
+  int get hashCode => Object.hash(
+      runtimeType, id, categoryId, subcategoryId, amount, date, type, note);
 
   @override
   String toString() {
-    return 'Transaction(id: $id, categoryId: $categoryId, amount: $amount, date: $date, note: $note)';
+    return 'Transaction(id: $id, categoryId: $categoryId, subcategoryId: $subcategoryId, amount: $amount, date: $date, type: $type, note: $note)';
   }
 }
 
@@ -57,7 +62,13 @@ abstract mixin class $TransactionCopyWith<$Res> {
       _$TransactionCopyWithImpl;
   @useResult
   $Res call(
-      {int? id, int categoryId, double amount, DateTime date, String? note});
+      {int? id,
+      int categoryId,
+      int? subcategoryId,
+      double amount,
+      DateTime date,
+      TransactionType type,
+      String? note});
 }
 
 /// @nodoc
@@ -74,8 +85,10 @@ class _$TransactionCopyWithImpl<$Res> implements $TransactionCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? categoryId = null,
+    Object? subcategoryId = freezed,
     Object? amount = null,
     Object? date = null,
+    Object? type = null,
     Object? note = freezed,
   }) {
     return _then(_self.copyWith(
@@ -87,6 +100,10 @@ class _$TransactionCopyWithImpl<$Res> implements $TransactionCopyWith<$Res> {
           ? _self.categoryId
           : categoryId // ignore: cast_nullable_to_non_nullable
               as int,
+      subcategoryId: freezed == subcategoryId
+          ? _self.subcategoryId
+          : subcategoryId // ignore: cast_nullable_to_non_nullable
+              as int?,
       amount: null == amount
           ? _self.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -95,6 +112,10 @@ class _$TransactionCopyWithImpl<$Res> implements $TransactionCopyWith<$Res> {
           ? _self.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as TransactionType,
       note: freezed == note
           ? _self.note
           : note // ignore: cast_nullable_to_non_nullable
@@ -194,16 +215,16 @@ extension TransactionPatterns on Transaction {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int? id, int categoryId, double amount, DateTime date,
-            String? note)?
+    TResult Function(int? id, int categoryId, int? subcategoryId, double amount,
+            DateTime date, TransactionType type, String? note)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Transaction() when $default != null:
-        return $default(
-            _that.id, _that.categoryId, _that.amount, _that.date, _that.note);
+        return $default(_that.id, _that.categoryId, _that.subcategoryId,
+            _that.amount, _that.date, _that.type, _that.note);
       case _:
         return orElse();
     }
@@ -224,15 +245,15 @@ extension TransactionPatterns on Transaction {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            int? id, int categoryId, double amount, DateTime date, String? note)
+    TResult Function(int? id, int categoryId, int? subcategoryId, double amount,
+            DateTime date, TransactionType type, String? note)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Transaction():
-        return $default(
-            _that.id, _that.categoryId, _that.amount, _that.date, _that.note);
+        return $default(_that.id, _that.categoryId, _that.subcategoryId,
+            _that.amount, _that.date, _that.type, _that.note);
     }
   }
 
@@ -250,15 +271,15 @@ extension TransactionPatterns on Transaction {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int? id, int categoryId, double amount, DateTime date,
-            String? note)?
+    TResult? Function(int? id, int categoryId, int? subcategoryId,
+            double amount, DateTime date, TransactionType type, String? note)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Transaction() when $default != null:
-        return $default(
-            _that.id, _that.categoryId, _that.amount, _that.date, _that.note);
+        return $default(_that.id, _that.categoryId, _that.subcategoryId,
+            _that.amount, _that.date, _that.type, _that.note);
       case _:
         return null;
     }
@@ -271,8 +292,10 @@ class _Transaction implements Transaction {
   const _Transaction(
       {this.id,
       required this.categoryId,
+      this.subcategoryId,
       required this.amount,
       required this.date,
+      this.type = TransactionType.expense,
       this.note});
 
   @override
@@ -280,9 +303,14 @@ class _Transaction implements Transaction {
   @override
   final int categoryId;
   @override
+  final int? subcategoryId;
+  @override
   final double amount;
   @override
   final DateTime date;
+  @override
+  @JsonKey()
+  final TransactionType type;
   @override
   final String? note;
 
@@ -302,18 +330,21 @@ class _Transaction implements Transaction {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.categoryId, categoryId) ||
                 other.categoryId == categoryId) &&
+            (identical(other.subcategoryId, subcategoryId) ||
+                other.subcategoryId == subcategoryId) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.date, date) || other.date == date) &&
+            (identical(other.type, type) || other.type == type) &&
             (identical(other.note, note) || other.note == note));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, categoryId, amount, date, note);
+  int get hashCode => Object.hash(
+      runtimeType, id, categoryId, subcategoryId, amount, date, type, note);
 
   @override
   String toString() {
-    return 'Transaction(id: $id, categoryId: $categoryId, amount: $amount, date: $date, note: $note)';
+    return 'Transaction(id: $id, categoryId: $categoryId, subcategoryId: $subcategoryId, amount: $amount, date: $date, type: $type, note: $note)';
   }
 }
 
@@ -326,7 +357,13 @@ abstract mixin class _$TransactionCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int? id, int categoryId, double amount, DateTime date, String? note});
+      {int? id,
+      int categoryId,
+      int? subcategoryId,
+      double amount,
+      DateTime date,
+      TransactionType type,
+      String? note});
 }
 
 /// @nodoc
@@ -343,8 +380,10 @@ class __$TransactionCopyWithImpl<$Res> implements _$TransactionCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? categoryId = null,
+    Object? subcategoryId = freezed,
     Object? amount = null,
     Object? date = null,
+    Object? type = null,
     Object? note = freezed,
   }) {
     return _then(_Transaction(
@@ -356,6 +395,10 @@ class __$TransactionCopyWithImpl<$Res> implements _$TransactionCopyWith<$Res> {
           ? _self.categoryId
           : categoryId // ignore: cast_nullable_to_non_nullable
               as int,
+      subcategoryId: freezed == subcategoryId
+          ? _self.subcategoryId
+          : subcategoryId // ignore: cast_nullable_to_non_nullable
+              as int?,
       amount: null == amount
           ? _self.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -364,6 +407,10 @@ class __$TransactionCopyWithImpl<$Res> implements _$TransactionCopyWith<$Res> {
           ? _self.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as TransactionType,
       note: freezed == note
           ? _self.note
           : note // ignore: cast_nullable_to_non_nullable
