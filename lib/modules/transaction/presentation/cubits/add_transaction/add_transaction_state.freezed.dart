@@ -17,6 +17,7 @@ mixin _$AddTransactionState {
   TransactionType get transactionType;
   List<Category> get categories;
   Map<int, List<Subcategory>> get subcategoriesMap;
+  List<Subcategory> get topSubcategories;
   int? get expandedCategoryId;
   Category? get selectedCategory;
   Subcategory? get selectedSubcategory;
@@ -25,6 +26,7 @@ mixin _$AddTransactionState {
   AddTransactionStatus get status;
   double? get overflowDeficit;
   List<OverflowSplit> get overflowSplits;
+  double get overflowIncome;
 
   /// Create a copy of AddTransactionState
   /// with the given fields replaced by the non-null parameter values.
@@ -45,6 +47,8 @@ mixin _$AddTransactionState {
                 .equals(other.categories, categories) &&
             const DeepCollectionEquality()
                 .equals(other.subcategoriesMap, subcategoriesMap) &&
+            const DeepCollectionEquality()
+                .equals(other.topSubcategories, topSubcategories) &&
             (identical(other.expandedCategoryId, expandedCategoryId) ||
                 other.expandedCategoryId == expandedCategoryId) &&
             (identical(other.selectedCategory, selectedCategory) ||
@@ -58,7 +62,9 @@ mixin _$AddTransactionState {
             (identical(other.overflowDeficit, overflowDeficit) ||
                 other.overflowDeficit == overflowDeficit) &&
             const DeepCollectionEquality()
-                .equals(other.overflowSplits, overflowSplits));
+                .equals(other.overflowSplits, overflowSplits) &&
+            (identical(other.overflowIncome, overflowIncome) ||
+                other.overflowIncome == overflowIncome));
   }
 
   @override
@@ -67,6 +73,7 @@ mixin _$AddTransactionState {
       transactionType,
       const DeepCollectionEquality().hash(categories),
       const DeepCollectionEquality().hash(subcategoriesMap),
+      const DeepCollectionEquality().hash(topSubcategories),
       expandedCategoryId,
       selectedCategory,
       selectedSubcategory,
@@ -74,11 +81,12 @@ mixin _$AddTransactionState {
       note,
       status,
       overflowDeficit,
-      const DeepCollectionEquality().hash(overflowSplits));
+      const DeepCollectionEquality().hash(overflowSplits),
+      overflowIncome);
 
   @override
   String toString() {
-    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits)';
+    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, topSubcategories: $topSubcategories, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome)';
   }
 }
 
@@ -92,6 +100,7 @@ abstract mixin class $AddTransactionStateCopyWith<$Res> {
       {TransactionType transactionType,
       List<Category> categories,
       Map<int, List<Subcategory>> subcategoriesMap,
+      List<Subcategory> topSubcategories,
       int? expandedCategoryId,
       Category? selectedCategory,
       Subcategory? selectedSubcategory,
@@ -99,7 +108,8 @@ abstract mixin class $AddTransactionStateCopyWith<$Res> {
       String note,
       AddTransactionStatus status,
       double? overflowDeficit,
-      List<OverflowSplit> overflowSplits});
+      List<OverflowSplit> overflowSplits,
+      double overflowIncome});
 
   $CategoryCopyWith<$Res>? get selectedCategory;
   $SubcategoryCopyWith<$Res>? get selectedSubcategory;
@@ -121,6 +131,7 @@ class _$AddTransactionStateCopyWithImpl<$Res>
     Object? transactionType = null,
     Object? categories = null,
     Object? subcategoriesMap = null,
+    Object? topSubcategories = null,
     Object? expandedCategoryId = freezed,
     Object? selectedCategory = freezed,
     Object? selectedSubcategory = freezed,
@@ -129,6 +140,7 @@ class _$AddTransactionStateCopyWithImpl<$Res>
     Object? status = null,
     Object? overflowDeficit = freezed,
     Object? overflowSplits = null,
+    Object? overflowIncome = null,
   }) {
     return _then(_self.copyWith(
       transactionType: null == transactionType
@@ -143,6 +155,10 @@ class _$AddTransactionStateCopyWithImpl<$Res>
           ? _self.subcategoriesMap
           : subcategoriesMap // ignore: cast_nullable_to_non_nullable
               as Map<int, List<Subcategory>>,
+      topSubcategories: null == topSubcategories
+          ? _self.topSubcategories
+          : topSubcategories // ignore: cast_nullable_to_non_nullable
+              as List<Subcategory>,
       expandedCategoryId: freezed == expandedCategoryId
           ? _self.expandedCategoryId
           : expandedCategoryId // ignore: cast_nullable_to_non_nullable
@@ -175,6 +191,10 @@ class _$AddTransactionStateCopyWithImpl<$Res>
           ? _self.overflowSplits
           : overflowSplits // ignore: cast_nullable_to_non_nullable
               as List<OverflowSplit>,
+      overflowIncome: null == overflowIncome
+          ? _self.overflowIncome
+          : overflowIncome // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 
@@ -302,6 +322,7 @@ extension AddTransactionStatePatterns on AddTransactionState {
             TransactionType transactionType,
             List<Category> categories,
             Map<int, List<Subcategory>> subcategoriesMap,
+            List<Subcategory> topSubcategories,
             int? expandedCategoryId,
             Category? selectedCategory,
             Subcategory? selectedSubcategory,
@@ -309,7 +330,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             String note,
             AddTransactionStatus status,
             double? overflowDeficit,
-            List<OverflowSplit> overflowSplits)?
+            List<OverflowSplit> overflowSplits,
+            double overflowIncome)?
         $default, {
     required TResult orElse(),
   }) {
@@ -320,6 +342,7 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.transactionType,
             _that.categories,
             _that.subcategoriesMap,
+            _that.topSubcategories,
             _that.expandedCategoryId,
             _that.selectedCategory,
             _that.selectedSubcategory,
@@ -327,7 +350,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.note,
             _that.status,
             _that.overflowDeficit,
-            _that.overflowSplits);
+            _that.overflowSplits,
+            _that.overflowIncome);
       case _:
         return orElse();
     }
@@ -352,6 +376,7 @@ extension AddTransactionStatePatterns on AddTransactionState {
             TransactionType transactionType,
             List<Category> categories,
             Map<int, List<Subcategory>> subcategoriesMap,
+            List<Subcategory> topSubcategories,
             int? expandedCategoryId,
             Category? selectedCategory,
             Subcategory? selectedSubcategory,
@@ -359,7 +384,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             String note,
             AddTransactionStatus status,
             double? overflowDeficit,
-            List<OverflowSplit> overflowSplits)
+            List<OverflowSplit> overflowSplits,
+            double overflowIncome)
         $default,
   ) {
     final _that = this;
@@ -369,6 +395,7 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.transactionType,
             _that.categories,
             _that.subcategoriesMap,
+            _that.topSubcategories,
             _that.expandedCategoryId,
             _that.selectedCategory,
             _that.selectedSubcategory,
@@ -376,7 +403,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.note,
             _that.status,
             _that.overflowDeficit,
-            _that.overflowSplits);
+            _that.overflowSplits,
+            _that.overflowIncome);
     }
   }
 
@@ -398,6 +426,7 @@ extension AddTransactionStatePatterns on AddTransactionState {
             TransactionType transactionType,
             List<Category> categories,
             Map<int, List<Subcategory>> subcategoriesMap,
+            List<Subcategory> topSubcategories,
             int? expandedCategoryId,
             Category? selectedCategory,
             Subcategory? selectedSubcategory,
@@ -405,7 +434,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             String note,
             AddTransactionStatus status,
             double? overflowDeficit,
-            List<OverflowSplit> overflowSplits)?
+            List<OverflowSplit> overflowSplits,
+            double overflowIncome)?
         $default,
   ) {
     final _that = this;
@@ -415,6 +445,7 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.transactionType,
             _that.categories,
             _that.subcategoriesMap,
+            _that.topSubcategories,
             _that.expandedCategoryId,
             _that.selectedCategory,
             _that.selectedSubcategory,
@@ -422,7 +453,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.note,
             _that.status,
             _that.overflowDeficit,
-            _that.overflowSplits);
+            _that.overflowSplits,
+            _that.overflowIncome);
       case _:
         return null;
     }
@@ -436,6 +468,7 @@ class _AddTransactionState implements AddTransactionState {
       {this.transactionType = TransactionType.expense,
       final List<Category> categories = const [],
       final Map<int, List<Subcategory>> subcategoriesMap = const {},
+      final List<Subcategory> topSubcategories = const [],
       this.expandedCategoryId,
       this.selectedCategory,
       this.selectedSubcategory,
@@ -443,9 +476,11 @@ class _AddTransactionState implements AddTransactionState {
       this.note = '',
       this.status = AddTransactionStatus.idle,
       this.overflowDeficit,
-      final List<OverflowSplit> overflowSplits = const []})
+      final List<OverflowSplit> overflowSplits = const [],
+      this.overflowIncome = 0.0})
       : _categories = categories,
         _subcategoriesMap = subcategoriesMap,
+        _topSubcategories = topSubcategories,
         _overflowSplits = overflowSplits;
 
   @override
@@ -467,6 +502,16 @@ class _AddTransactionState implements AddTransactionState {
     if (_subcategoriesMap is EqualUnmodifiableMapView) return _subcategoriesMap;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_subcategoriesMap);
+  }
+
+  final List<Subcategory> _topSubcategories;
+  @override
+  @JsonKey()
+  List<Subcategory> get topSubcategories {
+    if (_topSubcategories is EqualUnmodifiableListView)
+      return _topSubcategories;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_topSubcategories);
   }
 
   @override
@@ -495,6 +540,10 @@ class _AddTransactionState implements AddTransactionState {
     return EqualUnmodifiableListView(_overflowSplits);
   }
 
+  @override
+  @JsonKey()
+  final double overflowIncome;
+
   /// Create a copy of AddTransactionState
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -515,6 +564,8 @@ class _AddTransactionState implements AddTransactionState {
                 .equals(other._categories, _categories) &&
             const DeepCollectionEquality()
                 .equals(other._subcategoriesMap, _subcategoriesMap) &&
+            const DeepCollectionEquality()
+                .equals(other._topSubcategories, _topSubcategories) &&
             (identical(other.expandedCategoryId, expandedCategoryId) ||
                 other.expandedCategoryId == expandedCategoryId) &&
             (identical(other.selectedCategory, selectedCategory) ||
@@ -528,7 +579,9 @@ class _AddTransactionState implements AddTransactionState {
             (identical(other.overflowDeficit, overflowDeficit) ||
                 other.overflowDeficit == overflowDeficit) &&
             const DeepCollectionEquality()
-                .equals(other._overflowSplits, _overflowSplits));
+                .equals(other._overflowSplits, _overflowSplits) &&
+            (identical(other.overflowIncome, overflowIncome) ||
+                other.overflowIncome == overflowIncome));
   }
 
   @override
@@ -537,6 +590,7 @@ class _AddTransactionState implements AddTransactionState {
       transactionType,
       const DeepCollectionEquality().hash(_categories),
       const DeepCollectionEquality().hash(_subcategoriesMap),
+      const DeepCollectionEquality().hash(_topSubcategories),
       expandedCategoryId,
       selectedCategory,
       selectedSubcategory,
@@ -544,11 +598,12 @@ class _AddTransactionState implements AddTransactionState {
       note,
       status,
       overflowDeficit,
-      const DeepCollectionEquality().hash(_overflowSplits));
+      const DeepCollectionEquality().hash(_overflowSplits),
+      overflowIncome);
 
   @override
   String toString() {
-    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits)';
+    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, topSubcategories: $topSubcategories, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome)';
   }
 }
 
@@ -564,6 +619,7 @@ abstract mixin class _$AddTransactionStateCopyWith<$Res>
       {TransactionType transactionType,
       List<Category> categories,
       Map<int, List<Subcategory>> subcategoriesMap,
+      List<Subcategory> topSubcategories,
       int? expandedCategoryId,
       Category? selectedCategory,
       Subcategory? selectedSubcategory,
@@ -571,7 +627,8 @@ abstract mixin class _$AddTransactionStateCopyWith<$Res>
       String note,
       AddTransactionStatus status,
       double? overflowDeficit,
-      List<OverflowSplit> overflowSplits});
+      List<OverflowSplit> overflowSplits,
+      double overflowIncome});
 
   @override
   $CategoryCopyWith<$Res>? get selectedCategory;
@@ -595,6 +652,7 @@ class __$AddTransactionStateCopyWithImpl<$Res>
     Object? transactionType = null,
     Object? categories = null,
     Object? subcategoriesMap = null,
+    Object? topSubcategories = null,
     Object? expandedCategoryId = freezed,
     Object? selectedCategory = freezed,
     Object? selectedSubcategory = freezed,
@@ -603,6 +661,7 @@ class __$AddTransactionStateCopyWithImpl<$Res>
     Object? status = null,
     Object? overflowDeficit = freezed,
     Object? overflowSplits = null,
+    Object? overflowIncome = null,
   }) {
     return _then(_AddTransactionState(
       transactionType: null == transactionType
@@ -617,6 +676,10 @@ class __$AddTransactionStateCopyWithImpl<$Res>
           ? _self._subcategoriesMap
           : subcategoriesMap // ignore: cast_nullable_to_non_nullable
               as Map<int, List<Subcategory>>,
+      topSubcategories: null == topSubcategories
+          ? _self._topSubcategories
+          : topSubcategories // ignore: cast_nullable_to_non_nullable
+              as List<Subcategory>,
       expandedCategoryId: freezed == expandedCategoryId
           ? _self.expandedCategoryId
           : expandedCategoryId // ignore: cast_nullable_to_non_nullable
@@ -649,6 +712,10 @@ class __$AddTransactionStateCopyWithImpl<$Res>
           ? _self._overflowSplits
           : overflowSplits // ignore: cast_nullable_to_non_nullable
               as List<OverflowSplit>,
+      overflowIncome: null == overflowIncome
+          ? _self.overflowIncome
+          : overflowIncome // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 

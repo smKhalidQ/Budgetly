@@ -22,10 +22,8 @@ class HomeHeaderWidget extends StatelessWidget {
 
     return BlocBuilder<SettingCubit, SettingState>(
       buildWhen: (prev, curr) =>
-          prev.monthlySalary != curr.monthlySalary ||
           prev.selectedCurrency != curr.selectedCurrency,
       builder: (context, settingState) {
-        final salary = settingState.monthlySalary;
         final currency =
             settingState.selectedCurrency ?? currencies.keys.first;
         final symbol = currencies[currency]?['currencySymbol'] ?? '';
@@ -37,11 +35,15 @@ class HomeHeaderWidget extends StatelessWidget {
               0.0,
               (sum, c) => sum + c.spentAmount,
             );
-            final remaining = (salary - totalSpent).toDouble();
+            final totalBudget = catState.categories.fold(
+              0.0,
+              (sum, c) => sum + c.allocatedAmount,
+            );
+            final remaining = totalBudget - totalSpent;
             final isOver = remaining < 0;
-            final progress = salary == 0
+            final progress = totalBudget == 0
                 ? 0.0
-                : (totalSpent / salary).clamp(0.0, 1.0);
+                : (totalSpent / totalBudget).clamp(0.0, 1.0);
 
             return Container(
               margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
@@ -188,7 +190,8 @@ class HomeHeaderWidget extends StatelessWidget {
                               ),
                               _CardStat(
                                 label: t.totalBudget,
-                                value: '$symbol$salary',
+                                value:
+                                    '$symbol${totalBudget.toStringAsFixed(0)}',
                                 color: Colors.white,
                               ),
                               const Spacer(),

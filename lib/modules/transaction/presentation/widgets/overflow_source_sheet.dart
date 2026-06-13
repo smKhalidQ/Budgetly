@@ -33,7 +33,12 @@ class OverflowDecisionView extends StatelessWidget {
         Expanded(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: _SplitList(currencySymbol: currencySymbol),
+            child: Column(
+              children: [
+                _SplitList(currencySymbol: currencySymbol),
+                const _IncomeSourceRow(),
+              ],
+            ),
           ),
         ),
         const _ConfirmRow(),
@@ -201,34 +206,16 @@ class _SplitList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (splits, deficit) =
-        context.select<AddTransactionCubit, (List<OverflowSplit>, double)>(
-      (c) => (c.state.overflowSplits, c.state.overflowDeficit ?? 0),
+    final splits = context.select<AddTransactionCubit, List<OverflowSplit>>(
+      (c) => c.state.overflowSplits,
     );
 
-    if (splits.isEmpty) {
-      return Padding(
-        padding: EdgeInsets.symmetric(vertical: 24.h),
-        child: Center(
-          child: Text(
-            'No other categories have available budget.',
-            style: GoogleFonts.cairo(
-              fontSize: 13.sp,
-              color: AppColor.textSecondary,
-            ),
-          ),
-        ),
-      );
-    }
+    if (splits.isEmpty) return const SizedBox.shrink();
 
     return Column(
       children: [
         for (final split in splits)
-          _SplitRow(
-            split: split,
-            currencySymbol: currencySymbol,
-            remainingDeficit: deficit,
-          ),
+          _SplitRow(split: split, currencySymbol: currencySymbol),
         SizedBox(height: 8.h),
       ],
     );
@@ -240,22 +227,24 @@ class _SplitList extends StatelessWidget {
 class _SplitRow extends StatelessWidget {
   final OverflowSplit split;
   final String currencySymbol;
-  final double remainingDeficit;
 
   const _SplitRow({
     required this.split,
     required this.currencySymbol,
-    required this.remainingDeficit,
   });
 
   @override
   Widget build(BuildContext context) {
     final color = parseColorFromString(split.category.color);
     final cubit = context.read<AddTransactionCubit>();
-    final covered = context.select<AddTransactionCubit, double>(
-      (c) => c.state.overflowCovered,
+    final (covered, deficit) =
+        context.select<AddTransactionCubit, (double, double)>(
+      (c) => (c.state.overflowCovered, c.state.overflowDeficit ?? 0),
     );
-    final uncovered = (remainingDeficit - covered).clamp(0.0, split.available);
+    final remainingNeed =
+        (deficit - (covered - split.amount)).clamp(0.0, deficit);
+    final maxTake =
+        remainingNeed < split.available ? remainingNeed : split.available;
 
     return Container(
       margin: EdgeInsets.only(bottom: 8.h),
@@ -269,149 +258,223 @@ class _SplitRow extends StatelessWidget {
               : AppColor.dividerColor,
         ),
       ),
-      child: Column(
+      child: Row(
         children: [
-          Row(
-            children: [
-              Container(
-                width: 32.w,
-                height: 32.w,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  IconData(
-                    int.parse(split.category.icon),
-                    fontFamily: 'MaterialIcons',
-                  ),
-                  color: color,
-                  size: 16.sp,
-                ),
+          Container(
+            width: 32.w,
+            height: 32.w,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              IconData(
+                int.parse(split.category.icon),
+                fontFamily: 'MaterialIcons',
               ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      split.category.name,
-                      style: GoogleFonts.cairo(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppColor.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      'Available: $currencySymbol${split.available.toStringAsFixed(2)}',
-                      style: GoogleFonts.cairo(
-                        fontSize: 11.sp,
-                        color: AppColor.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Quick-fill button
-              if (split.amount == 0)
-                GestureDetector(
-                  onTap: () => cubit.updateOverflowSplit(
-                    split.category.id!,
-                    uncovered.clamp(0.0, split.available),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 10.w, vertical: 4.h),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(
-                          color: color.withValues(alpha: 0.3)),
-                    ),
-                    child: Text(
-                      'Use',
-                      style: GoogleFonts.cairo(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
-                        color: color,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
+              color: color,
+              size: 16.sp,
+            ),
           ),
-          if (split.amount > 0) ...[
-            SizedBox(height: 10.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _StepButton(
-                  icon: Icons.remove_rounded,
-                  color: color,
-                  onTap: () => cubit.updateOverflowSplit(
-                    split.category.id!,
-                    split.amount - 1,
+                Text(
+                  split.category.name,
+                  style: GoogleFonts.cairo(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColor.textPrimary,
                   ),
                 ),
                 Text(
-                  '$currencySymbol${split.amount.toStringAsFixed(2)}',
+                  'Available: $currencySymbol${split.available.toStringAsFixed(2)}',
                   style: GoogleFonts.cairo(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-                ),
-                _StepButton(
-                  icon: Icons.add_rounded,
-                  color: color,
-                  onTap: () => cubit.updateOverflowSplit(
-                    split.category.id!,
-                    split.amount + 1,
+                    fontSize: 11.sp,
+                    color: AppColor.textSecondary,
                   ),
                 ),
               ],
             ),
-            // The "price": what this draw costs the source envelope.
-            if (split.budgetFraction > 0) ...[
-              SizedBox(height: 6.h),
-              Text(
-                '≈ ${(split.budgetFraction * 100).round()}% of ${split.category.name}\'s budget',
-                style: GoogleFonts.cairo(
-                  fontSize: 11.sp,
-                  color: color.withValues(alpha: 0.9),
-                ),
-              ),
-            ],
-          ],
+          ),
+          SizedBox(width: 8.w),
+          _SourceAmountField(
+            value: split.amount,
+            max: maxTake,
+            color: color,
+            onChanged: (v) =>
+                cubit.updateOverflowSplit(split.category.id!, v),
+          ),
         ],
       ),
     );
   }
 }
 
-class _StepButton extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _StepButton({
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
+class _IncomeSourceRow extends StatelessWidget {
+  const _IncomeSourceRow();
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 32.w,
-        height: 32.w,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          shape: BoxShape.circle,
+    final cubit = context.read<AddTransactionCubit>();
+    final (income, covered, deficit) =
+        context.select<AddTransactionCubit, (double, double, double)>(
+      (c) => (
+        c.state.overflowIncome,
+        c.state.overflowCovered,
+        c.state.overflowDeficit ?? 0,
+      ),
+    );
+    final color = AppColor.incomeColor;
+    final incomeMax = (deficit - (covered - income)).clamp(0.0, deficit);
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: income > 0
+              ? color.withValues(alpha: 0.4)
+              : AppColor.dividerColor,
         ),
-        child: Icon(icon, size: 18.sp, color: color),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 32.w,
+            height: 32.w,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.add_card_rounded, color: color, size: 16.sp),
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Text(
+              'From new income',
+              style: GoogleFonts.cairo(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColor.textPrimary,
+              ),
+            ),
+          ),
+          SizedBox(width: 8.w),
+          _SourceAmountField(
+            value: income,
+            max: incomeMax,
+            color: color,
+            onChanged: cubit.updateOverflowIncome,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SourceAmountField extends StatefulWidget {
+  final double value;
+  final double max;
+  final Color color;
+  final ValueChanged<double> onChanged;
+
+  const _SourceAmountField({
+    required this.value,
+    required this.max,
+    required this.color,
+    required this.onChanged,
+  });
+
+  @override
+  State<_SourceAmountField> createState() => _SourceAmountFieldState();
+}
+
+class _SourceAmountFieldState extends State<_SourceAmountField> {
+  late final TextEditingController _controller;
+  final FocusNode _focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: _format(widget.value));
+    _focus.addListener(() {
+      if (_focus.hasFocus) {
+        _controller.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: _controller.text.length,
+        );
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _SourceAmountField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_focus.hasFocus &&
+        (double.tryParse(_controller.text) ?? 0.0) != widget.value) {
+      _controller.text = _format(widget.value);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  String _format(double v) => v <= 0
+      ? ''
+      : (v == v.roundToDouble()
+          ? v.toStringAsFixed(0)
+          : v.toStringAsFixed(2));
+
+  void _onChanged(String text) {
+    var value = double.tryParse(text) ?? 0.0;
+    if (value < 0) value = 0;
+    if (value > widget.max) {
+      value = widget.max;
+      final clamped = _format(value);
+      _controller.value = TextEditingValue(
+        text: clamped,
+        selection: TextSelection(baseOffset: 0, extentOffset: clamped.length),
+      );
+    }
+    widget.onChanged(value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 74.w,
+      child: TextField(
+        controller: _controller,
+        focusNode: _focus,
+        textAlign: TextAlign.center,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        style: GoogleFonts.cairo(
+          fontSize: 13.sp,
+          fontWeight: FontWeight.bold,
+          color: widget.color,
+        ),
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: BorderSide(color: AppColor.textSecondary.withValues(alpha: 0.4)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: BorderSide(color: widget.color, width: 1.5),
+          ),
+        ),
+        onChanged: _onChanged,
       ),
     );
   }

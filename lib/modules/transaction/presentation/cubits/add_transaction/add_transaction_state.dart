@@ -26,19 +26,13 @@ class OverflowSplit {
       );
 }
 
-extension OverflowSplitX on OverflowSplit {
-  /// The share of this category's whole monthly budget that the drawn [amount]
-  /// represents — the "price" of covering the deficit from here (0.0 → 1.0).
-  double get budgetFraction =>
-      category.allocatedAmount > 0 ? amount / category.allocatedAmount : 0.0;
-}
-
 @freezed
 sealed class AddTransactionState with _$AddTransactionState {
   const factory AddTransactionState({
     @Default(TransactionType.expense) TransactionType transactionType,
     @Default([]) List<Category> categories,
     @Default({}) Map<int, List<Subcategory>> subcategoriesMap,
+    @Default([]) List<Subcategory> topSubcategories,
     int? expandedCategoryId,
     Category? selectedCategory,
     Subcategory? selectedSubcategory,
@@ -47,6 +41,7 @@ sealed class AddTransactionState with _$AddTransactionState {
     @Default(AddTransactionStatus.idle) AddTransactionStatus status,
     double? overflowDeficit,
     @Default([]) List<OverflowSplit> overflowSplits,
+    @Default(0.0) double overflowIncome,
   }) = _AddTransactionState;
 }
 
@@ -56,7 +51,7 @@ extension AddTransactionStateX on AddTransactionState {
   bool get canSubmit => parsedAmount > 0 && selectedCategory != null && !isLoading;
   bool get isOverflow => overflowDeficit != null;
   double get overflowCovered =>
-      overflowSplits.fold(0.0, (sum, s) => sum + s.amount);
+      overflowSplits.fold(0.0, (sum, s) => sum + s.amount) + overflowIncome;
   bool get overflowFullyCovered =>
       isOverflow && (overflowCovered - overflowDeficit!).abs() < 0.01;
 }

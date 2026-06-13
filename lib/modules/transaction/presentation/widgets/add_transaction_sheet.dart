@@ -266,16 +266,19 @@ class _CategoriesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (categories, expandedId) =
-        context.select<AddTransactionCubit, (List<Category>, int?)>(
-      (c) => (c.state.categories, c.state.expandedCategoryId),
+    final (categories, expandedId, type) = context
+        .select<AddTransactionCubit, (List<Category>, int?, TransactionType)>(
+      (c) => (
+        c.state.categories,
+        c.state.expandedCategoryId,
+        c.state.transactionType,
+      ),
     );
 
-    // While a category is expanded, only that category (with its subcategories)
-    // is shown — the rest of the list collapses away to focus the entry.
-    final displayed = expandedId == null
-        ? categories
-        : categories.where((c) => c.id == expandedId).toList();
+    final isExpense = type == TransactionType.expense;
+    final displayed = (isExpense && expandedId != null)
+        ? categories.where((c) => c.id == expandedId).toList()
+        : categories;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,6 +294,10 @@ class _CategoriesSection extends StatelessWidget {
             ),
           ),
         ),
+        if (isExpense && expandedId == null) ...[
+          const _FrequentSubcategories(),
+          SizedBox(height: 8.h),
+        ],
         Expanded(
           child: ListView.builder(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -299,6 +306,56 @@ class _CategoriesSection extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _FrequentSubcategories extends StatelessWidget {
+  const _FrequentSubcategories();
+
+  @override
+  Widget build(BuildContext context) {
+    final subs = context.select<AddTransactionCubit, List<Subcategory>>(
+      (c) => c.state.topSubcategories,
+    );
+    if (subs.isEmpty) return const SizedBox.shrink();
+    final cubit = context.read<AddTransactionCubit>();
+
+    return SizedBox(
+      height: 34.h,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        itemCount: subs.length,
+        separatorBuilder: (_, __) => SizedBox(width: 8.w),
+        itemBuilder: (_, i) {
+          final sub = subs[i];
+          final color = parseColorFromString(sub.color);
+          return GestureDetector(
+            onTap: () => cubit.selectFromTop(sub),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: color.withValues(alpha: 0.3)),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                sub.name,
+                textAlign: TextAlign.center,
+                strutStyle: StrutStyle(fontSize: 12.sp, height: 1.0, forceStrutHeight: true),
+                style: GoogleFonts.cairo(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                  height: 1.0,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -312,10 +369,17 @@ class _CategoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.select<AddTransactionCubit, (int?, Category?, Subcategory?)>(
-      (c) => (c.state.expandedCategoryId, c.state.selectedCategory, c.state.selectedSubcategory),
+    final state = context.select<AddTransactionCubit,
+        (int?, Category?, Subcategory?, TransactionType)>(
+      (c) => (
+        c.state.expandedCategoryId,
+        c.state.selectedCategory,
+        c.state.selectedSubcategory,
+        c.state.transactionType,
+      ),
     );
-    final (expandedId, selectedCat, selectedSub) = state;
+    final (expandedId, selectedCat, selectedSub, transactionType) = state;
+    final isExpense = transactionType == TransactionType.expense;
 
     final isExpanded = expandedId == category.id;
     final isSelected = selectedCat?.id == category.id;
@@ -386,24 +450,25 @@ class _CategoryTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => isExpanded
-                      ? cubit.collapse()
-                      : cubit.selectCategory(category),
-                  behavior: HitTestBehavior.opaque,
-                  child: Padding(
-                    padding: EdgeInsets.all(4.r),
-                    child: AnimatedRotation(
-                      turns: isExpanded ? 0.5 : 0,
-                      duration: const Duration(milliseconds: 200),
-                      child: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: AppColor.textSecondary,
-                        size: 20.sp,
+                if (isExpense)
+                  GestureDetector(
+                    onTap: () => isExpanded
+                        ? cubit.collapse()
+                        : cubit.selectCategory(category),
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: EdgeInsets.all(4.r),
+                      child: AnimatedRotation(
+                        turns: isExpanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 200),
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: AppColor.textSecondary,
+                          size: 20.sp,
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -412,7 +477,7 @@ class _CategoryTile extends StatelessWidget {
           child: AnimatedSize(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
-            child: isExpanded
+            child: isExpanded && isExpense
                 ? _SubcategoryList(
                     category: category,
                     selectedSubcategory: selectedSub,

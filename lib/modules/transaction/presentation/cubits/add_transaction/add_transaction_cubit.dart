@@ -37,7 +37,48 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
       }
     }
 
-    emit(state.copyWith(categories: categories, subcategoriesMap: map));
+    emit(state.copyWith(
+      categories: categories,
+      subcategoriesMap: map,
+      topSubcategories: await _mostUsedSubcategories(subcategories),
+    ));
+  }
+
+  Future<List<Subcategory>> _mostUsedSubcategories(
+    List<Subcategory> subcategories,
+  ) async {
+    final transactions = await _transactionRepository.getAll();
+    final usage = <int, int>{};
+    for (final t in transactions) {
+      if (t.type == TransactionType.expense && t.subcategoryId != null) {
+        usage[t.subcategoryId!] = (usage[t.subcategoryId!] ?? 0) + 1;
+      }
+    }
+
+    final subById = {
+      for (final s in subcategories)
+        if (s.id != null) s.id!: s,
+    };
+
+    final ranked = usage.entries
+        .where((e) => subById.containsKey(e.key))
+        .toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return ranked.take(10).map((e) => subById[e.key]!).toList();
+  }
+
+  void selectFromTop(Subcategory subcategory) {
+    final parentId = subcategory.parentCategoryId;
+    if (parentId == null) return;
+    final index = state.categories.indexWhere((c) => c.id == parentId);
+    if (index == -1) return;
+    emit(state.copyWith(
+      selectedCategory: state.categories[index],
+      selectedSubcategory: subcategory,
+      expandedCategoryId: parentId,
+      amountInput: '',
+    ));
   }
 
   /// Seeds default subcategories for any default category that has none yet.
@@ -113,6 +154,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   void clearOverflow() => emit(state.copyWith(
         overflowDeficit: null,
         overflowSplits: [],
+        overflowIncome: 0.0,
       ));
 
   void updateOverflowSplit(int categoryId, double amount) {
@@ -120,6 +162,15 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
       return s.category.id == categoryId ? s.withAmount(amount) : s;
     }).toList();
     emit(state.copyWith(overflowSplits: updated));
+  }
+
+  void updateOverflowIncome(double amount) {
+    final deficit = state.overflowDeficit;
+    if (deficit == null) return;
+    final fromSplits =
+        state.overflowSplits.fold(0.0, (sum, s) => sum + s.amount);
+    final maxIncome = (deficit - fromSplits).clamp(0.0, deficit);
+    emit(state.copyWith(overflowIncome: amount.clamp(0.0, maxIncome)));
   }
 
   Future<void> submit() async {
@@ -158,6 +209,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
       state.selectedCategory!,
       state.parsedAmount,
       state.overflowSplits.where((s) => s.amount > 0).toList(),
+      incomeContribution: state.overflowIncome,
     );
   }
 
@@ -191,8 +243,9 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   Future<void> _persistTransaction(
     Category primary,
     double amount,
-    List<OverflowSplit> splits,
-  ) async {
+    List<OverflowSplit> splits, {
+    double incomeContribution = 0.0,
+  }) async {
     emit(state.copyWith(status: AddTransactionStatus.loading));
     try {
       await _transactionRepository.add(Transaction(
@@ -204,19 +257,32 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         note: state.note.isEmpty ? null : state.note,
       ));
 
-      final usedFromPrimary =
-          amount.clamp(0.0, primary.allocatedAmount - primary.spentAmount);
-      await _categoryRepository.updateSpentAmount(
-        primary.id!,
-        primary.spentAmount + usedFromPrimary,
-      );
+      final transferred =
+          splits.fold(0.0, (sum, split) => sum + split.amount);
+      final primaryIncrease = transferred + incomeContribution;
 
-      for (final split in splits) {
-        await _categoryRepository.updateSpentAmount(
-          split.category.id!,
-          split.category.spentAmount + split.amount,
+      if (primaryIncrease > 0) {
+        for (final split in splits) {
+          if (split.amount <= 0) continue;
+          await _categoryRepository.update(
+            split.category.id!,
+            split.category.copyWith(
+              allocatedAmount: split.category.allocatedAmount - split.amount,
+            ),
+          );
+        }
+        await _categoryRepository.update(
+          primary.id!,
+          primary.copyWith(
+            allocatedAmount: primary.allocatedAmount + primaryIncrease,
+          ),
         );
       }
+
+      await _categoryRepository.updateSpentAmount(
+        primary.id!,
+        primary.spentAmount + amount,
+      );
 
       emit(state.copyWith(status: AddTransactionStatus.success));
     } catch (_) {
