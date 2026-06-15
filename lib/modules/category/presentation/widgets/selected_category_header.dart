@@ -59,12 +59,18 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
             child: showPieChart
                 ? BlocBuilder<SubcategoryCubit, SubcategoryState>(
                     buildWhen: (prev, curr) =>
-                        prev.subcategories != curr.subcategories,
+                        prev.subcategories != curr.subcategories ||
+                        prev.spentBySubcategory != curr.spentBySubcategory ||
+                        prev.generalSpent != curr.generalSpent,
                     builder: (context, state) {
                       final subs = state.subcategories
                           .where((s) => s.parentCategoryId == category.id)
                           .toList();
-                      return _buildPieChart(subs);
+                      return _buildPieChart(
+                        subs,
+                        state.spentBySubcategory,
+                        state.generalSpent,
+                      );
                     },
                   )
                 : const SizedBox.shrink(),
@@ -74,15 +80,28 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPieChart(List<Subcategory> subs) {
-    final spentSubs = subs
-        .map((s) => (
-              sub: s,
-              amount: double.tryParse(s.spentAmount ?? '0') ?? 0.0,
-              color: parseColorFromString(s.color),
-            ))
-        .where((e) => e.amount > 0)
-        .toList();
+  Widget _buildPieChart(
+    List<Subcategory> subs,
+    Map<int, double> spentBySub,
+    double generalSpent,
+  ) {
+    const palette = [
+      Color(0xFF4F959D),
+      Color(0xFFEF6C6C),
+      Color(0xFFF2A65A),
+      Color(0xFF6C8EEF),
+      Color(0xFF9B6CEF),
+      Color(0xFF5BBF8A),
+      Color(0xFFE5C454),
+      Color(0xFFEF6CB0),
+    ];
+
+    final entries = <({String name, double amount})>[
+      for (final s in subs)
+        if ((spentBySub[s.id] ?? 0) > 0)
+          (name: s.name, amount: spentBySub[s.id]!),
+      if (generalSpent > 0) (name: 'General', amount: generalSpent),
+    ];
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
@@ -90,45 +109,35 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
         children: [
           Divider(color: AppColor.dividerColor, height: 1),
           SizedBox(height: 16.h),
-          if (spentSubs.isEmpty)
+          if (entries.isEmpty)
             _buildEmptyChart()
           else
-            Row(
-              children: [
-                SizedBox(
-                  width: 140.w,
-                  height: 140.w,
-                  child: PieChart(
-                    PieChartData(
-                      sectionsSpace: 2,
-                      centerSpaceRadius: 28.r,
-                      sections: spentSubs
-                          .map(
-                            (e) => PieChartSectionData(
-                              value: e.amount,
-                              color: e.color,
-                              radius: 42.r,
-                              title: '',
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
+            SizedBox(
+              width: 190.w,
+              height: 190.w,
+              child: PieChart(
+                PieChartData(
+                  sectionsSpace: 2,
+                  centerSpaceRadius: 30.r,
+                  sections: [
+                    for (var i = 0; i < entries.length; i++)
+                      PieChartSectionData(
+                        value: entries[i].amount,
+                        color: palette[i % palette.length],
+                        radius: 58.r,
+                        titlePositionPercentageOffset: 0.55,
+                        title:
+                            '${entries[i].name}\n${entries[i].amount.toStringAsFixed(0)}',
+                        titleStyle: GoogleFonts.cairo(
+                          fontSize: 8.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          height: 1.2,
+                        ),
+                      ),
+                  ],
                 ),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: spentSubs
-                        .map((e) => _buildLegendItem(
-                              e.sub.name,
-                              e.amount,
-                              e.color,
-                            ))
-                        .toList(),
-                  ),
-                ),
-              ],
+              ),
             ),
         ],
       ),
@@ -165,37 +174,6 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildLegendItem(String name, double amount, Color color) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
-      child: Row(
-        children: [
-          Container(
-            width: 10.w,
-            height: 10.w,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: Text(
-              name,
-              style: GoogleFonts.cairo(fontSize: 12.sp),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Text(
-            amount.toStringAsFixed(0),
-            style: AppTextStyle.number(
-              size: 12.sp,
-              weight: FontWeight.w600,
-              color: color,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

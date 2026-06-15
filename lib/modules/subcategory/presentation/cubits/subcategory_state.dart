@@ -15,6 +15,8 @@ sealed class SubcategoryState with _$SubcategoryState {
     @Default('Color(0xff2196f3)') String selectedColor,
     @Default(false) bool isEditMode,
     @Default(false) bool showPieChart,
+    @Default({}) Map<int, double> spentBySubcategory,
+    @Default(0.0) double generalSpent,
   }) = _SubcategoryState;
 }
 

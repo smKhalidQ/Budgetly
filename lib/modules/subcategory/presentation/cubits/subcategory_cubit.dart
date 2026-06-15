@@ -4,13 +4,17 @@ import 'package:budget_buddy/modules/subcategory/domain/default_subcategories.da
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
 import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
+import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
+import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
   final SubcategoryRepository _repository;
+  final TransactionRepository _transactionRepository;
 
-  SubcategoryCubit(this._repository) : super(const SubcategoryState());
+  SubcategoryCubit(this._repository, this._transactionRepository)
+      : super(const SubcategoryState());
 
   static SubcategoryCubit get(context) => BlocProvider.of(context);
 
@@ -95,6 +99,7 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
   Future<void> fetchAndEnsureDefault(Category category) async {
     emit(state.copyWith(status: SubcategoryStatus.loading));
     try {
+      final (bySub, general) = await _spendingFor(category.id!);
       final all = await _repository.getAll();
       final existing =
           all.where((s) => s.parentCategoryId == category.id).toList();
@@ -104,7 +109,11 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
 
       if (existing.isNotEmpty && !isPlaceholder) {
         emit(state.copyWith(
-            status: SubcategoryStatus.success, subcategories: all));
+          status: SubcategoryStatus.success,
+          subcategories: all,
+          spentBySubcategory: bySub,
+          generalSpent: general,
+        ));
         return;
       }
 
@@ -116,12 +125,35 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
 
       final updated = await _repository.getAll();
       emit(state.copyWith(
-          status: SubcategoryStatus.success, subcategories: updated));
+        status: SubcategoryStatus.success,
+        subcategories: updated,
+        spentBySubcategory: bySub,
+        generalSpent: general,
+      ));
     } catch (_) {
       emit(state.copyWith(
           status: SubcategoryStatus.error,
           errorMessage: 'Failed to load subcategories.'));
     }
+  }
+
+  /// Per-subcategory and "general" (no subcategory) spending for [categoryId],
+  /// derived from the actual expense transactions — the single source of truth.
+  Future<(Map<int, double>, double)> _spendingFor(int categoryId) async {
+    final transactions = await _transactionRepository.getAll();
+    final bySub = <int, double>{};
+    var general = 0.0;
+    for (final t in transactions) {
+      if (t.type != TransactionType.expense || t.categoryId != categoryId) {
+        continue;
+      }
+      if (t.subcategoryId != null) {
+        bySub[t.subcategoryId!] = (bySub[t.subcategoryId!] ?? 0) + t.amount;
+      } else {
+        general += t.amount;
+      }
+    }
+    return (bySub, general);
   }
 
   Future<void> resetToDefaults(Category category) async {

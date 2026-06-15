@@ -29,7 +29,7 @@ void initializeDependencies() {
   GetIt.I.registerLazySingleton(() => UserInfoRepository(GetIt.I()));
 
   GetIt.I.registerFactory(() => CategoryCubit(GetIt.I()));
-  GetIt.I.registerFactory(() => SubcategoryCubit(GetIt.I()));
+  GetIt.I.registerFactory(() => SubcategoryCubit(GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(() => TransactionCubit(GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(() => AddTransactionCubit(GetIt.I(), GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(() => SettingCubit(GetIt.I()));

@@ -21,6 +21,8 @@ mixin _$SubcategoryState {
   String get selectedColor;
   bool get isEditMode;
   bool get showPieChart;
+  Map<int, double> get spentBySubcategory;
+  double get generalSpent;
 
   /// Create a copy of SubcategoryState
   /// with the given fields replaced by the non-null parameter values.
@@ -47,7 +49,11 @@ mixin _$SubcategoryState {
             (identical(other.isEditMode, isEditMode) ||
                 other.isEditMode == isEditMode) &&
             (identical(other.showPieChart, showPieChart) ||
-                other.showPieChart == showPieChart));
+                other.showPieChart == showPieChart) &&
+            const DeepCollectionEquality()
+                .equals(other.spentBySubcategory, spentBySubcategory) &&
+            (identical(other.generalSpent, generalSpent) ||
+                other.generalSpent == generalSpent));
   }
 
   @override
@@ -59,11 +65,13 @@ mixin _$SubcategoryState {
       selectedIcon,
       selectedColor,
       isEditMode,
-      showPieChart);
+      showPieChart,
+      const DeepCollectionEquality().hash(spentBySubcategory),
+      generalSpent);
 
   @override
   String toString() {
-    return 'SubcategoryState(status: $status, subcategories: $subcategories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart)';
+    return 'SubcategoryState(status: $status, subcategories: $subcategories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart, spentBySubcategory: $spentBySubcategory, generalSpent: $generalSpent)';
   }
 }
 
@@ -80,7 +88,9 @@ abstract mixin class $SubcategoryStateCopyWith<$Res> {
       String selectedIcon,
       String selectedColor,
       bool isEditMode,
-      bool showPieChart});
+      bool showPieChart,
+      Map<int, double> spentBySubcategory,
+      double generalSpent});
 }
 
 /// @nodoc
@@ -103,6 +113,8 @@ class _$SubcategoryStateCopyWithImpl<$Res>
     Object? selectedColor = null,
     Object? isEditMode = null,
     Object? showPieChart = null,
+    Object? spentBySubcategory = null,
+    Object? generalSpent = null,
   }) {
     return _then(_self.copyWith(
       status: null == status
@@ -133,6 +145,14 @@ class _$SubcategoryStateCopyWithImpl<$Res>
           ? _self.showPieChart
           : showPieChart // ignore: cast_nullable_to_non_nullable
               as bool,
+      spentBySubcategory: null == spentBySubcategory
+          ? _self.spentBySubcategory
+          : spentBySubcategory // ignore: cast_nullable_to_non_nullable
+              as Map<int, double>,
+      generalSpent: null == generalSpent
+          ? _self.generalSpent
+          : generalSpent // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -235,7 +255,9 @@ extension SubcategoryStatePatterns on SubcategoryState {
             String selectedIcon,
             String selectedColor,
             bool isEditMode,
-            bool showPieChart)?
+            bool showPieChart,
+            Map<int, double> spentBySubcategory,
+            double generalSpent)?
         $default, {
     required TResult orElse(),
   }) {
@@ -249,7 +271,9 @@ extension SubcategoryStatePatterns on SubcategoryState {
             _that.selectedIcon,
             _that.selectedColor,
             _that.isEditMode,
-            _that.showPieChart);
+            _that.showPieChart,
+            _that.spentBySubcategory,
+            _that.generalSpent);
       case _:
         return orElse();
     }
@@ -277,7 +301,9 @@ extension SubcategoryStatePatterns on SubcategoryState {
             String selectedIcon,
             String selectedColor,
             bool isEditMode,
-            bool showPieChart)
+            bool showPieChart,
+            Map<int, double> spentBySubcategory,
+            double generalSpent)
         $default,
   ) {
     final _that = this;
@@ -290,7 +316,9 @@ extension SubcategoryStatePatterns on SubcategoryState {
             _that.selectedIcon,
             _that.selectedColor,
             _that.isEditMode,
-            _that.showPieChart);
+            _that.showPieChart,
+            _that.spentBySubcategory,
+            _that.generalSpent);
     }
   }
 
@@ -315,7 +343,9 @@ extension SubcategoryStatePatterns on SubcategoryState {
             String selectedIcon,
             String selectedColor,
             bool isEditMode,
-            bool showPieChart)?
+            bool showPieChart,
+            Map<int, double> spentBySubcategory,
+            double generalSpent)?
         $default,
   ) {
     final _that = this;
@@ -328,7 +358,9 @@ extension SubcategoryStatePatterns on SubcategoryState {
             _that.selectedIcon,
             _that.selectedColor,
             _that.isEditMode,
-            _that.showPieChart);
+            _that.showPieChart,
+            _that.spentBySubcategory,
+            _that.generalSpent);
       case _:
         return null;
     }
@@ -345,8 +377,11 @@ class _SubcategoryState implements SubcategoryState {
       this.selectedIcon = '',
       this.selectedColor = 'Color(0xff2196f3)',
       this.isEditMode = false,
-      this.showPieChart = false})
-      : _subcategories = subcategories;
+      this.showPieChart = false,
+      final Map<int, double> spentBySubcategory = const {},
+      this.generalSpent = 0.0})
+      : _subcategories = subcategories,
+        _spentBySubcategory = spentBySubcategory;
 
   @override
   @JsonKey()
@@ -374,6 +409,19 @@ class _SubcategoryState implements SubcategoryState {
   @override
   @JsonKey()
   final bool showPieChart;
+  final Map<int, double> _spentBySubcategory;
+  @override
+  @JsonKey()
+  Map<int, double> get spentBySubcategory {
+    if (_spentBySubcategory is EqualUnmodifiableMapView)
+      return _spentBySubcategory;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_spentBySubcategory);
+  }
+
+  @override
+  @JsonKey()
+  final double generalSpent;
 
   /// Create a copy of SubcategoryState
   /// with the given fields replaced by the non-null parameter values.
@@ -400,7 +448,11 @@ class _SubcategoryState implements SubcategoryState {
             (identical(other.isEditMode, isEditMode) ||
                 other.isEditMode == isEditMode) &&
             (identical(other.showPieChart, showPieChart) ||
-                other.showPieChart == showPieChart));
+                other.showPieChart == showPieChart) &&
+            const DeepCollectionEquality()
+                .equals(other._spentBySubcategory, _spentBySubcategory) &&
+            (identical(other.generalSpent, generalSpent) ||
+                other.generalSpent == generalSpent));
   }
 
   @override
@@ -412,11 +464,13 @@ class _SubcategoryState implements SubcategoryState {
       selectedIcon,
       selectedColor,
       isEditMode,
-      showPieChart);
+      showPieChart,
+      const DeepCollectionEquality().hash(_spentBySubcategory),
+      generalSpent);
 
   @override
   String toString() {
-    return 'SubcategoryState(status: $status, subcategories: $subcategories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart)';
+    return 'SubcategoryState(status: $status, subcategories: $subcategories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart, spentBySubcategory: $spentBySubcategory, generalSpent: $generalSpent)';
   }
 }
 
@@ -435,7 +489,9 @@ abstract mixin class _$SubcategoryStateCopyWith<$Res>
       String selectedIcon,
       String selectedColor,
       bool isEditMode,
-      bool showPieChart});
+      bool showPieChart,
+      Map<int, double> spentBySubcategory,
+      double generalSpent});
 }
 
 /// @nodoc
@@ -458,6 +514,8 @@ class __$SubcategoryStateCopyWithImpl<$Res>
     Object? selectedColor = null,
     Object? isEditMode = null,
     Object? showPieChart = null,
+    Object? spentBySubcategory = null,
+    Object? generalSpent = null,
   }) {
     return _then(_SubcategoryState(
       status: null == status
@@ -488,6 +546,14 @@ class __$SubcategoryStateCopyWithImpl<$Res>
           ? _self.showPieChart
           : showPieChart // ignore: cast_nullable_to_non_nullable
               as bool,
+      spentBySubcategory: null == spentBySubcategory
+          ? _self._spentBySubcategory
+          : spentBySubcategory // ignore: cast_nullable_to_non_nullable
+              as Map<int, double>,
+      generalSpent: null == generalSpent
+          ? _self.generalSpent
+          : generalSpent // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
