@@ -1,5 +1,6 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_cubit.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_state.dart';
@@ -150,7 +151,7 @@ class _DeficitMeter extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColor.cardBackground,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: isFull
@@ -172,9 +173,9 @@ class _DeficitMeter extends StatelessWidget {
                 ),
                 Text(
                   '$currencySymbol${covered.toStringAsFixed(2)} / $currencySymbol${deficit.toStringAsFixed(2)}',
-                  style: GoogleFonts.cairo(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
+                  style: AppTextStyle.number(
+                    size: 13.sp,
+                    weight: FontWeight.w600,
                     color: meterColor,
                   ),
                 ),
@@ -186,7 +187,7 @@ class _DeficitMeter extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 6.h,
-                backgroundColor: Colors.grey.withValues(alpha: 0.12),
+                backgroundColor: AppColor.surfaceMuted,
                 valueColor: AlwaysStoppedAnimation<Color>(meterColor),
               ),
             ),
@@ -250,7 +251,7 @@ class _SplitRow extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 8.h),
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColor.cardBackground,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: split.amount > 0
@@ -291,8 +292,9 @@ class _SplitRow extends StatelessWidget {
                 ),
                 Text(
                   'Available: $currencySymbol${split.available.toStringAsFixed(2)}',
-                  style: GoogleFonts.cairo(
-                    fontSize: 11.sp,
+                  style: AppTextStyle.number(
+                    size: 11.sp,
+                    weight: FontWeight.w400,
                     color: AppColor.textSecondary,
                   ),
                 ),
@@ -334,7 +336,7 @@ class _IncomeSourceRow extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 8.h),
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColor.cardBackground,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: income > 0
@@ -457,9 +459,9 @@ class _SourceAmountFieldState extends State<_SourceAmountField> {
         focusNode: _focus,
         textAlign: TextAlign.center,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        style: GoogleFonts.cairo(
-          fontSize: 13.sp,
-          fontWeight: FontWeight.bold,
+        style: AppTextStyle.number(
+          size: 13.sp,
+          weight: FontWeight.bold,
           color: widget.color,
         ),
         decoration: InputDecoration(
@@ -467,7 +469,7 @@ class _SourceAmountFieldState extends State<_SourceAmountField> {
           contentPadding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: AppColor.textSecondary.withValues(alpha: 0.4)),
+            borderSide: const BorderSide(color: AppColor.borderColor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.r),

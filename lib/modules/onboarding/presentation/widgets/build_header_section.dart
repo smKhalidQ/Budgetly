@@ -3,12 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_radius.dart';
+import 'package:budget_buddy/core/theming/app_text_style.dart';
+import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
 
+/// Summary for the budget-slicing screen: salary, how much is still
+/// unallocated, a progress bar, and a one-line hint telling the user the
+/// screen's purpose — split the salary across the categories below.
 class BuildHeaderSection extends StatelessWidget {
   const BuildHeaderSection({
     super.key,
@@ -31,61 +36,54 @@ class BuildHeaderSection extends StatelessWidget {
         final allocated = monthlySalary - remaining;
         final progress = (allocated / monthlySalary).clamp(0.0, 1.0);
         final isOver = remaining < 0;
+        final isDone = remaining == 0 && monthlySalary > 0;
         final remainingColor =
-            isOver ? AppColor.expenseColor : const Color(0xFF2E7D32);
-        final remainingBg =
-            isOver ? const Color(0xFFFFEBEE) : const Color(0xFFE8F5E9);
+            isOver ? AppColor.expenseColor : AppColor.incomeColor;
 
-        return Container(
-          margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
-          padding: EdgeInsets.all(20.r),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20.r),
-            boxShadow: [
-              BoxShadow(
-                color: AppColor.primaryColor.withValues(alpha: 0.08),
-                blurRadius: 24,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
+        return Padding(
+          padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 14.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                t.distributeYourBudget,
-                style: GoogleFonts.cairo(
-                  fontSize: 12.sp,
-                  color: AppColor.textSecondary,
-                ),
-              ),
-              SizedBox(height: 6.h),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    '$symbol$monthlySalary',
-                    style: GoogleFonts.poppins(
-                      fontSize: 26.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColor.primaryColor,
-                      height: 1,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          t.monthlySalary,
+                          style: GoogleFonts.cairo(
+                            fontSize: 12.sp,
+                            color: AppColor.textSecondary,
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          '$symbol$monthlySalary',
+                          style: AppTextStyle.number(
+                            size: 28.sp,
+                            weight: FontWeight.bold,
+                            color: AppColor.primaryColor,
+                            height: 1,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 12.w, vertical: 6.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                     decoration: BoxDecoration(
-                      color: remainingBg,
+                      color: remainingColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text(
                       '$symbol$remaining ${t.remaining}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
+                      style: AppTextStyle.number(
+                        size: 12.sp,
+                        weight: FontWeight.w600,
                         color: remainingColor,
                       ),
                     ),
@@ -98,27 +96,74 @@ class BuildHeaderSection extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: progress,
                   minHeight: 6.h,
-                  backgroundColor: AppColor.dividerColor,
+                  backgroundColor: AppColor.surfaceMuted,
                   valueColor: AlwaysStoppedAnimation<Color>(
                     isOver ? AppColor.expenseColor : AppColor.accentColor,
                   ),
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 6.h),
               Align(
                 alignment: AlignmentDirectional.centerEnd,
                 child: Text(
                   '${(progress * 100).toStringAsFixed(0)}% ${t.allocated}',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.cairo(
                     fontSize: 11.sp,
                     color: AppColor.textSecondary,
                   ),
                 ),
               ),
+              SizedBox(height: 12.h),
+              _Hint(
+                done: isDone,
+                text: isDone
+                    ? 'Every $symbol has a job — you\'re ready to go.'
+                    : 'Split your $symbol$monthlySalary across the categories below.',
+              ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class _Hint extends StatelessWidget {
+  final bool done;
+  final String text;
+
+  const _Hint({required this.done, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = done ? AppColor.incomeColor : AppColor.primaryColor;
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppRadius.md.r),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            done ? Icons.check_circle_rounded : Icons.lightbulb_outline_rounded,
+            size: 16.sp,
+            color: color,
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Text(
+              text,
+              style: GoogleFonts.cairo(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w500,
+                color: color,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

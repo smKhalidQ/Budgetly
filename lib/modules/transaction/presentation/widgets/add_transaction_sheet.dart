@@ -1,5 +1,6 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
@@ -169,7 +170,7 @@ class _Handle extends StatelessWidget {
         width: 36.w,
         height: 4.h,
         decoration: BoxDecoration(
-          color: Colors.grey.withValues(alpha: 0.3),
+          color: AppColor.borderColor,
           borderRadius: BorderRadius.circular(2.r),
         ),
       ),
@@ -194,7 +195,7 @@ class _TypeToggle extends StatelessWidget {
       child: Container(
         height: 44.h,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColor.cardBackground,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(color: AppColor.dividerColor),
         ),
@@ -405,7 +406,7 @@ class _CategoryTile extends StatelessWidget {
             decoration: BoxDecoration(
               color: isSelected
                   ? color.withValues(alpha: 0.08)
-                  : Colors.white,
+                  : AppColor.cardBackground,
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
                 color: isSelected ? color.withValues(alpha: 0.4) : Colors.transparent,
@@ -563,7 +564,7 @@ class _SubcategoryTile extends StatelessWidget {
               width: 2.w,
               height: 16.h,
               decoration: BoxDecoration(
-                color: isSelected ? color : Colors.grey.withValues(alpha: 0.3),
+                color: isSelected ? color : AppColor.borderColor,
                 borderRadius: BorderRadius.circular(1.r),
               ),
             ),
@@ -615,7 +616,7 @@ class _NoteRow extends StatelessWidget {
             color: AppColor.textSecondary,
           ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: AppColor.cardBackground,
           contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.r),
@@ -644,11 +645,11 @@ class _BottomSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColor.cardBackground,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColor.backgroundCardShadow,
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -719,9 +720,9 @@ class _AmountDisplay extends StatelessWidget {
                     SizedBox(width: 2.w),
                     Text(
                       displayAmount,
-                      style: GoogleFonts.cairo(
-                        fontSize: 36.sp,
-                        fontWeight: FontWeight.bold,
+                      style: AppTextStyle.number(
+                        size: 36.sp,
+                        weight: FontWeight.bold,
                         color: AppColor.textPrimary,
                       ),
                     ),
@@ -844,7 +845,7 @@ class _NumKey extends StatelessWidget {
           child: Container(
             height: 52.h,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColor.cardBackground,
               borderRadius: BorderRadius.circular(10.r),
               border: Border.all(color: AppColor.dividerColor),
             ),
@@ -853,9 +854,9 @@ class _NumKey extends StatelessWidget {
                 ? Icon(icon, size: 20.sp, color: AppColor.textPrimary)
                 : Text(
                     label,
-                    style: GoogleFonts.cairo(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w500,
+                    style: AppTextStyle.number(
+                      size: 20.sp,
+                      weight: FontWeight.w500,
                       color: AppColor.textPrimary,
                     ),
                   ),

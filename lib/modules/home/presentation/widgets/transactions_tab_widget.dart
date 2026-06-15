@@ -1,5 +1,7 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_radius.dart';
+import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
@@ -162,8 +164,8 @@ class _TransactionRow extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14.r),
+        color: AppColor.cardBackground,
+        borderRadius: BorderRadius.circular(AppRadius.md.r),
       ),
       child: Row(
         children: [
@@ -213,9 +215,9 @@ class _TransactionRow extends StatelessWidget {
           SizedBox(width: 8.w),
           Text(
             '$sign$currencySymbol${transaction.amount.toStringAsFixed(2)}',
-            style: GoogleFonts.cairo(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
+            style: AppTextStyle.number(
+              size: 14.sp,
+              weight: FontWeight.bold,
               color: amountColor,
             ),
           ),

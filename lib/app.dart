@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'core/responsive/adaptive_layout.dart';
 import 'core/responsive/responsive_manager.dart';
 import 'core/router/app_router.dart';
+import 'core/theming/app_theme.dart';
 import 'l10n/app_localizations.dart';
 import 'modules/category/presentation/cubits/category_cubit.dart';
 import 'modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -46,10 +47,7 @@ class App extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-          useMaterial3: true,
-        ),
+        theme: appTheme,
         home: AppRouter.initialScreen(),
       ),
     );

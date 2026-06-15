@@ -1,5 +1,6 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
@@ -52,11 +53,14 @@ class HomeHeaderWidget extends StatelessWidget {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF2A3F52), Color(0xFF1A2C3D)],
+                  colors: [
+                    AppColor.headerGradientStart,
+                    AppColor.headerGradientEnd,
+                  ],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0xFF2A3F52).withValues(alpha: 0.45),
+                    color: AppColor.headerGradientStart.withValues(alpha: 0.45),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
@@ -127,7 +131,7 @@ class HomeHeaderWidget extends StatelessWidget {
                                 ),
                                 child: Text(
                                   monthYear,
-                                  style: GoogleFonts.poppins(
+                                  style: GoogleFonts.cairo(
                                     color: Colors.white.withValues(alpha: 0.7),
                                     fontSize: 10.sp,
                                     fontWeight: FontWeight.w500,
@@ -139,10 +143,10 @@ class HomeHeaderWidget extends StatelessWidget {
                           SizedBox(height: 8.h),
                           Text(
                             '$symbol${remaining.abs().toStringAsFixed(0)}',
-                            style: GoogleFonts.poppins(
+                            style: AppTextStyle.number(
+                              size: 28.sp,
+                              weight: FontWeight.bold,
                               color: Colors.white,
-                              fontSize: 28.sp,
-                              fontWeight: FontWeight.bold,
                               height: 1,
                               letterSpacing: -0.5,
                             ),
@@ -208,12 +212,11 @@ class HomeHeaderWidget extends StatelessWidget {
                                 ),
                                 child: Text(
                                   '${(progress * 100).toStringAsFixed(0)}%',
-                                  style: GoogleFonts.poppins(
+                                  style: AppTextStyle.number(
+                                    size: 12.sp,
                                     color: isOver
                                         ? AppColor.expenseColor
                                         : AppColor.accentColor,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
@@ -251,11 +254,7 @@ class _CardStat extends StatelessWidget {
       children: [
         Text(
           value,
-          style: GoogleFonts.poppins(
-            color: color,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTextStyle.number(size: 14.sp, color: color),
         ),
         Text(
           label,

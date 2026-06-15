@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
+import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
@@ -52,10 +53,10 @@ class SlicingCategoryCard extends StatelessWidget {
             Expanded(
               child: Text(
                 category.name,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.cairo(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xFF263238),
+                  color: AppColor.textPrimary,
                 ),
               ),
             ),
@@ -83,7 +84,7 @@ class SlicingCategoryCard extends StatelessWidget {
                   ),
                   hintText: '0',
                   hintStyle: GoogleFonts.poppins(
-                    color: Colors.grey[400],
+                    color: AppColor.textTertiary,
                     fontSize: 15.sp,
                   ),
                   isDense: true,
@@ -93,8 +94,8 @@ class SlicingCategoryCard extends StatelessWidget {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.r),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade200,
+                    borderSide: const BorderSide(
+                      color: AppColor.borderColor,
                       width: 1.5,
                     ),
                   ),

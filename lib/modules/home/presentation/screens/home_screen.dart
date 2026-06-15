@@ -47,10 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColor.cardBackground,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
+              color: AppColor.backgroundCardShadow,
               blurRadius: 16,
               offset: const Offset(0, -4),
             ),

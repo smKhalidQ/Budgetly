@@ -48,19 +48,11 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_ios_new_outlined,
-                color: Colors.white),
+            icon: const Icon(Icons.arrow_back_ios_new_outlined),
           ),
-          title: Text(
-            widget.category.name,
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          elevation: 0,
-          backgroundColor: AppColor.primaryColor,
-          foregroundColor: Colors.black,
+          title: Text(widget.category.name),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColor.cardBackground,
         body: BlocBuilder<SubcategoryCubit, SubcategoryState>(
           buildWhen: (prev, curr) => prev.showPieChart != curr.showPieChart,
           builder: (context, state) {

@@ -1,5 +1,7 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_radius.dart';
+import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
@@ -62,12 +64,12 @@ class MainCategoriesListWidget extends StatelessWidget {
                       final remaining =
                           category.allocatedAmount - category.spentAmount;
                       return Material(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16.r),
-                        shadowColor: Colors.black.withValues(alpha: 0.05),
+                        color: AppColor.cardBackground,
+                        borderRadius: BorderRadius.circular(AppRadius.lg.r),
+                        shadowColor: AppColor.backgroundCardShadow,
                         elevation: 3,
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(16.r),
+                          borderRadius: BorderRadius.circular(AppRadius.lg.r),
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -82,8 +84,8 @@ class MainCategoriesListWidget extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: color,
                                   borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(16.r),
-                                    bottomLeft: Radius.circular(16.r),
+                                    topLeft: Radius.circular(AppRadius.lg.r),
+                                    bottomLeft: Radius.circular(AppRadius.lg.r),
                                   ),
                                 ),
                               ),
@@ -113,7 +115,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                                     children: [
                                       Text(
                                         category.name,
-                                        style: GoogleFonts.poppins(
+                                        style: GoogleFonts.cairo(
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w600,
                                           color: AppColor.textPrimary,
@@ -127,8 +129,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                                         child: LinearProgressIndicator(
                                           value: progress,
                                           minHeight: 4.h,
-                                          backgroundColor:
-                                              Colors.grey.withValues(alpha: 0.12),
+                                          backgroundColor: AppColor.surfaceMuted,
                                           valueColor: AlwaysStoppedAnimation<Color>(
                                               color),
                                         ),
@@ -147,8 +148,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                                             height: 14.h,
                                             margin: EdgeInsets.symmetric(
                                                 horizontal: 8.w),
-                                            color: Colors.grey
-                                                .withValues(alpha: 0.2),
+                                            color: AppColor.dividerColor,
                                           ),
                                           _AmountChip(
                                             label: context.tr.remaining,
@@ -206,16 +206,16 @@ class _AmountChip extends StatelessWidget {
         children: [
           TextSpan(
             text: '$label: ',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.cairo(
               fontSize: 11.sp,
               color: AppColor.textSecondary,
             ),
           ),
           TextSpan(
             text: value,
-            style: GoogleFonts.poppins(
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w600,
+            style: AppTextStyle.number(
+              size: 11.sp,
+              weight: FontWeight.w600,
               color: color,
             ),
           ),

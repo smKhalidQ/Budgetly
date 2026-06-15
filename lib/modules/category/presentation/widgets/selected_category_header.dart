@@ -1,5 +1,7 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_radius.dart';
+import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
@@ -31,19 +33,9 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     final double progressValue =
         (category.spentAmount / category.allocatedAmount).clamp(0.0, 1.0);
 
-    return Container(
-      margin: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 8.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    // Flat header — no card chrome, sits directly on the white background.
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Column(
         children: [
           Padding(
@@ -96,7 +88,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
       child: Column(
         children: [
-          Divider(color: Colors.grey.withValues(alpha: 0.15), height: 1),
+          Divider(color: AppColor.dividerColor, height: 1),
           SizedBox(height: 16.h),
           if (spentSubs.isEmpty)
             _buildEmptyChart()
@@ -167,7 +159,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
         SizedBox(width: 16.w),
         Text(
           "No spending yet",
-          style: GoogleFonts.roboto(
+          style: GoogleFonts.cairo(
             color: AppColor.textSecondary,
             fontSize: 13.sp,
           ),
@@ -190,15 +182,15 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
           Expanded(
             child: Text(
               name,
-              style: GoogleFonts.roboto(fontSize: 12.sp),
+              style: GoogleFonts.cairo(fontSize: 12.sp),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           Text(
             amount.toStringAsFixed(0),
-            style: GoogleFonts.roboto(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
+            style: AppTextStyle.number(
+              size: 12.sp,
+              weight: FontWeight.w600,
               color: color,
             ),
           ),
@@ -217,9 +209,9 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
           child: CircularProgressIndicator(
             value: progressValue,
             strokeWidth: 5,
-            backgroundColor: Colors.grey.withValues(alpha: 0.15),
+            backgroundColor: AppColor.surfaceMuted,
             valueColor: AlwaysStoppedAnimation<Color>(
-              progressValue >= 1 ? Colors.red : categoryColor,
+              progressValue >= 1 ? AppColor.expenseColor : categoryColor,
             ),
           ),
         ),
@@ -242,20 +234,21 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(category.name,
-            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+            style: GoogleFonts.cairo(
+                fontSize: 18.sp, fontWeight: FontWeight.bold)),
         SizedBox(height: 4.h),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
           decoration: BoxDecoration(
             color: remainingAmount < 0
-                ? Colors.red.withValues(alpha: 0.15)
+                ? AppColor.expenseColor.withValues(alpha: 0.15)
                 : categoryColor.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(AppRadius.md.r),
           ),
           child: Text(
             "\$${remainingAmount.toStringAsFixed(0)} ${remainingAmount < 0 ? 'over' : 'left'}",
-            style: TextStyle(
-              color: Colors.black.withValues(alpha: 0.9),
+            style: GoogleFonts.cairo(
+              color: AppColor.textPrimary,
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -283,8 +276,8 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(20.r),
       child: Container(
         padding: EdgeInsets.all(6.r),
-        decoration: BoxDecoration(
-          color: Colors.grey.withValues(alpha: 0.1),
+        decoration: const BoxDecoration(
+          color: AppColor.surfaceMuted,
           shape: BoxShape.circle,
         ),
         child: Icon(icon, color: color, size: 20.sp),

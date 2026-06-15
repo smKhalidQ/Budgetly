@@ -91,7 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   _SlidePage(
                     icon: Icons.savings_rounded,
-                    iconColor: const Color(0xFFF9A825),
+                    iconColor: AppColor.warningColor,
                     title: t.onboarding3Title,
                     subtitle: t.onboarding3Subtitle,
                   ),

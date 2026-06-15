@@ -248,7 +248,7 @@ class _PickerDialogShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title, style: GoogleFonts.roboto(fontWeight: FontWeight.bold)),
+      title: Text(title, style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         height: MediaQuery.of(context).size.height * 0.5,
@@ -273,7 +273,7 @@ class _PickerDialogShell extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Select Icon",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.cairo(
                                 fontWeight: FontWeight.w500)),
                         SizedBox(height: 10.h),
                         IconPickerWidget(
@@ -294,7 +294,7 @@ class _PickerDialogShell extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Select Color",
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.cairo(
                                 fontWeight: FontWeight.w500)),
                         SizedBox(height: 10.h),
                         ColorPickerWidget(
@@ -321,7 +321,7 @@ class _PickerDialogShell extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: page == i
                         ? AppColor.primaryColor
-                        : Colors.grey.withValues(alpha: 0.5),
+                        : AppColor.borderColor,
                   ),
                 ),
               ),
@@ -332,7 +332,8 @@ class _PickerDialogShell extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text("Cancel", style: TextStyle(color: Colors.grey[600])),
+          child: Text("Cancel",
+              style: GoogleFonts.cairo(color: AppColor.textSecondary)),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(

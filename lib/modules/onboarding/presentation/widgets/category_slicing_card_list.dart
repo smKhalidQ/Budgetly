@@ -59,7 +59,8 @@ class _CategorySlicingCardListState extends State<CategorySlicingCardList> {
           return Center(
             child: Text(
               state.errorMessage ?? '',
-              style: GoogleFonts.poppins(color: Colors.red, fontSize: 15.sp),
+              style: GoogleFonts.cairo(
+                  color: AppColor.expenseColor, fontSize: 15.sp),
               textAlign: TextAlign.center,
             ),
           );
@@ -71,40 +72,33 @@ class _CategorySlicingCardListState extends State<CategorySlicingCardList> {
           return Center(
             child: Text(
               t.noCategoriesFound,
-              style: GoogleFonts.cairo(color: Colors.grey[500], fontSize: 15.sp),
+              style: GoogleFonts.cairo(
+                  color: AppColor.textSecondary, fontSize: 15.sp),
               textAlign: TextAlign.center,
             ),
           );
         }
 
-        return Container(
-          margin: EdgeInsets.only(top: 16.h),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        // Flat list — rows sit directly on the screen background, separated
+        // by hairline dividers (no card / white sheet wrapper).
+        return ListView.separated(
+          padding: EdgeInsets.only(top: 4.h, bottom: 20.h),
+          itemCount: categories.length,
+          separatorBuilder: (_, __) => Divider(
+            height: 1,
+            indent: 74.w,
+            endIndent: 20.w,
+            color: AppColor.dividerColor,
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-            child: ListView.separated(
-              padding: EdgeInsets.only(top: 8.h, bottom: 20.h),
-              itemCount: categories.length,
-              separatorBuilder: (_, __) => Divider(
-                height: 1,
-                indent: 74.w,
-                endIndent: 20.w,
-                color: Colors.grey.shade100,
-              ),
-              itemBuilder: (context, index) {
-                return SlicingCategoryCard(
-                  category: categories[index],
-                  controller: _controllerFor(index),
-                  index: index,
-                  monthlySalary: widget.monthlySalary,
-                  currency: widget.currency,
-                );
-              },
-            ),
-          ),
+          itemBuilder: (context, index) {
+            return SlicingCategoryCard(
+              category: categories[index],
+              controller: _controllerFor(index),
+              index: index,
+              monthlySalary: widget.monthlySalary,
+              currency: widget.currency,
+            );
+          },
         );
       },
     );
