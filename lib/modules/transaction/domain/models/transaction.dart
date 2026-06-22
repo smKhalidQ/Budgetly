@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'transaction.freezed.dart';
 
-enum TransactionType { income, expense }
+enum TransactionType { income, expense, rollover }
 
 @freezed
 sealed class Transaction with _$Transaction {

@@ -151,6 +151,13 @@ class _TransactionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (transaction.type == TransactionType.rollover) {
+      return _RolloverRow(
+        transaction: transaction,
+        currencySymbol: currencySymbol,
+      );
+    }
+
     final isIncome = transaction.type == TransactionType.income;
     final color =
         category != null ? parseColorFromString(category!.color) : AppColor.categoryOthers;
@@ -219,6 +226,88 @@ class _TransactionRow extends StatelessWidget {
               size: 14.sp,
               weight: FontWeight.bold,
               color: amountColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Rollover Row ─────────────────────────────────────────────────────────────
+
+class _RolloverRow extends StatelessWidget {
+  final Transaction transaction;
+  final String currencySymbol;
+
+  const _RolloverRow({
+    required this.transaction,
+    required this.currencySymbol,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final note = transaction.note ?? 'Month-end savings';
+    final parts = note.split(' · ');
+    final title = parts.first;
+    final subtitle = parts.length > 1 ? parts[1] : null;
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        color: AppColor.accentColor.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppRadius.md.r),
+        border: Border.all(color: AppColor.accentColor.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40.w,
+            height: 40.w,
+            decoration: BoxDecoration(
+              color: AppColor.accentColor.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.savings_rounded,
+              color: AppColor.accentColor,
+              size: 20.sp,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.cairo(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColor.accentColor,
+                  ),
+                ),
+                if (subtitle != null) ...[
+                  SizedBox(height: 2.h),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.cairo(
+                      fontSize: 11.sp,
+                      color: AppColor.textSecondary,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Text(
+            '+$currencySymbol${transaction.amount.toStringAsFixed(2)}',
+            style: AppTextStyle.number(
+              size: 14.sp,
+              weight: FontWeight.bold,
+              color: AppColor.accentColor,
             ),
           ),
         ],

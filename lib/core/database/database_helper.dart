@@ -18,7 +18,7 @@ class DatabaseHelper {
     try {
       Database myDb = await openDatabase(
         path,
-        version: 2,
+        version: 3,
         onCreate: _onCreate,
         onUpgrade: _onUpgrade,
         onOpen: (db) async {
@@ -78,10 +78,23 @@ class DatabaseHelper {
         FOREIGN KEY (categoryId) REFERENCES category (categoryId) ON DELETE CASCADE,
         FOREIGN KEY (subcategoryId) REFERENCES subcategory (subcategoryId) ON DELETE SET NULL
       )''');
+
+      await db.execute(_createRecurringExpenseTable);
     } on DatabaseException catch (_) {
       throw Exception("sql syntax error");
     }
   }
+
+  static const _createRecurringExpenseTable = '''CREATE TABLE recurring_expense (
+        recurringId INTEGER PRIMARY KEY AUTOINCREMENT,
+        categoryId INTEGER NOT NULL,
+        subcategoryId INTEGER,
+        amount REAL NOT NULL,
+        note TEXT,
+        isActive INTEGER NOT NULL DEFAULT 1,
+        FOREIGN KEY (categoryId) REFERENCES category (categoryId) ON DELETE CASCADE,
+        FOREIGN KEY (subcategoryId) REFERENCES subcategory (subcategoryId) ON DELETE SET NULL
+      )''';
 
   static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
@@ -89,6 +102,9 @@ class DatabaseHelper {
         db, 'transaction', 'subcategoryId', 'INTEGER');
       await _addColumnIfMissing(
         db, 'transaction', 'type', "TEXT NOT NULL DEFAULT 'expense'");
+    }
+    if (oldVersion < 3) {
+      await db.execute(_createRecurringExpenseTable);
     }
   }
 

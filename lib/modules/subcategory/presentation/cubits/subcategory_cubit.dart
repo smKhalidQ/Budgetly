@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/services/month_cycle_service.dart';
 import 'package:budget_buddy/core/utilities/listener_mixin.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/subcategory/domain/default_subcategories.dart';
@@ -141,12 +142,14 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
   /// derived from the actual expense transactions — the single source of truth.
   Future<(Map<int, double>, double)> _spendingFor(int categoryId) async {
     final transactions = await _transactionRepository.getAll();
+    final cycleStart = MonthCycleService.currentCycleStart();
     final bySub = <int, double>{};
     var general = 0.0;
     for (final t in transactions) {
       if (t.type != TransactionType.expense || t.categoryId != categoryId) {
         continue;
       }
+      if (cycleStart != null && t.date.isBefore(cycleStart)) continue;
       if (t.subcategoryId != null) {
         bySub[t.subcategoryId!] = (bySub[t.subcategoryId!] ?? 0) + t.amount;
       } else {

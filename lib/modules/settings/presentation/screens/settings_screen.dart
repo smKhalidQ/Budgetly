@@ -1,6 +1,13 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_radius.dart';
+import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:budget_buddy/modules/recurring/presentation/screens/recurring_expenses_screen.dart';
+import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
+import 'package:budget_buddy/modules/settings/presentation/cubits/settings_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -8,34 +15,247 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.settings_rounded,
-              size: 72.sp,
-              color: AppColor.primaryColor.withValues(alpha: 0.15),
+    return BlocProvider(
+      create: (_) => GetIt.I<SettingsCubit>(),
+      child: const _SettingsView(),
+    );
+  }
+}
+
+class _SettingsView extends StatelessWidget {
+  const _SettingsView();
+
+  void _confirmStartNewMonth(BuildContext context) {
+    final cubit = context.read<SettingsCubit>();
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          'Start a new month?',
+          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Leftover in every category moves to Saving, spending resets, and '
+          'your active fixed expenses are posted.',
+          style: GoogleFonts.cairo(
+            fontSize: 13.sp,
+            color: AppColor.textSecondary,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.cairo(color: AppColor.textSecondary),
             ),
-            SizedBox(height: 16.h),
-            Text(
-              'Settings',
-              style: GoogleFonts.cairo(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColor.textSecondary,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              cubit.startNewMonth();
+            },
+            child: const Text('Start'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onCycleDone(BuildContext context, SettingsState state) {
+    final summary = state.lastCycle;
+    if (summary == null) return;
+
+    // Refresh the home category balances after the sweep.
+    context.read<CategoryCubit>().fetchCategories();
+
+    final parts = <String>[
+      'Saved ${summary.savedToSaving.toStringAsFixed(0)} to Saving',
+      if (summary.recurringPosted > 0)
+        '${summary.recurringPosted} fixed posted',
+      if (summary.recurringFlagged > 0)
+        '${summary.recurringFlagged} need attention',
+    ];
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'New month started · ${parts.join(' · ')}',
+          style: GoogleFonts.cairo(fontSize: 12.sp),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColor.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColor.backgroundColor,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: Text(
+          'Settings',
+          style: GoogleFonts.cairo(
+            color: AppColor.primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 18.sp,
+          ),
+        ),
+      ),
+      body: BlocConsumer<SettingsCubit, SettingsState>(
+        listenWhen: (prev, curr) =>
+            prev.status != curr.status &&
+            curr.status == SettingsStatus.success &&
+            curr.lastCycle != null,
+        listener: _onCycleDone,
+        builder: (context, state) {
+          return ListView(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            children: [
+              _SectionLabel('Month'),
+              _SettingsTile(
+                icon: Icons.event_repeat_rounded,
+                iconColor: AppColor.accentColor,
+                title: 'Start a new month',
+                subtitle: 'Sweep leftover to Saving & post fixed expenses',
+                trailing: state.isLoading
+                    ? SizedBox(
+                        width: 18.w,
+                        height: 18.w,
+                        child: const CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Icon(
+                        Icons.chevron_right_rounded,
+                        color: AppColor.textSecondary.withValues(alpha: 0.4),
+                        size: 22.sp,
+                      ),
+                onTap:
+                    state.isLoading ? null : () => _confirmStartNewMonth(context),
               ),
-            ),
-            SizedBox(height: 6.h),
-            Text(
-              'Coming soon',
-              style: GoogleFonts.cairo(
-                fontSize: 13.sp,
-                color: AppColor.textSecondary.withValues(alpha: 0.6),
+              SizedBox(height: 16.h),
+              _SectionLabel('Fixed expenses'),
+              _SettingsTile(
+                icon: Icons.push_pin_rounded,
+                iconColor: AppColor.primaryColor,
+                title: 'Manage fixed expenses',
+                subtitle: 'Bills posted automatically each new month',
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColor.textSecondary.withValues(alpha: 0.4),
+                  size: 22.sp,
+                ),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const RecurringExpensesScreen(),
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ─── Section Label ────────────────────────────────────────────────────────────
+
+class _SectionLabel extends StatelessWidget {
+  final String label;
+
+  const _SectionLabel(this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(4.w, 8.h, 4.w, 8.h),
+      child: Text(
+        label,
+        style: GoogleFonts.cairo(
+          fontSize: 13.sp,
+          fontWeight: FontWeight.w700,
+          color: AppColor.textSecondary,
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Settings Tile ────────────────────────────────────────────────────────────
+
+class _SettingsTile extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+  final Widget trailing;
+  final VoidCallback? onTap;
+
+  const _SettingsTile({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.subtitle,
+    required this.trailing,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColor.cardBackground,
+      borderRadius: BorderRadius.circular(AppRadius.lg.r),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.lg.r),
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+          child: Row(
+            children: [
+              Container(
+                width: 40.w,
+                height: 40.w,
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: iconColor, size: 20.sp),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.cairo(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColor.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.cairo(
+                        fontSize: 11.sp,
+                        color: AppColor.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 8.w),
+              trailing,
+            ],
+          ),
         ),
       ),
     );
