@@ -11,6 +11,7 @@ import 'package:budget_buddy/modules/category/domain/repositories/category_repos
 import 'package:budget_buddy/modules/recurring/domain/repositories/recurring_expense_repository.dart';
 import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
 import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
 import 'package:budget_buddy/modules/user_info/domain/repositories/user_info_repository.dart';
 
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
@@ -36,11 +37,15 @@ void initializeDependencies() {
 
   GetIt.I.registerLazySingleton(
       () => MonthCycleService(GetIt.I(), GetIt.I(), GetIt.I()));
+  GetIt.I.registerLazySingleton(
+      () => TransactionBalanceService(GetIt.I(), GetIt.I()));
 
   GetIt.I.registerFactory(() => CategoryCubit(GetIt.I()));
   GetIt.I.registerFactory(() => SubcategoryCubit(GetIt.I(), GetIt.I()));
-  GetIt.I.registerFactory(() => TransactionCubit(GetIt.I(), GetIt.I()));
-  GetIt.I.registerFactory(() => AddTransactionCubit(GetIt.I(), GetIt.I(), GetIt.I()));
+  GetIt.I.registerFactory(
+      () => TransactionCubit(GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I()));
+  GetIt.I.registerFactory(
+      () => AddTransactionCubit(GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(() => SettingCubit(GetIt.I()));
   GetIt.I.registerFactory(() => SettingsCubit(GetIt.I(), GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(

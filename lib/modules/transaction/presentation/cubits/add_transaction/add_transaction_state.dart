@@ -42,12 +42,14 @@ sealed class AddTransactionState with _$AddTransactionState {
     double? overflowDeficit,
     @Default([]) List<OverflowSplit> overflowSplits,
     @Default(0.0) double overflowIncome,
+    Transaction? editingTransaction,
   }) = _AddTransactionState;
 }
 
 extension AddTransactionStateX on AddTransactionState {
   double get parsedAmount => double.tryParse(amountInput) ?? 0.0;
   bool get isLoading => status == AddTransactionStatus.loading;
+  bool get isEditing => editingTransaction != null;
   bool get canSubmit => parsedAmount > 0 && selectedCategory != null && !isLoading;
   bool get isOverflow => overflowDeficit != null;
   double get overflowCovered =>

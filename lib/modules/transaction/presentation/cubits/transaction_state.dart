@@ -1,6 +1,7 @@
 // run build_runner
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
 
 part 'transaction_state.freezed.dart';
@@ -13,6 +14,7 @@ sealed class TransactionState with _$TransactionState {
     @Default(TransactionStatus.initial) TransactionStatus status,
     @Default([]) List<Transaction> transactions,
     @Default({}) Map<int, Category> categoriesById,
+    @Default({}) Map<int, Subcategory> subcategoriesById,
     String? errorMessage,
     @Default(false) bool isEditMode,
   }) = _TransactionState;

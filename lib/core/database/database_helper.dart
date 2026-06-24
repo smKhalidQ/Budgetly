@@ -18,7 +18,7 @@ class DatabaseHelper {
     try {
       Database myDb = await openDatabase(
         path,
-        version: 3,
+        version: 4,
         onCreate: _onCreate,
         onUpgrade: _onUpgrade,
         onOpen: (db) async {
@@ -75,6 +75,7 @@ class DatabaseHelper {
         date TEXT NOT NULL,
         type TEXT NOT NULL DEFAULT 'expense',
         note TEXT,
+        coverage TEXT,
         FOREIGN KEY (categoryId) REFERENCES category (categoryId) ON DELETE CASCADE,
         FOREIGN KEY (subcategoryId) REFERENCES subcategory (subcategoryId) ON DELETE SET NULL
       )''');
@@ -105,6 +106,9 @@ class DatabaseHelper {
     }
     if (oldVersion < 3) {
       await db.execute(_createRecurringExpenseTable);
+    }
+    if (oldVersion < 4) {
+      await _addColumnIfMissing(db, 'transaction', 'coverage', 'TEXT');
     }
   }
 

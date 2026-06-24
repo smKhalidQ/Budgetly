@@ -27,6 +27,7 @@ mixin _$AddTransactionState {
   double? get overflowDeficit;
   List<OverflowSplit> get overflowSplits;
   double get overflowIncome;
+  Transaction? get editingTransaction;
 
   /// Create a copy of AddTransactionState
   /// with the given fields replaced by the non-null parameter values.
@@ -64,7 +65,9 @@ mixin _$AddTransactionState {
             const DeepCollectionEquality()
                 .equals(other.overflowSplits, overflowSplits) &&
             (identical(other.overflowIncome, overflowIncome) ||
-                other.overflowIncome == overflowIncome));
+                other.overflowIncome == overflowIncome) &&
+            (identical(other.editingTransaction, editingTransaction) ||
+                other.editingTransaction == editingTransaction));
   }
 
   @override
@@ -82,11 +85,12 @@ mixin _$AddTransactionState {
       status,
       overflowDeficit,
       const DeepCollectionEquality().hash(overflowSplits),
-      overflowIncome);
+      overflowIncome,
+      editingTransaction);
 
   @override
   String toString() {
-    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, topSubcategories: $topSubcategories, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome)';
+    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, topSubcategories: $topSubcategories, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome, editingTransaction: $editingTransaction)';
   }
 }
 
@@ -109,10 +113,12 @@ abstract mixin class $AddTransactionStateCopyWith<$Res> {
       AddTransactionStatus status,
       double? overflowDeficit,
       List<OverflowSplit> overflowSplits,
-      double overflowIncome});
+      double overflowIncome,
+      Transaction? editingTransaction});
 
   $CategoryCopyWith<$Res>? get selectedCategory;
   $SubcategoryCopyWith<$Res>? get selectedSubcategory;
+  $TransactionCopyWith<$Res>? get editingTransaction;
 }
 
 /// @nodoc
@@ -141,6 +147,7 @@ class _$AddTransactionStateCopyWithImpl<$Res>
     Object? overflowDeficit = freezed,
     Object? overflowSplits = null,
     Object? overflowIncome = null,
+    Object? editingTransaction = freezed,
   }) {
     return _then(_self.copyWith(
       transactionType: null == transactionType
@@ -195,6 +202,10 @@ class _$AddTransactionStateCopyWithImpl<$Res>
           ? _self.overflowIncome
           : overflowIncome // ignore: cast_nullable_to_non_nullable
               as double,
+      editingTransaction: freezed == editingTransaction
+          ? _self.editingTransaction
+          : editingTransaction // ignore: cast_nullable_to_non_nullable
+              as Transaction?,
     ));
   }
 
@@ -223,6 +234,20 @@ class _$AddTransactionStateCopyWithImpl<$Res>
 
     return $SubcategoryCopyWith<$Res>(_self.selectedSubcategory!, (value) {
       return _then(_self.copyWith(selectedSubcategory: value));
+    });
+  }
+
+  /// Create a copy of AddTransactionState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TransactionCopyWith<$Res>? get editingTransaction {
+    if (_self.editingTransaction == null) {
+      return null;
+    }
+
+    return $TransactionCopyWith<$Res>(_self.editingTransaction!, (value) {
+      return _then(_self.copyWith(editingTransaction: value));
     });
   }
 }
@@ -331,7 +356,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             AddTransactionStatus status,
             double? overflowDeficit,
             List<OverflowSplit> overflowSplits,
-            double overflowIncome)?
+            double overflowIncome,
+            Transaction? editingTransaction)?
         $default, {
     required TResult orElse(),
   }) {
@@ -351,7 +377,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.status,
             _that.overflowDeficit,
             _that.overflowSplits,
-            _that.overflowIncome);
+            _that.overflowIncome,
+            _that.editingTransaction);
       case _:
         return orElse();
     }
@@ -385,7 +412,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             AddTransactionStatus status,
             double? overflowDeficit,
             List<OverflowSplit> overflowSplits,
-            double overflowIncome)
+            double overflowIncome,
+            Transaction? editingTransaction)
         $default,
   ) {
     final _that = this;
@@ -404,7 +432,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.status,
             _that.overflowDeficit,
             _that.overflowSplits,
-            _that.overflowIncome);
+            _that.overflowIncome,
+            _that.editingTransaction);
     }
   }
 
@@ -435,7 +464,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             AddTransactionStatus status,
             double? overflowDeficit,
             List<OverflowSplit> overflowSplits,
-            double overflowIncome)?
+            double overflowIncome,
+            Transaction? editingTransaction)?
         $default,
   ) {
     final _that = this;
@@ -454,7 +484,8 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.status,
             _that.overflowDeficit,
             _that.overflowSplits,
-            _that.overflowIncome);
+            _that.overflowIncome,
+            _that.editingTransaction);
       case _:
         return null;
     }
@@ -477,7 +508,8 @@ class _AddTransactionState implements AddTransactionState {
       this.status = AddTransactionStatus.idle,
       this.overflowDeficit,
       final List<OverflowSplit> overflowSplits = const [],
-      this.overflowIncome = 0.0})
+      this.overflowIncome = 0.0,
+      this.editingTransaction})
       : _categories = categories,
         _subcategoriesMap = subcategoriesMap,
         _topSubcategories = topSubcategories,
@@ -543,6 +575,8 @@ class _AddTransactionState implements AddTransactionState {
   @override
   @JsonKey()
   final double overflowIncome;
+  @override
+  final Transaction? editingTransaction;
 
   /// Create a copy of AddTransactionState
   /// with the given fields replaced by the non-null parameter values.
@@ -581,7 +615,9 @@ class _AddTransactionState implements AddTransactionState {
             const DeepCollectionEquality()
                 .equals(other._overflowSplits, _overflowSplits) &&
             (identical(other.overflowIncome, overflowIncome) ||
-                other.overflowIncome == overflowIncome));
+                other.overflowIncome == overflowIncome) &&
+            (identical(other.editingTransaction, editingTransaction) ||
+                other.editingTransaction == editingTransaction));
   }
 
   @override
@@ -599,11 +635,12 @@ class _AddTransactionState implements AddTransactionState {
       status,
       overflowDeficit,
       const DeepCollectionEquality().hash(_overflowSplits),
-      overflowIncome);
+      overflowIncome,
+      editingTransaction);
 
   @override
   String toString() {
-    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, topSubcategories: $topSubcategories, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome)';
+    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, topSubcategories: $topSubcategories, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome, editingTransaction: $editingTransaction)';
   }
 }
 
@@ -628,12 +665,15 @@ abstract mixin class _$AddTransactionStateCopyWith<$Res>
       AddTransactionStatus status,
       double? overflowDeficit,
       List<OverflowSplit> overflowSplits,
-      double overflowIncome});
+      double overflowIncome,
+      Transaction? editingTransaction});
 
   @override
   $CategoryCopyWith<$Res>? get selectedCategory;
   @override
   $SubcategoryCopyWith<$Res>? get selectedSubcategory;
+  @override
+  $TransactionCopyWith<$Res>? get editingTransaction;
 }
 
 /// @nodoc
@@ -662,6 +702,7 @@ class __$AddTransactionStateCopyWithImpl<$Res>
     Object? overflowDeficit = freezed,
     Object? overflowSplits = null,
     Object? overflowIncome = null,
+    Object? editingTransaction = freezed,
   }) {
     return _then(_AddTransactionState(
       transactionType: null == transactionType
@@ -716,6 +757,10 @@ class __$AddTransactionStateCopyWithImpl<$Res>
           ? _self.overflowIncome
           : overflowIncome // ignore: cast_nullable_to_non_nullable
               as double,
+      editingTransaction: freezed == editingTransaction
+          ? _self.editingTransaction
+          : editingTransaction // ignore: cast_nullable_to_non_nullable
+              as Transaction?,
     ));
   }
 
@@ -744,6 +789,20 @@ class __$AddTransactionStateCopyWithImpl<$Res>
 
     return $SubcategoryCopyWith<$Res>(_self.selectedSubcategory!, (value) {
       return _then(_self.copyWith(selectedSubcategory: value));
+    });
+  }
+
+  /// Create a copy of AddTransactionState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TransactionCopyWith<$Res>? get editingTransaction {
+    if (_self.editingTransaction == null) {
+      return null;
+    }
+
+    return $TransactionCopyWith<$Res>(_self.editingTransaction!, (value) {
+      return _then(_self.copyWith(editingTransaction: value));
     });
   }
 }

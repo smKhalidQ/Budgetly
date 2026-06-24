@@ -15,5 +15,6 @@ sealed class Transaction with _$Transaction {
     required DateTime date,
     @Default(TransactionType.expense) TransactionType type,
     String? note,
+    String? coverage,
   }) = _Transaction;
 }

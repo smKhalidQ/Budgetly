@@ -18,6 +18,7 @@ class TransactionDataSource {
     required DateTime date,
     required String type,
     String? note,
+    String? coverage,
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
@@ -28,6 +29,7 @@ class TransactionDataSource {
         'date': date.toIso8601String(),
         'type': type,
         'note': note,
+        'coverage': coverage,
       });
     } on DatabaseException catch (_) {
       throw Exception("data insertion failed");
@@ -42,6 +44,7 @@ class TransactionDataSource {
     required DateTime date,
     required String type,
     String? note,
+    String? coverage,
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
@@ -54,6 +57,7 @@ class TransactionDataSource {
           'date': date.toIso8601String(),
           'type': type,
           'note': note,
+          'coverage': coverage,
         },
         where: 'transactionId = ?',
         whereArgs: [transactionId],

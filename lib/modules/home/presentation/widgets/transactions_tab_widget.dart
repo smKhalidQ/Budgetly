@@ -5,12 +5,15 @@ import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_cubit.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_state.dart';
+import 'package:budget_buddy/modules/transaction/presentation/widgets/add_transaction_sheet.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TransactionsTabWidget extends StatelessWidget {
@@ -22,6 +25,7 @@ class TransactionsTabWidget extends StatelessWidget {
       buildWhen: (prev, curr) =>
           prev.transactions != curr.transactions ||
           prev.categoriesById != curr.categoriesById ||
+          prev.subcategoriesById != curr.subcategoriesById ||
           prev.status != curr.status,
       builder: (context, state) {
         if (state.isEmpty && state.isLoading) {
@@ -51,6 +55,10 @@ class TransactionsTabWidget extends StatelessWidget {
                   return _TransactionRow(
                     transaction: transaction,
                     category: state.categoriesById[transaction.categoryId],
+                    subcategoryName: transaction.subcategoryId == null
+                        ? null
+                        : state
+                            .subcategoriesById[transaction.subcategoryId!]?.name,
                     currencySymbol: currencySymbol,
                   );
                 },
@@ -141,13 +149,51 @@ class _DayHeader extends StatelessWidget {
 class _TransactionRow extends StatelessWidget {
   final Transaction transaction;
   final Category? category;
+  final String? subcategoryName;
   final String currencySymbol;
 
   const _TransactionRow({
     required this.transaction,
     required this.category,
+    required this.subcategoryName,
     required this.currencySymbol,
   });
+
+  void _openEdit(BuildContext context) {
+    AddTransactionSheet.show(
+      context,
+      editing: transaction,
+      onSuccess: () => context.read<CategoryCubit>().fetchCategories(),
+    );
+  }
+
+  void _deleteWithUndo(BuildContext context) {
+    final transactionCubit = context.read<TransactionCubit>();
+    final categoryCubit = context.read<CategoryCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final removed = transaction;
+
+    transactionCubit
+        .deleteTransaction(removed)
+        .then((_) => categoryCubit.fetchCategories());
+
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            'Transaction deleted',
+            style: GoogleFonts.cairo(fontSize: 12.sp),
+          ),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () => transactionCubit
+                .restoreTransaction(removed)
+                .then((_) => categoryCubit.fetchCategories()),
+          ),
+        ),
+      );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,17 +210,44 @@ class _TransactionRow extends StatelessWidget {
     final amountColor = isIncome ? AppColor.incomeColor : AppColor.expenseColor;
     final sign = isIncome ? '+' : '-';
 
-    final title = category?.name ?? 'Unknown';
+    final title = subcategoryName ?? category?.name ?? 'Unknown';
     final subtitle = transaction.note;
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: AppColor.cardBackground,
-        borderRadius: BorderRadius.circular(AppRadius.md.r),
-      ),
-      child: Row(
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      child: Slidable(
+        key: ValueKey('txn-${transaction.id}'),
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          extentRatio: 0.5,
+          children: [
+            SlidableAction(
+              onPressed: (_) => _openEdit(context),
+              backgroundColor: AppColor.accentColor,
+              foregroundColor: Colors.white,
+              icon: Icons.edit_rounded,
+              label: 'Edit',
+              borderRadius:
+                  BorderRadius.horizontal(left: Radius.circular(AppRadius.md.r)),
+            ),
+            SlidableAction(
+              onPressed: (_) => _deleteWithUndo(context),
+              backgroundColor: AppColor.expenseColor,
+              foregroundColor: Colors.white,
+              icon: Icons.delete_rounded,
+              label: 'Delete',
+              borderRadius: BorderRadius.horizontal(
+                  right: Radius.circular(AppRadius.md.r)),
+            ),
+          ],
+        ),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            color: AppColor.cardBackground,
+            borderRadius: BorderRadius.circular(AppRadius.md.r),
+          ),
+          child: Row(
         children: [
           Container(
             width: 40.w,
@@ -228,7 +301,15 @@ class _TransactionRow extends StatelessWidget {
               color: amountColor,
             ),
           ),
+          SizedBox(width: 6.w),
+          Icon(
+            Icons.keyboard_double_arrow_left_rounded,
+            size: 14.sp,
+            color: AppColor.textSecondary.withValues(alpha: 0.35),
+          ),
         ],
+      ),
+        ),
       ),
     );
   }

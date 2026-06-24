@@ -15,6 +15,9 @@ class TransactionRepository {
   final _addedController = StreamController<TransactionAddedEvent>.broadcast();
   Stream<TransactionAddedEvent> get onTransactionAdded => _addedController.stream;
 
+  final _changedController = StreamController<void>.broadcast();
+  Stream<void> get onTransactionChanged => _changedController.stream;
+
   Future<List<Transaction>> getAll() async {
     final rows = await _dataSource.fetchTransactions();
     return rows.map(_fromRow).toList();
@@ -28,6 +31,7 @@ class TransactionRepository {
       date: item.date,
       type: item.type.name,
       note: item.note,
+      coverage: item.coverage,
     );
     _addedController.add(TransactionAddedEvent(item));
   }
@@ -41,11 +45,14 @@ class TransactionRepository {
       date: item.date,
       type: item.type.name,
       note: item.note,
+      coverage: item.coverage,
     );
+    _changedController.add(null);
   }
 
   Future<void> delete(int id) async {
     await _dataSource.deleteTransaction(id);
+    _changedController.add(null);
   }
 
   Transaction _fromRow(Map<String, dynamic> row) {
@@ -61,6 +68,7 @@ class TransactionRepository {
         orElse: () => TransactionType.expense,
       ),
       note: row['note'] as String?,
+      coverage: row['coverage'] as String?,
     );
   }
 }

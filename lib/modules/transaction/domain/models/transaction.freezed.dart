@@ -21,6 +21,7 @@ mixin _$Transaction {
   DateTime get date;
   TransactionType get type;
   String? get note;
+  String? get coverage;
 
   /// Create a copy of Transaction
   /// with the given fields replaced by the non-null parameter values.
@@ -42,16 +43,18 @@ mixin _$Transaction {
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.type, type) || other.type == type) &&
-            (identical(other.note, note) || other.note == note));
+            (identical(other.note, note) || other.note == note) &&
+            (identical(other.coverage, coverage) ||
+                other.coverage == coverage));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, categoryId, subcategoryId, amount, date, type, note);
+  int get hashCode => Object.hash(runtimeType, id, categoryId, subcategoryId,
+      amount, date, type, note, coverage);
 
   @override
   String toString() {
-    return 'Transaction(id: $id, categoryId: $categoryId, subcategoryId: $subcategoryId, amount: $amount, date: $date, type: $type, note: $note)';
+    return 'Transaction(id: $id, categoryId: $categoryId, subcategoryId: $subcategoryId, amount: $amount, date: $date, type: $type, note: $note, coverage: $coverage)';
   }
 }
 
@@ -68,7 +71,8 @@ abstract mixin class $TransactionCopyWith<$Res> {
       double amount,
       DateTime date,
       TransactionType type,
-      String? note});
+      String? note,
+      String? coverage});
 }
 
 /// @nodoc
@@ -90,6 +94,7 @@ class _$TransactionCopyWithImpl<$Res> implements $TransactionCopyWith<$Res> {
     Object? date = null,
     Object? type = null,
     Object? note = freezed,
+    Object? coverage = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -119,6 +124,10 @@ class _$TransactionCopyWithImpl<$Res> implements $TransactionCopyWith<$Res> {
       note: freezed == note
           ? _self.note
           : note // ignore: cast_nullable_to_non_nullable
+              as String?,
+      coverage: freezed == coverage
+          ? _self.coverage
+          : coverage // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -215,8 +224,15 @@ extension TransactionPatterns on Transaction {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int? id, int categoryId, int? subcategoryId, double amount,
-            DateTime date, TransactionType type, String? note)?
+    TResult Function(
+            int? id,
+            int categoryId,
+            int? subcategoryId,
+            double amount,
+            DateTime date,
+            TransactionType type,
+            String? note,
+            String? coverage)?
         $default, {
     required TResult orElse(),
   }) {
@@ -224,7 +240,7 @@ extension TransactionPatterns on Transaction {
     switch (_that) {
       case _Transaction() when $default != null:
         return $default(_that.id, _that.categoryId, _that.subcategoryId,
-            _that.amount, _that.date, _that.type, _that.note);
+            _that.amount, _that.date, _that.type, _that.note, _that.coverage);
       case _:
         return orElse();
     }
@@ -246,14 +262,14 @@ extension TransactionPatterns on Transaction {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(int? id, int categoryId, int? subcategoryId, double amount,
-            DateTime date, TransactionType type, String? note)
+            DateTime date, TransactionType type, String? note, String? coverage)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Transaction():
         return $default(_that.id, _that.categoryId, _that.subcategoryId,
-            _that.amount, _that.date, _that.type, _that.note);
+            _that.amount, _that.date, _that.type, _that.note, _that.coverage);
     }
   }
 
@@ -271,15 +287,22 @@ extension TransactionPatterns on Transaction {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int? id, int categoryId, int? subcategoryId,
-            double amount, DateTime date, TransactionType type, String? note)?
+    TResult? Function(
+            int? id,
+            int categoryId,
+            int? subcategoryId,
+            double amount,
+            DateTime date,
+            TransactionType type,
+            String? note,
+            String? coverage)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Transaction() when $default != null:
         return $default(_that.id, _that.categoryId, _that.subcategoryId,
-            _that.amount, _that.date, _that.type, _that.note);
+            _that.amount, _that.date, _that.type, _that.note, _that.coverage);
       case _:
         return null;
     }
@@ -296,7 +319,8 @@ class _Transaction implements Transaction {
       required this.amount,
       required this.date,
       this.type = TransactionType.expense,
-      this.note});
+      this.note,
+      this.coverage});
 
   @override
   final int? id;
@@ -313,6 +337,8 @@ class _Transaction implements Transaction {
   final TransactionType type;
   @override
   final String? note;
+  @override
+  final String? coverage;
 
   /// Create a copy of Transaction
   /// with the given fields replaced by the non-null parameter values.
@@ -335,16 +361,18 @@ class _Transaction implements Transaction {
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.type, type) || other.type == type) &&
-            (identical(other.note, note) || other.note == note));
+            (identical(other.note, note) || other.note == note) &&
+            (identical(other.coverage, coverage) ||
+                other.coverage == coverage));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, categoryId, subcategoryId, amount, date, type, note);
+  int get hashCode => Object.hash(runtimeType, id, categoryId, subcategoryId,
+      amount, date, type, note, coverage);
 
   @override
   String toString() {
-    return 'Transaction(id: $id, categoryId: $categoryId, subcategoryId: $subcategoryId, amount: $amount, date: $date, type: $type, note: $note)';
+    return 'Transaction(id: $id, categoryId: $categoryId, subcategoryId: $subcategoryId, amount: $amount, date: $date, type: $type, note: $note, coverage: $coverage)';
   }
 }
 
@@ -363,7 +391,8 @@ abstract mixin class _$TransactionCopyWith<$Res>
       double amount,
       DateTime date,
       TransactionType type,
-      String? note});
+      String? note,
+      String? coverage});
 }
 
 /// @nodoc
@@ -385,6 +414,7 @@ class __$TransactionCopyWithImpl<$Res> implements _$TransactionCopyWith<$Res> {
     Object? date = null,
     Object? type = null,
     Object? note = freezed,
+    Object? coverage = freezed,
   }) {
     return _then(_Transaction(
       id: freezed == id
@@ -414,6 +444,10 @@ class __$TransactionCopyWithImpl<$Res> implements _$TransactionCopyWith<$Res> {
       note: freezed == note
           ? _self.note
           : note // ignore: cast_nullable_to_non_nullable
+              as String?,
+      coverage: freezed == coverage
+          ? _self.coverage
+          : coverage // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
 import 'package:budget_buddy/modules/subcategory/domain/default_subcategories.dart';
@@ -5,6 +7,7 @@ import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart'
 import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
 import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,11 +15,13 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   final CategoryRepository _categoryRepository;
   final SubcategoryRepository _subcategoryRepository;
   final TransactionRepository _transactionRepository;
+  final TransactionBalanceService _balanceService;
 
   AddTransactionCubit(
     this._categoryRepository,
     this._subcategoryRepository,
     this._transactionRepository,
+    this._balanceService,
   ) : super(const AddTransactionState());
 
   Future<void> initialize() async {
@@ -43,6 +48,46 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
       topSubcategories: await _mostUsedSubcategories(subcategories),
     ));
   }
+
+  Future<void> initializeForEdit(Transaction txn) async {
+    final categories = await _categoryRepository.getAll();
+    var subcategories = await _subcategoryRepository.getAll();
+    if (await _ensureDefaultSubcategories(categories, subcategories)) {
+      subcategories = await _subcategoryRepository.getAll();
+    }
+
+    final map = <int, List<Subcategory>>{};
+    for (final sub in subcategories) {
+      if (sub.parentCategoryId != null) {
+        map.putIfAbsent(sub.parentCategoryId!, () => []).add(sub);
+      }
+    }
+
+    final catIndex = categories.indexWhere((c) => c.id == txn.categoryId);
+    final category = catIndex == -1 ? null : categories[catIndex];
+    Subcategory? subcategory;
+    if (txn.subcategoryId != null) {
+      final subs = map[txn.categoryId] ?? [];
+      final subIndex = subs.indexWhere((s) => s.id == txn.subcategoryId);
+      if (subIndex != -1) subcategory = subs[subIndex];
+    }
+
+    emit(state.copyWith(
+      categories: categories,
+      subcategoriesMap: map,
+      topSubcategories: await _mostUsedSubcategories(subcategories),
+      transactionType: txn.type,
+      selectedCategory: category,
+      selectedSubcategory: subcategory,
+      expandedCategoryId: txn.categoryId,
+      amountInput: _formatAmount(txn.amount),
+      note: txn.note ?? '',
+      editingTransaction: txn,
+    ));
+  }
+
+  String _formatAmount(double v) =>
+      v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
 
   Future<List<Subcategory>> _mostUsedSubcategories(
     List<Subcategory> subcategories,
@@ -184,7 +229,13 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
       return;
     }
 
-    final remaining = category.allocatedAmount - category.spentAmount;
+    var remaining = category.allocatedAmount - category.spentAmount;
+    final editing = state.editingTransaction;
+    if (editing != null &&
+        editing.type == TransactionType.expense &&
+        editing.categoryId == category.id) {
+      remaining += editing.amount;
+    }
 
     if (amount > remaining) {
       final deficit = amount - remaining;
@@ -218,21 +269,26 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   Future<void> _persistIncome(Category category, double amount) async {
     emit(state.copyWith(status: AddTransactionStatus.loading));
     try {
-      await _transactionRepository.add(Transaction(
+      final editing = state.editingTransaction;
+      final txn = Transaction(
+        id: editing?.id,
         categoryId: category.id!,
         subcategoryId: state.selectedSubcategory?.id,
         amount: amount,
-        date: DateTime.now(),
+        date: editing?.date ?? DateTime.now(),
         type: TransactionType.income,
         note: state.note.isEmpty ? null : state.note,
-      ));
-
-      await _categoryRepository.update(
-        category.id!,
-        category.copyWith(
-          allocatedAmount: category.allocatedAmount + amount,
-        ),
       );
+
+      if (editing == null) {
+        await _transactionRepository.add(txn);
+      } else {
+        await _transactionRepository.edit(txn);
+        await _reverseOriginal(editing);
+        await _balanceService.recomputeSpent(editing.categoryId);
+      }
+
+      await _balanceService.adjustAllocated(category.id!, amount);
 
       emit(state.copyWith(status: AddTransactionStatus.success));
     } catch (_) {
@@ -248,14 +304,24 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   }) async {
     emit(state.copyWith(status: AddTransactionStatus.loading));
     try {
-      await _transactionRepository.add(Transaction(
+      final editing = state.editingTransaction;
+      final txn = Transaction(
+        id: editing?.id,
         categoryId: primary.id!,
         subcategoryId: state.selectedSubcategory?.id,
         amount: amount,
-        date: DateTime.now(),
+        date: editing?.date ?? DateTime.now(),
         type: state.transactionType,
         note: state.note.isEmpty ? null : state.note,
-      ));
+        coverage: _buildCoverage(splits, incomeContribution),
+      );
+
+      if (editing == null) {
+        await _transactionRepository.add(txn);
+      } else {
+        await _transactionRepository.edit(txn);
+        await _reverseOriginal(editing);
+      }
 
       final transferred =
           splits.fold(0.0, (sum, split) => sum + split.amount);
@@ -264,29 +330,36 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
       if (primaryIncrease > 0) {
         for (final split in splits) {
           if (split.amount <= 0) continue;
-          await _categoryRepository.update(
-            split.category.id!,
-            split.category.copyWith(
-              allocatedAmount: split.category.allocatedAmount - split.amount,
-            ),
-          );
+          await _balanceService.adjustAllocated(split.category.id!, -split.amount);
         }
-        await _categoryRepository.update(
-          primary.id!,
-          primary.copyWith(
-            allocatedAmount: primary.allocatedAmount + primaryIncrease,
-          ),
-        );
+        await _balanceService.adjustAllocated(primary.id!, primaryIncrease);
       }
 
-      await _categoryRepository.updateSpentAmount(
-        primary.id!,
-        primary.spentAmount + amount,
-      );
+      await _balanceService.recomputeSpent(primary.id!);
+      if (editing != null && editing.categoryId != primary.id) {
+        await _balanceService.recomputeSpent(editing.categoryId);
+      }
 
       emit(state.copyWith(status: AddTransactionStatus.success));
     } catch (_) {
       emit(state.copyWith(status: AddTransactionStatus.error));
     }
+  }
+
+  Future<void> _reverseOriginal(Transaction original) async {
+    if (original.type == TransactionType.income) {
+      await _balanceService.adjustAllocated(original.categoryId, -original.amount);
+    }
+  }
+
+  String? _buildCoverage(List<OverflowSplit> splits, double income) {
+    final positive = splits.where((s) => s.amount > 0).toList();
+    if (positive.isEmpty && income <= 0) return null;
+    return jsonEncode({
+      'income': income,
+      'splits': [
+        for (final s in positive) {'c': s.category.id, 'a': s.amount},
+      ],
+    });
   }
 }

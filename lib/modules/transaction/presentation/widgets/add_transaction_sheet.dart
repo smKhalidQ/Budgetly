@@ -16,23 +16,35 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AddTransactionSheet extends StatelessWidget {
   final VoidCallback onSuccess;
+  final Transaction? editing;
 
-  const AddTransactionSheet({super.key, required this.onSuccess});
+  const AddTransactionSheet({super.key, required this.onSuccess, this.editing});
 
-  static void show(BuildContext context, {required VoidCallback onSuccess}) {
+  static void show(
+    BuildContext context, {
+    required VoidCallback onSuccess,
+    Transaction? editing,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => AddTransactionSheet(onSuccess: onSuccess),
+      builder: (_) =>
+          AddTransactionSheet(onSuccess: onSuccess, editing: editing),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => GetIt.I<AddTransactionCubit>()..initialize(),
-      child: _Body(onSuccess: onSuccess),
+      create: (_) {
+        final cubit = GetIt.I<AddTransactionCubit>();
+        editing == null
+            ? cubit.initialize()
+            : cubit.initializeForEdit(editing!);
+        return cubit;
+      },
+      child: _Body(onSuccess: onSuccess, editing: editing),
     );
   }
 }
@@ -41,8 +53,9 @@ class AddTransactionSheet extends StatelessWidget {
 
 class _Body extends StatefulWidget {
   final VoidCallback onSuccess;
+  final Transaction? editing;
 
-  const _Body({required this.onSuccess});
+  const _Body({required this.onSuccess, this.editing});
 
   @override
   State<_Body> createState() => _BodyState();
@@ -54,7 +67,7 @@ class _BodyState extends State<_Body> {
   @override
   void initState() {
     super.initState();
-    _noteController = TextEditingController();
+    _noteController = TextEditingController(text: widget.editing?.note ?? '');
   }
 
   @override
