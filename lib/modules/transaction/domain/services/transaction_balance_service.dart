@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:budget_buddy/core/services/month_cycle_service.dart';
 import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
+import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
 import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
 
 /// Shared rules for keeping category balances in sync with transactions.
@@ -68,41 +67,26 @@ class TransactionBalanceService {
   /// Returns the borrowed budget: lenders get their amounts back, and the
   /// spending category loses the coverage it received.
   Future<void> reverseCoverage(Transaction txn) async {
-    final coverage = _parseCoverage(txn.coverage);
+    final coverage = TransactionCoverage.parse(txn.coverage);
     if (coverage == null) return;
-    var borrowed = coverage.income;
-    for (final split in coverage.splits) {
-      borrowed += split.amount;
-      await adjustAllocated(split.categoryId, split.amount);
+    for (final source in coverage.sources) {
+      await adjustAllocated(source.categoryId, source.amount);
     }
-    if (borrowed > 0) await adjustAllocated(txn.categoryId, -borrowed);
+    if (coverage.borrowed > 0) {
+      await adjustAllocated(txn.categoryId, -coverage.borrowed);
+    }
   }
 
   /// Re-takes the coverage: lenders lose their amounts again and the spending
   /// category regains the borrowed budget.
   Future<void> applyCoverage(Transaction txn) async {
-    final coverage = _parseCoverage(txn.coverage);
+    final coverage = TransactionCoverage.parse(txn.coverage);
     if (coverage == null) return;
-    var borrowed = coverage.income;
-    for (final split in coverage.splits) {
-      borrowed += split.amount;
-      await adjustAllocated(split.categoryId, -split.amount);
+    for (final source in coverage.sources) {
+      await adjustAllocated(source.categoryId, -source.amount);
     }
-    if (borrowed > 0) await adjustAllocated(txn.categoryId, borrowed);
-  }
-
-  ({double income, List<({int categoryId, double amount})> splits})?
-      _parseCoverage(String? raw) {
-    if (raw == null || raw.isEmpty) return null;
-    final data = jsonDecode(raw) as Map<String, dynamic>;
-    final income = (data['income'] as num?)?.toDouble() ?? 0;
-    final splits = [
-      for (final s in (data['splits'] as List? ?? []))
-        (
-          categoryId: (s as Map)['c'] as int,
-          amount: (s['a'] as num).toDouble(),
-        ),
-    ];
-    return (income: income, splits: splits);
+    if (coverage.borrowed > 0) {
+      await adjustAllocated(txn.categoryId, coverage.borrowed);
+    }
   }
 }

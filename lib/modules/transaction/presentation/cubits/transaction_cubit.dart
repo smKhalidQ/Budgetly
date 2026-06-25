@@ -2,6 +2,7 @@ import 'package:budget_buddy/core/utilities/listener_mixin.dart';
 import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
 import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
+import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
 import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
 import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_state.dart';
@@ -67,5 +68,39 @@ class TransactionCubit extends Cubit<TransactionState> with StreamListener {
   Future<void> restoreTransaction(Transaction txn) async {
     await _repository.add(txn.copyWith(id: null));
     await _balanceService.applyEffect(txn);
+  }
+
+  /// Edits an expense inline: reverses the old coverage back to baseline, then
+  /// re-records the new amount with the new lender distribution ([sources] maps
+  /// categoryId → amount taken). The income part of any old coverage is dropped.
+  Future<void> editExpenseCoverage(
+    Transaction txn,
+    double newAmount,
+    Map<int, double> sources,
+    double income,
+  ) async {
+    await _balanceService.reverseCoverage(txn);
+
+    final newSources = [
+      for (final entry in sources.entries)
+        if (entry.value > 0)
+          CoverageSource(categoryId: entry.key, amount: entry.value),
+    ];
+    final coverage = newSources.isEmpty && income <= 0
+        ? ''
+        : TransactionCoverage(income: income, sources: newSources).encode();
+    final updated = txn.copyWith(amount: newAmount, coverage: coverage);
+
+    await _repository.edit(updated);
+    await _balanceService.applyCoverage(updated);
+    await _balanceService.recomputeSpent(txn.categoryId);
+  }
+
+  /// Edits an income amount inline: adjusts the category's allocated by the
+  /// difference.
+  Future<void> editIncomeAmount(Transaction txn, double newAmount) async {
+    final delta = newAmount - txn.amount;
+    await _repository.edit(txn.copyWith(amount: newAmount));
+    await _balanceService.adjustAllocated(txn.categoryId, delta);
   }
 }

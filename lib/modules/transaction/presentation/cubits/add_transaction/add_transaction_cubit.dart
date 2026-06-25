@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
 import 'package:budget_buddy/modules/subcategory/domain/default_subcategories.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
 import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
+import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
 import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
 import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_state.dart';
@@ -355,11 +354,12 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   String? _buildCoverage(List<OverflowSplit> splits, double income) {
     final positive = splits.where((s) => s.amount > 0).toList();
     if (positive.isEmpty && income <= 0) return null;
-    return jsonEncode({
-      'income': income,
-      'splits': [
-        for (final s in positive) {'c': s.category.id, 'a': s.amount},
+    return TransactionCoverage(
+      income: income,
+      sources: [
+        for (final s in positive)
+          CoverageSource(categoryId: s.category.id!, amount: s.amount),
       ],
-    });
+    ).encode();
   }
 }
