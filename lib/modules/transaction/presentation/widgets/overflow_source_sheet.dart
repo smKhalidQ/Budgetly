@@ -134,22 +134,64 @@ class _DeficitMeter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (deficit, covered, isFull) =
-        context.select<AddTransactionCubit, (double, double, bool)>(
-      (c) => (
-        c.state.overflowDeficit ?? 0,
-        c.state.overflowCovered,
-        c.state.overflowFullyCovered,
-      ),
-    );
+    final state = context.watch<AddTransactionCubit>().state;
+    final amount = state.parsedAmount;
+    final deficit = state.overflowDeficit ?? 0;
+    final covered = state.overflowCovered;
+    final isFull = state.overflowFullyCovered;
 
-    final progress = deficit > 0 ? (covered / deficit).clamp(0.0, 1.0) : 0.0;
-    final meterColor = isFull ? AppColor.incomeColor : AppColor.accentColor;
+    final primaryColor = state.selectedCategory != null
+        ? parseColorFromString(state.selectedCategory!.color)
+        : AppColor.primaryColor;
+    final primaryName = state.selectedCategory?.name ?? 'category';
+    final primaryPart = amount - deficit;
+    final remaining = deficit - covered;
+    final remainingColor =
+        isFull ? AppColor.incomeColor : AppColor.accentColor;
+    final remainingLabel = isFull
+        ? 'All covered'
+        : 'Remaining: $currencySymbol${remaining.toStringAsFixed(0)}';
+
+    final parts = <(int, Color)>[];
+    if (primaryPart > 0) parts.add(((primaryPart * 100).round(), primaryColor));
+    for (final split in state.overflowSplits) {
+      if (split.amount > 0) {
+        parts.add((
+          (split.amount * 100).round(),
+          parseColorFromString(split.category.color),
+        ));
+      }
+    }
+    if (state.overflowIncome > 0) {
+      parts.add(((state.overflowIncome * 100).round(), AppColor.incomeColor));
+    }
+    final rf = (remaining < 0 ? 0.0 : remaining * 100).round();
+
+    final barChildren = <Widget>[];
+    for (var i = 0; i < parts.length; i++) {
+      if (i > 0) {
+        barChildren.add(Container(width: 1.5.w, color: AppColor.cardBackground));
+      }
+      barChildren.add(
+        Expanded(flex: parts[i].$1, child: Container(color: parts[i].$2)),
+      );
+    }
+    if (rf > 0) {
+      if (barChildren.isNotEmpty) {
+        barChildren.add(Container(width: 1.5.w, color: AppColor.cardBackground));
+      }
+      barChildren.add(
+        Expanded(flex: rf, child: Container(color: AppColor.borderColor)),
+      );
+    }
+    if (barChildren.isEmpty) {
+      barChildren.add(Expanded(child: Container(color: AppColor.borderColor)));
+    }
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: AppColor.cardBackground,
           borderRadius: BorderRadius.circular(12.r),
@@ -161,35 +203,31 @@ class _DeficitMeter extends StatelessWidget {
         ),
         child: Column(
           children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4.r),
+              child: SizedBox(height: 7.h, child: Row(children: barChildren)),
+            ),
+            SizedBox(height: 8.h),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Covered',
+                  'From $primaryName: $currencySymbol${primaryPart.toStringAsFixed(0)}',
                   style: GoogleFonts.cairo(
-                    fontSize: 12.sp,
-                    color: AppColor.textSecondary,
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w600,
+                    color: primaryColor,
                   ),
                 ),
+                const Spacer(),
                 Text(
-                  '$currencySymbol${covered.toStringAsFixed(2)} / $currencySymbol${deficit.toStringAsFixed(2)}',
-                  style: AppTextStyle.number(
-                    size: 13.sp,
-                    weight: FontWeight.w600,
-                    color: meterColor,
+                  remainingLabel,
+                  style: GoogleFonts.cairo(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w700,
+                    color: remainingColor,
                   ),
                 ),
               ],
-            ),
-            SizedBox(height: 8.h),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4.r),
-              child: LinearProgressIndicator(
-                value: progress,
-                minHeight: 6.h,
-                backgroundColor: AppColor.surfaceMuted,
-                valueColor: AlwaysStoppedAnimation<Color>(meterColor),
-              ),
             ),
           ],
         ),
@@ -291,7 +329,7 @@ class _SplitRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Available: $currencySymbol${split.available.toStringAsFixed(2)}',
+                  'Available: $currencySymbol${(split.available - split.amount).toStringAsFixed(2)}',
                   style: AppTextStyle.number(
                     size: 11.sp,
                     weight: FontWeight.w400,

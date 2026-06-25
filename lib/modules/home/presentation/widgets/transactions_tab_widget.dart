@@ -768,8 +768,10 @@ class _InlineEditorState extends State<_InlineEditor> {
   void _onIncomeChanged(String text) {
     var value = double.tryParse(text) ?? 0;
     if (value < 0) value = 0;
-    if (value > _deficit) {
-      value = _deficit;
+    var cap = _deficit - _lenderSum;
+    if (cap < 0) cap = 0;
+    if (value > cap) {
+      value = cap;
       final clamped = _fmt(value);
       _incomeController.value = TextEditingValue(
         text: clamped,
@@ -782,16 +784,21 @@ class _InlineEditorState extends State<_InlineEditor> {
   void _onLenderChanged(Category c, String text) {
     var value = double.tryParse(text) ?? 0;
     if (value < 0) value = 0;
+    final id = c.id!;
+    final othersCovered = _coveredSum - (_lenderAmounts[id] ?? 0);
+    var cap = _deficit - othersCovered;
+    if (cap < 0) cap = 0;
     final max = _maxFor(c);
-    if (value > max) {
-      value = max;
+    if (max < cap) cap = max;
+    if (value > cap) {
+      value = cap;
       final clamped = _fmt(value);
-      _lenderControllers[c.id!]!.value = TextEditingValue(
+      _lenderControllers[id]!.value = TextEditingValue(
         text: clamped,
         selection: TextSelection.collapsed(offset: clamped.length),
       );
     }
-    setState(() => _lenderAmounts[c.id!] = value);
+    setState(() => _lenderAmounts[id] = value);
   }
 
   void _save() {
@@ -1141,7 +1148,7 @@ class _InlineEditorState extends State<_InlineEditor> {
                   ),
                 ),
                 Text(
-                  'Max: $symbol${_maxFor(c).toStringAsFixed(0)}',
+                  'Available: $symbol${(_maxFor(c) - (_lenderAmounts[c.id!] ?? 0)).toStringAsFixed(0)}',
                   style: GoogleFonts.cairo(
                     fontSize: 10.sp,
                     color: AppColor.textSecondary,
