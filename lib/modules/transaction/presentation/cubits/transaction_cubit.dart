@@ -70,9 +70,6 @@ class TransactionCubit extends Cubit<TransactionState> with StreamListener {
     await _balanceService.applyEffect(txn);
   }
 
-  /// Edits an expense inline: reverses the old coverage back to baseline, then
-  /// re-records the new amount with the new lender distribution ([sources] maps
-  /// categoryId → amount taken). The income part of any old coverage is dropped.
   Future<void> editExpenseCoverage(
     Transaction txn,
     double newAmount,
@@ -96,8 +93,6 @@ class TransactionCubit extends Cubit<TransactionState> with StreamListener {
     await _balanceService.recomputeSpent(txn.categoryId);
   }
 
-  /// Edits an income amount inline: adjusts the category's allocated by the
-  /// difference.
   Future<void> editIncomeAmount(Transaction txn, double newAmount) async {
     final delta = newAmount - txn.amount;
     await _repository.edit(txn.copyWith(amount: newAmount));
