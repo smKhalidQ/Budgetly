@@ -2,6 +2,7 @@ import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:budget_buddy/modules/reconcile/presentation/screens/reconcile_screen.dart';
 import 'package:budget_buddy/modules/recurring/presentation/screens/recurring_expenses_screen.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/settings_state.dart';
@@ -154,6 +155,25 @@ class _SettingsView extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (_) => const RecurringExpensesScreen(),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              _SectionLabel('Balance'),
+              _SettingsTile(
+                icon: Icons.account_balance_wallet_rounded,
+                iconColor: AppColor.accentColor,
+                title: 'Reconcile balance',
+                subtitle: 'Match the app to the money you actually have',
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColor.textSecondary.withValues(alpha: 0.4),
+                  size: 22.sp,
+                ),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ReconcileScreen(),
                   ),
                 ),
               ),

@@ -58,6 +58,11 @@ class MonthCycleService {
     return raw == null ? null : DateTime.tryParse(raw);
   }
 
+  Future<void> markCycleStart(DateTime when) => CacheHelper.saveData(
+        key: _cycleStartKey,
+        value: when.toIso8601String(),
+      );
+
   /// Closes the current month and opens a fresh one. Safe to call any time the
   /// user's income lands.
   Future<CycleSummary> startNewCycle() async {
