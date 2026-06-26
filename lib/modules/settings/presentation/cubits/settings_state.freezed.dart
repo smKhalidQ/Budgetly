@@ -17,6 +17,7 @@ mixin _$SettingsState {
   SettingsStatus get status;
   String? get errorMessage;
   CycleSummary? get lastCycle;
+  bool get wasReset;
 
   /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
@@ -35,15 +36,18 @@ mixin _$SettingsState {
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
             (identical(other.lastCycle, lastCycle) ||
-                other.lastCycle == lastCycle));
+                other.lastCycle == lastCycle) &&
+            (identical(other.wasReset, wasReset) ||
+                other.wasReset == wasReset));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, errorMessage, lastCycle);
+  int get hashCode =>
+      Object.hash(runtimeType, status, errorMessage, lastCycle, wasReset);
 
   @override
   String toString() {
-    return 'SettingsState(status: $status, errorMessage: $errorMessage, lastCycle: $lastCycle)';
+    return 'SettingsState(status: $status, errorMessage: $errorMessage, lastCycle: $lastCycle, wasReset: $wasReset)';
   }
 }
 
@@ -54,7 +58,10 @@ abstract mixin class $SettingsStateCopyWith<$Res> {
       _$SettingsStateCopyWithImpl;
   @useResult
   $Res call(
-      {SettingsStatus status, String? errorMessage, CycleSummary? lastCycle});
+      {SettingsStatus status,
+      String? errorMessage,
+      CycleSummary? lastCycle,
+      bool wasReset});
 }
 
 /// @nodoc
@@ -73,6 +80,7 @@ class _$SettingsStateCopyWithImpl<$Res>
     Object? status = null,
     Object? errorMessage = freezed,
     Object? lastCycle = freezed,
+    Object? wasReset = null,
   }) {
     return _then(_self.copyWith(
       status: null == status
@@ -87,6 +95,10 @@ class _$SettingsStateCopyWithImpl<$Res>
           ? _self.lastCycle
           : lastCycle // ignore: cast_nullable_to_non_nullable
               as CycleSummary?,
+      wasReset: null == wasReset
+          ? _self.wasReset
+          : wasReset // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -183,14 +195,15 @@ extension SettingsStatePatterns on SettingsState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(SettingsStatus status, String? errorMessage,
-            CycleSummary? lastCycle)?
+            CycleSummary? lastCycle, bool wasReset)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _SettingsState() when $default != null:
-        return $default(_that.status, _that.errorMessage, _that.lastCycle);
+        return $default(
+            _that.status, _that.errorMessage, _that.lastCycle, _that.wasReset);
       case _:
         return orElse();
     }
@@ -212,13 +225,14 @@ extension SettingsStatePatterns on SettingsState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(SettingsStatus status, String? errorMessage,
-            CycleSummary? lastCycle)
+            CycleSummary? lastCycle, bool wasReset)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingsState():
-        return $default(_that.status, _that.errorMessage, _that.lastCycle);
+        return $default(
+            _that.status, _that.errorMessage, _that.lastCycle, _that.wasReset);
     }
   }
 
@@ -237,13 +251,14 @@ extension SettingsStatePatterns on SettingsState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(SettingsStatus status, String? errorMessage,
-            CycleSummary? lastCycle)?
+            CycleSummary? lastCycle, bool wasReset)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingsState() when $default != null:
-        return $default(_that.status, _that.errorMessage, _that.lastCycle);
+        return $default(
+            _that.status, _that.errorMessage, _that.lastCycle, _that.wasReset);
       case _:
         return null;
     }
@@ -256,7 +271,8 @@ class _SettingsState implements SettingsState {
   const _SettingsState(
       {this.status = SettingsStatus.initial,
       this.errorMessage,
-      this.lastCycle});
+      this.lastCycle,
+      this.wasReset = false});
 
   @override
   @JsonKey()
@@ -265,6 +281,9 @@ class _SettingsState implements SettingsState {
   final String? errorMessage;
   @override
   final CycleSummary? lastCycle;
+  @override
+  @JsonKey()
+  final bool wasReset;
 
   /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
@@ -283,15 +302,18 @@ class _SettingsState implements SettingsState {
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
             (identical(other.lastCycle, lastCycle) ||
-                other.lastCycle == lastCycle));
+                other.lastCycle == lastCycle) &&
+            (identical(other.wasReset, wasReset) ||
+                other.wasReset == wasReset));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, errorMessage, lastCycle);
+  int get hashCode =>
+      Object.hash(runtimeType, status, errorMessage, lastCycle, wasReset);
 
   @override
   String toString() {
-    return 'SettingsState(status: $status, errorMessage: $errorMessage, lastCycle: $lastCycle)';
+    return 'SettingsState(status: $status, errorMessage: $errorMessage, lastCycle: $lastCycle, wasReset: $wasReset)';
   }
 }
 
@@ -304,7 +326,10 @@ abstract mixin class _$SettingsStateCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {SettingsStatus status, String? errorMessage, CycleSummary? lastCycle});
+      {SettingsStatus status,
+      String? errorMessage,
+      CycleSummary? lastCycle,
+      bool wasReset});
 }
 
 /// @nodoc
@@ -323,6 +348,7 @@ class __$SettingsStateCopyWithImpl<$Res>
     Object? status = null,
     Object? errorMessage = freezed,
     Object? lastCycle = freezed,
+    Object? wasReset = null,
   }) {
     return _then(_SettingsState(
       status: null == status
@@ -337,6 +363,10 @@ class __$SettingsStateCopyWithImpl<$Res>
           ? _self.lastCycle
           : lastCycle // ignore: cast_nullable_to_non_nullable
               as CycleSummary?,
+      wasReset: null == wasReset
+          ? _self.wasReset
+          : wasReset // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }

@@ -52,7 +52,8 @@ void initializeDependencies() {
   GetIt.I.registerFactory(
       () => AddTransactionCubit(GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(() => SettingCubit(GetIt.I()));
-  GetIt.I.registerFactory(() => SettingsCubit(GetIt.I(), GetIt.I(), GetIt.I()));
+  GetIt.I.registerFactory(
+      () => SettingsCubit(GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(
       () => RecurringCubit(GetIt.I(), GetIt.I(), GetIt.I()));
 }

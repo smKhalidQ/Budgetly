@@ -55,6 +55,11 @@ class TransactionRepository {
     _changedController.add(null);
   }
 
+  Future<void> clearAll() async {
+    await _dataSource.clearAll();
+    _changedController.add(null);
+  }
+
   Transaction _fromRow(Map<String, dynamic> row) {
     final typeStr = row['type'] as String? ?? 'expense';
     return Transaction(

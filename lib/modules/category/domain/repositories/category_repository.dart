@@ -76,6 +76,11 @@ class CategoryRepository {
     );
   }
 
+  Future<void> resetAllSpentAmounts() async {
+    await _dataSource.resetAllSpentAmounts();
+    _changedController.add(const CategoryChangedEvent());
+  }
+
   Category _fromRow(Map<String, dynamic> row) => Category(
         id: row['categoryId'] as int?,
         name: row['categoryName'] as String? ?? '',

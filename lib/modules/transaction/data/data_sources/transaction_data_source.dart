@@ -79,4 +79,13 @@ class TransactionDataSource {
       throw Exception("data deletion failed");
     }
   }
+
+  Future<void> clearAll() async {
+    Database? myDb = await DatabaseHelper.db;
+    try {
+      await myDb!.delete('transaction');
+    } on DatabaseException catch (_) {
+      throw Exception("data deletion failed");
+    }
+  }
 }

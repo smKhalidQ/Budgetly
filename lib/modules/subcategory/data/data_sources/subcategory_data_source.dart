@@ -53,6 +53,16 @@ class SubcategoryDataSource {
     }
   }
 
+  Future<void> resetAllSpentAmounts() async {
+    Database? myDb = await DatabaseHelper.db;
+    try {
+      await myDb!.rawUpdate(
+          "UPDATE subcategory SET subcategorySpentAmount = ?", ['0']);
+    } on DatabaseException catch (_) {
+      throw Exception("data update failed");
+    }
+  }
+
   Future<int> updateSubcategoryData({
     required int subcategoryId,
     required Map<String, dynamic> updatedFields,

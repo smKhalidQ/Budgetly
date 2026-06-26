@@ -132,6 +132,15 @@ class CategoryManagementDataSource {
     }
   }
 
+  Future<void> resetAllSpentAmounts() async {
+    Database? myDb = await DatabaseHelper.db;
+    try {
+      await myDb!.rawUpdate('UPDATE category SET storedSpentAmount = ?', [0.0]);
+    } on DatabaseException catch (_) {
+      throw Exception("data update failed");
+    }
+  }
+
   Future<Map<String, dynamic>?> getCategoryById(int categoryId) async {
     Database? myDb = await DatabaseHelper.db;
     try {

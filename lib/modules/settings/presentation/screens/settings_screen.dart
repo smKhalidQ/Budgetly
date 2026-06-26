@@ -67,11 +67,64 @@ class _SettingsView extends StatelessWidget {
     );
   }
 
+  void _confirmReset(BuildContext context) {
+    final cubit = context.read<SettingsCubit>();
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          'Reset to initial state?',
+          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'All transactions will be deleted and spending will be zeroed. '
+          'Your salary, category allocations, and fixed expenses are kept.',
+          style: GoogleFonts.cairo(
+            fontSize: 13.sp,
+            color: AppColor.textSecondary,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.cairo(color: AppColor.textSecondary),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              cubit.resetToPostSetup();
+            },
+            child: const Text('Reset'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _onCycleDone(BuildContext context, SettingsState state) {
+    if (state.wasReset) {
+      context.read<CategoryCubit>().fetchCategories();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Reset complete — back to post-setup state',
+            style: GoogleFonts.cairo(fontSize: 12.sp),
+          ),
+        ),
+      );
+      return;
+    }
+
     final summary = state.lastCycle;
     if (summary == null) return;
 
-    // Refresh the home category balances after the sweep.
     context.read<CategoryCubit>().fetchCategories();
 
     final parts = <String>[
@@ -113,7 +166,7 @@ class _SettingsView extends StatelessWidget {
         listenWhen: (prev, curr) =>
             prev.status != curr.status &&
             curr.status == SettingsStatus.success &&
-            curr.lastCycle != null,
+            (curr.lastCycle != null || curr.wasReset),
         listener: _onCycleDone,
         builder: (context, state) {
           return ListView(
@@ -176,6 +229,27 @@ class _SettingsView extends StatelessWidget {
                     builder: (_) => const ReconcileScreen(),
                   ),
                 ),
+              ),
+              SizedBox(height: 16.h),
+              _SectionLabel('Debug'),
+              _SettingsTile(
+                icon: Icons.restart_alt_rounded,
+                iconColor: Colors.red,
+                title: 'Reset to post-setup state',
+                subtitle:
+                    'Wipe all transactions & spending — keeps salary and allocations',
+                trailing: state.isLoading
+                    ? SizedBox(
+                        width: 18.w,
+                        height: 18.w,
+                        child: const CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Icon(
+                        Icons.chevron_right_rounded,
+                        color: AppColor.textSecondary.withValues(alpha: 0.4),
+                        size: 22.sp,
+                      ),
+                onTap: state.isLoading ? null : () => _confirmReset(context),
               ),
             ],
           );

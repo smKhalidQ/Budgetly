@@ -12,6 +12,7 @@ sealed class SettingsState with _$SettingsState {
     @Default(SettingsStatus.initial) SettingsStatus status,
     String? errorMessage,
     CycleSummary? lastCycle,
+    @Default(false) bool wasReset,
   }) = _SettingsState;
 }
 
