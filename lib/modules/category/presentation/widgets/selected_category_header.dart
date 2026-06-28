@@ -4,9 +4,12 @@ import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
+import 'package:budget_buddy/core/widgets/pickers/color_picker_widget.dart';
+import 'package:budget_buddy/core/widgets/pickers/icon_picker_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +21,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
   final double remainingAmount;
   final bool showPieChart;
   final VoidCallback onTogglePieChart;
+  final ValueChanged<Category> onCategoryUpdated;
 
   const SelectedCategoryHeaderWidget({
     super.key,
@@ -26,6 +30,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     required this.remainingAmount,
     required this.showPieChart,
     required this.onTogglePieChart,
+    required this.onCategoryUpdated,
   });
 
   @override
@@ -33,7 +38,6 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     final double progressValue =
         (category.spentAmount / category.allocatedAmount).clamp(0.0, 1.0);
 
-    // Flat header — no card chrome, sits directly on the white background.
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Column(
@@ -47,7 +51,10 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [_buildCategoryInfo(), _buildActionButtons()],
+                    children: [
+                      _buildCategoryInfo(),
+                      _buildActionButtons(context),
+                    ],
                   ),
                 ),
               ],
@@ -236,11 +243,34 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons() {
-    return _iconBtn(
-      icon: Icons.pie_chart,
-      color: categoryColor,
-      onTap: onTogglePieChart,
+  Widget _buildActionButtons(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _iconBtn(
+          icon: Icons.edit_outlined,
+          color: AppColor.textSecondary,
+          onTap: () => _showEditDialog(context),
+        ),
+        SizedBox(width: 8.w),
+        _iconBtn(
+          icon: Icons.pie_chart,
+          color: categoryColor,
+          onTap: onTogglePieChart,
+        ),
+      ],
+    );
+  }
+
+  void _showEditDialog(BuildContext context) {
+    final cubit = CategoryCubit.get(context);
+    showDialog(
+      context: context,
+      builder: (_) => _EditCategoryDialog(
+        category: category,
+        cubit: cubit,
+        onSaved: onCategoryUpdated,
+      ),
     );
   }
 
@@ -260,6 +290,162 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
         ),
         child: Icon(icon, color: color, size: 20.sp),
       ),
+    );
+  }
+}
+
+// ─── Edit Category Dialog ─────────────────────────────────────────────────────
+
+class _EditCategoryDialog extends StatefulWidget {
+  final Category category;
+  final CategoryCubit cubit;
+  final ValueChanged<Category> onSaved;
+
+  const _EditCategoryDialog({
+    required this.category,
+    required this.cubit,
+    required this.onSaved,
+  });
+
+  @override
+  State<_EditCategoryDialog> createState() => _EditCategoryDialogState();
+}
+
+class _EditCategoryDialogState extends State<_EditCategoryDialog> {
+  late final TextEditingController _nameCtrl;
+  late final PageController _pageCtrl;
+  late Color _color;
+  late String _icon;
+  int _page = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameCtrl = TextEditingController(text: widget.category.name);
+    _pageCtrl = PageController();
+    _color = parseColorFromString(widget.category.color);
+    _icon = widget.category.icon;
+  }
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _pageCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        "Edit Category",
+        style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
+      ),
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: Column(
+          children: [
+            TextField(
+              controller: _nameCtrl,
+              decoration: const InputDecoration(
+                labelText: "Name",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16.h),
+            Expanded(
+              child: PageView(
+                controller: _pageCtrl,
+                onPageChanged: (p) => setState(() => _page = p),
+                children: [
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Select Icon",
+                          style: GoogleFonts.roboto(fontWeight: FontWeight.w500),
+                        ),
+                        SizedBox(height: 10.h),
+                        IconPickerWidget(
+                          key: ValueKey(_icon),
+                          currentIcon: IconData(
+                            int.tryParse(_icon) ?? Icons.category.codePoint,
+                            fontFamily: 'MaterialIcons',
+                          ),
+                          currentColor: _color,
+                          onIconSelected: (icon) =>
+                              setState(() => _icon = icon.codePoint.toString()),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Select Color",
+                          style: GoogleFonts.roboto(fontWeight: FontWeight.w500),
+                        ),
+                        SizedBox(height: 10.h),
+                        ColorPickerWidget(
+                          key: ValueKey(_color.toARGB32()),
+                          currentColor: _color,
+                          onColorSelected: (c) => setState(() => _color = c),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                2,
+                (i) => Container(
+                  width: 8.w,
+                  height: 8.w,
+                  margin: EdgeInsets.symmetric(horizontal: 4.w),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _page == i
+                        ? AppColor.primaryColor
+                        : Colors.grey.withValues(alpha: 0.5),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text("Cancel", style: TextStyle(color: Colors.grey[600])),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColor.primaryColor,
+            foregroundColor: Colors.white,
+          ),
+          onPressed: () {
+            if (_nameCtrl.text.trim().isEmpty) return;
+            final colorHex =
+                '0x${_color.toARGB32().toRadixString(16).padLeft(8, '0')}';
+            final updated = widget.category.copyWith(
+              name: _nameCtrl.text.trim(),
+              icon: _icon,
+              color: colorHex,
+            );
+            widget.cubit.updateCategoryData(widget.category.id!, updated);
+            widget.onSaved(updated);
+            Navigator.pop(context);
+          },
+          child: const Text("Save"),
+        ),
+      ],
     );
   }
 }

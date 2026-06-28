@@ -22,10 +22,12 @@ class CategoryDetailScreen extends StatefulWidget {
 
 class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   late final SubcategoryCubit _subcategoryCubit;
+  late Category _category;
 
   @override
   void initState() {
     super.initState();
+    _category = widget.category;
     _subcategoryCubit = GetIt.I<SubcategoryCubit>()
       ..fetchAndEnsureDefault(widget.category);
   }
@@ -38,9 +40,9 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Color categoryColor = parseColorFromString(widget.category.color);
+    final Color categoryColor = parseColorFromString(_category.color);
     final double remainingAmount =
-        widget.category.allocatedAmount - widget.category.spentAmount;
+        _category.allocatedAmount - _category.spentAmount;
 
     return BlocProvider.value(
       value: _subcategoryCubit,
@@ -50,7 +52,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
           ),
-          title: Text(widget.category.name),
+          title: Text(_category.name),
         ),
         backgroundColor: AppColor.cardBackground,
         body: BlocBuilder<SubcategoryCubit, SubcategoryState>(
@@ -59,16 +61,17 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
             return Column(
               children: [
                 SelectedCategoryHeaderWidget(
-                  category: widget.category,
+                  category: _category,
                   categoryColor: categoryColor,
                   remainingAmount: remainingAmount,
                   showPieChart: state.showPieChart,
-                  onTogglePieChart: () =>
-                      _subcategoryCubit.togglePieChart(),
+                  onTogglePieChart: _subcategoryCubit.togglePieChart,
+                  onCategoryUpdated: (updated) =>
+                      setState(() => _category = updated),
                 ),
                 Expanded(
                   child: SubcategoriesListWidget(
-                    category: widget.category,
+                    category: _category,
                   ),
                 ),
               ],
@@ -96,7 +99,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
     await PickerDialogHelpers.showSubcategoryPickerDialog(
       context: context,
       title: "Add New Subcategory",
-      parentCategoryId: widget.category.id!,
+      parentCategoryId: _category.id!,
       pickerFunction: (Subcategory newSubcategory) {
         _subcategoryCubit.insertNewSubcategory(newSubcategory);
       },
