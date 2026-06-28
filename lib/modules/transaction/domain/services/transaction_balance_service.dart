@@ -90,45 +90,16 @@ class TransactionBalanceService {
     }
   }
 
-  /// Restores every category's allocatedAmount to what it was immediately after
-  /// setup by reversing all income, rollover, and coverage effects.
   Future<void> resetAllocationsToSetup() async {
-    final transactions = await _transactionRepository.getAll();
     final categories = await _categoryRepository.getAll();
-
-    // Net amount that was ADDED to each category's allocatedAmount since setup.
-    final netDelta = <int, double>{};
-
-    for (final txn in transactions) {
-      switch (txn.type) {
-        case TransactionType.income:
-        case TransactionType.rollover:
-          netDelta[txn.categoryId] = (netDelta[txn.categoryId] ?? 0) + txn.amount;
-        case TransactionType.expense:
-          final coverage = TransactionCoverage.parse(txn.coverage);
-          if (coverage == null) break;
-          // Lenders had their allocated reduced — we'll add it back.
-          for (final source in coverage.sources) {
-            netDelta[source.categoryId] =
-                (netDelta[source.categoryId] ?? 0) - source.amount;
-          }
-          // Primary gained total coverage (borrowed + income contribution).
-          if (coverage.borrowed > 0) {
-            netDelta[txn.categoryId] =
-                (netDelta[txn.categoryId] ?? 0) + coverage.borrowed;
-          }
-      }
-    }
-
     for (final category in categories) {
       if (category.id == null) continue;
-      final delta = netDelta[category.id!] ?? 0.0;
-      if (delta == 0) continue;
-      final original = (category.allocatedAmount - delta).clamp(0.0, double.infinity);
-      await _categoryRepository.update(
-        category.id!,
-        category.copyWith(allocatedAmount: original),
-      );
+      if (category.allocatedAmount != category.baseAllocation) {
+        await _categoryRepository.update(
+          category.id!,
+          category.copyWith(allocatedAmount: category.baseAllocation),
+        );
+      }
     }
   }
 }

@@ -26,6 +26,7 @@ class CategoryRepository {
       categoryColor: item.color,
       categoryIcon: item.icon,
       allocatedAmount: item.allocatedAmount,
+      baseAllocation: item.baseAllocation,
     );
     _changedController.add(const CategoryChangedEvent());
   }
@@ -38,6 +39,7 @@ class CategoryRepository {
         'categoryColor': item.color,
         'categoryIcon': item.icon,
         'allocatedAmount': item.allocatedAmount,
+        'baseAllocation': item.baseAllocation,
       },
     );
     _changedController.add(const CategoryChangedEvent());
@@ -57,6 +59,7 @@ class CategoryRepository {
                 'categoryColor': c.color,
                 'categoryIcon': c.icon,
                 'allocatedAmount': c.allocatedAmount,
+                'baseAllocation': c.baseAllocation,
                 'storedSpentAmount': c.spentAmount,
               })
           .toList(),
@@ -81,12 +84,16 @@ class CategoryRepository {
     _changedController.add(const CategoryChangedEvent());
   }
 
-  Category _fromRow(Map<String, dynamic> row) => Category(
-        id: row['categoryId'] as int?,
-        name: row['categoryName'] as String? ?? '',
-        color: row['categoryColor'] as String? ?? '',
-        icon: row['categoryIcon'] as String? ?? '',
-        allocatedAmount: (row['allocatedAmount'] as num?)?.toDouble() ?? 0.0,
-        spentAmount: (row['storedSpentAmount'] as num?)?.toDouble() ?? 0.0,
-      );
+  Category _fromRow(Map<String, dynamic> row) {
+    final allocated = (row['allocatedAmount'] as num?)?.toDouble() ?? 0.0;
+    return Category(
+      id: row['categoryId'] as int?,
+      name: row['categoryName'] as String? ?? '',
+      color: row['categoryColor'] as String? ?? '',
+      icon: row['categoryIcon'] as String? ?? '',
+      allocatedAmount: allocated,
+      baseAllocation: (row['baseAllocation'] as num?)?.toDouble() ?? allocated,
+      spentAmount: (row['storedSpentAmount'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
 }

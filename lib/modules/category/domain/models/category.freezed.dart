@@ -19,6 +19,7 @@ mixin _$Category {
   String get color;
   String get icon;
   double get allocatedAmount;
+  double get baseAllocation;
   double get spentAmount;
 
   /// Create a copy of Category
@@ -39,17 +40,19 @@ mixin _$Category {
             (identical(other.icon, icon) || other.icon == icon) &&
             (identical(other.allocatedAmount, allocatedAmount) ||
                 other.allocatedAmount == allocatedAmount) &&
+            (identical(other.baseAllocation, baseAllocation) ||
+                other.baseAllocation == baseAllocation) &&
             (identical(other.spentAmount, spentAmount) ||
                 other.spentAmount == spentAmount));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, color, icon, allocatedAmount, spentAmount);
+  int get hashCode => Object.hash(runtimeType, id, name, color, icon,
+      allocatedAmount, baseAllocation, spentAmount);
 
   @override
   String toString() {
-    return 'Category(id: $id, name: $name, color: $color, icon: $icon, allocatedAmount: $allocatedAmount, spentAmount: $spentAmount)';
+    return 'Category(id: $id, name: $name, color: $color, icon: $icon, allocatedAmount: $allocatedAmount, baseAllocation: $baseAllocation, spentAmount: $spentAmount)';
   }
 }
 
@@ -64,6 +67,7 @@ abstract mixin class $CategoryCopyWith<$Res> {
       String color,
       String icon,
       double allocatedAmount,
+      double baseAllocation,
       double spentAmount});
 }
 
@@ -84,6 +88,7 @@ class _$CategoryCopyWithImpl<$Res> implements $CategoryCopyWith<$Res> {
     Object? color = null,
     Object? icon = null,
     Object? allocatedAmount = null,
+    Object? baseAllocation = null,
     Object? spentAmount = null,
   }) {
     return _then(_self.copyWith(
@@ -106,6 +111,10 @@ class _$CategoryCopyWithImpl<$Res> implements $CategoryCopyWith<$Res> {
       allocatedAmount: null == allocatedAmount
           ? _self.allocatedAmount
           : allocatedAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      baseAllocation: null == baseAllocation
+          ? _self.baseAllocation
+          : baseAllocation // ignore: cast_nullable_to_non_nullable
               as double,
       spentAmount: null == spentAmount
           ? _self.spentAmount
@@ -207,7 +216,7 @@ extension CategoryPatterns on Category {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(int? id, String name, String color, String icon,
-            double allocatedAmount, double spentAmount)?
+            double allocatedAmount, double baseAllocation, double spentAmount)?
         $default, {
     required TResult orElse(),
   }) {
@@ -215,7 +224,7 @@ extension CategoryPatterns on Category {
     switch (_that) {
       case _Category() when $default != null:
         return $default(_that.id, _that.name, _that.color, _that.icon,
-            _that.allocatedAmount, _that.spentAmount);
+            _that.allocatedAmount, _that.baseAllocation, _that.spentAmount);
       case _:
         return orElse();
     }
@@ -237,14 +246,14 @@ extension CategoryPatterns on Category {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(int? id, String name, String color, String icon,
-            double allocatedAmount, double spentAmount)
+            double allocatedAmount, double baseAllocation, double spentAmount)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Category():
         return $default(_that.id, _that.name, _that.color, _that.icon,
-            _that.allocatedAmount, _that.spentAmount);
+            _that.allocatedAmount, _that.baseAllocation, _that.spentAmount);
     }
   }
 
@@ -263,14 +272,14 @@ extension CategoryPatterns on Category {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(int? id, String name, String color, String icon,
-            double allocatedAmount, double spentAmount)?
+            double allocatedAmount, double baseAllocation, double spentAmount)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Category() when $default != null:
         return $default(_that.id, _that.name, _that.color, _that.icon,
-            _that.allocatedAmount, _that.spentAmount);
+            _that.allocatedAmount, _that.baseAllocation, _that.spentAmount);
       case _:
         return null;
     }
@@ -286,6 +295,7 @@ class _Category implements Category {
       required this.color,
       required this.icon,
       required this.allocatedAmount,
+      this.baseAllocation = 0.0,
       this.spentAmount = 0.0});
 
   @override
@@ -298,6 +308,9 @@ class _Category implements Category {
   final String icon;
   @override
   final double allocatedAmount;
+  @override
+  @JsonKey()
+  final double baseAllocation;
   @override
   @JsonKey()
   final double spentAmount;
@@ -321,17 +334,19 @@ class _Category implements Category {
             (identical(other.icon, icon) || other.icon == icon) &&
             (identical(other.allocatedAmount, allocatedAmount) ||
                 other.allocatedAmount == allocatedAmount) &&
+            (identical(other.baseAllocation, baseAllocation) ||
+                other.baseAllocation == baseAllocation) &&
             (identical(other.spentAmount, spentAmount) ||
                 other.spentAmount == spentAmount));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, color, icon, allocatedAmount, spentAmount);
+  int get hashCode => Object.hash(runtimeType, id, name, color, icon,
+      allocatedAmount, baseAllocation, spentAmount);
 
   @override
   String toString() {
-    return 'Category(id: $id, name: $name, color: $color, icon: $icon, allocatedAmount: $allocatedAmount, spentAmount: $spentAmount)';
+    return 'Category(id: $id, name: $name, color: $color, icon: $icon, allocatedAmount: $allocatedAmount, baseAllocation: $baseAllocation, spentAmount: $spentAmount)';
   }
 }
 
@@ -348,6 +363,7 @@ abstract mixin class _$CategoryCopyWith<$Res>
       String color,
       String icon,
       double allocatedAmount,
+      double baseAllocation,
       double spentAmount});
 }
 
@@ -368,6 +384,7 @@ class __$CategoryCopyWithImpl<$Res> implements _$CategoryCopyWith<$Res> {
     Object? color = null,
     Object? icon = null,
     Object? allocatedAmount = null,
+    Object? baseAllocation = null,
     Object? spentAmount = null,
   }) {
     return _then(_Category(
@@ -390,6 +407,10 @@ class __$CategoryCopyWithImpl<$Res> implements _$CategoryCopyWith<$Res> {
       allocatedAmount: null == allocatedAmount
           ? _self.allocatedAmount
           : allocatedAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      baseAllocation: null == baseAllocation
+          ? _self.baseAllocation
+          : baseAllocation // ignore: cast_nullable_to_non_nullable
               as double,
       spentAmount: null == spentAmount
           ? _self.spentAmount

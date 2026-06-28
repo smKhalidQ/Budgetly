@@ -114,12 +114,17 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
       id: item.id,
       name: updatedName,
       allocatedAmount: updatedAmount,
+      baseAllocation: updatedAmount,
       color: state.selectedColor,
       icon: state.selectedIcon.isEmpty ? item.icon : state.selectedIcon,
       spentAmount: item.spentAmount,
     );
     updateCategoryData(item.id!, updatedItem);
   }
+
+  List<Category> _withBaseFromAllocated(List<Category> list) => list
+      .map((c) => c.copyWith(baseAllocation: c.allocatedAmount))
+      .toList();
 
   void updateLocalCategory(int id, Category updated) {
     final index = state.categories.indexWhere((c) => c.id == id);
@@ -195,7 +200,7 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
     if (state.remainingBudget > 0) return false;
     emit(state.copyWith(status: CategoryStatus.loading));
     try {
-      await _repository.initializeAll(state.categories);
+      await _repository.initializeAll(_withBaseFromAllocated(state.categories));
       await CacheHelper.saveData(key: 'setup_done', value: true);
       emit(state.copyWith(status: CategoryStatus.success));
       return true;
@@ -228,7 +233,7 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
     }
     emit(state.copyWith(status: CategoryStatus.loading));
     try {
-      await _repository.initializeAll(state.categories);
+      await _repository.initializeAll(_withBaseFromAllocated(state.categories));
       await CacheHelper.saveData(key: 'setup_done', value: true);
       emit(state.copyWith(status: CategoryStatus.success));
     } catch (_) {

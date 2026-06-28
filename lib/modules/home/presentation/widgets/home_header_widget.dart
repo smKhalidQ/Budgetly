@@ -1,4 +1,5 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
+import 'package:budget_buddy/core/services/month_cycle_service.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
@@ -40,6 +41,11 @@ class HomeHeaderWidget extends StatelessWidget {
               0.0,
               (sum, c) => sum + c.allocatedAmount,
             );
+            final salary = catState.categories.fold(
+              0.0,
+              (sum, c) => sum + c.baseAllocation,
+            );
+            final saving = MonthCycleService.vaultTotal();
             final remaining = totalBudget - totalSpent;
             final isOver = remaining < 0;
             final progress = totalBudget == 0
@@ -190,12 +196,24 @@ class HomeHeaderWidget extends StatelessWidget {
                                 height: 28.h,
                                 color: Colors.white.withValues(alpha: 0.15),
                                 margin: EdgeInsets.symmetric(
-                                    horizontal: 16.w),
+                                    horizontal: 12.w),
                               ),
                               _CardStat(
-                                label: t.totalBudget,
+                                label: 'Saving',
+                                value: '$symbol${saving.toStringAsFixed(0)}',
+                                color: AppColor.accentColor,
+                              ),
+                              Container(
+                                width: 1.w,
+                                height: 28.h,
+                                color: Colors.white.withValues(alpha: 0.15),
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 12.w),
+                              ),
+                              _CardStat(
+                                label: 'Salary',
                                 value:
-                                    '$symbol${totalBudget.toStringAsFixed(0)}',
+                                    '$symbol${salary.toStringAsFixed(0)}',
                                 color: Colors.white,
                               ),
                               const Spacer(),

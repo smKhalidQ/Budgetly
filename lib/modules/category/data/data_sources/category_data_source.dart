@@ -17,6 +17,7 @@ class CategoryManagementDataSource {
     required String categoryColor,
     required String categoryIcon,
     required double allocatedAmount,
+    required double baseAllocation,
   }) async {
     Database? myDb = await DatabaseHelper.db;
     try {
@@ -26,6 +27,7 @@ class CategoryManagementDataSource {
         'categoryColor': categoryColor,
         'categoryIcon': categoryIcon,
         'allocatedAmount': allocatedAmount.toString(),
+        'baseAllocation': baseAllocation,
         'storedSpentAmount': 0.0,
       });
     } on DatabaseException catch (_) {
@@ -83,6 +85,7 @@ class CategoryManagementDataSource {
               'categoryColor': category['categoryColor'],
               'categoryIcon': category['categoryIcon'],
               'allocatedAmount': category['allocatedAmount'].toString(),
+              'baseAllocation': category['baseAllocation'],
               'storedSpentAmount': category['storedSpentAmount'].toString(),
             },
             where: 'categoryId = ?',
@@ -95,6 +98,7 @@ class CategoryManagementDataSource {
             'categoryColor': category['categoryColor'],
             'categoryIcon': category['categoryIcon'],
             'allocatedAmount': category['allocatedAmount'].toString(),
+            'baseAllocation': category['baseAllocation'],
             'storedSpentAmount': category['storedSpentAmount'].toString(),
           });
         }

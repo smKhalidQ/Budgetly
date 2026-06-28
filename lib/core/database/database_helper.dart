@@ -18,7 +18,7 @@ class DatabaseHelper {
     try {
       Database myDb = await openDatabase(
         path,
-        version: 4,
+        version: 5,
         onCreate: _onCreate,
         onUpgrade: _onUpgrade,
         onOpen: (db) async {
@@ -45,6 +45,7 @@ class DatabaseHelper {
         categoryColor TEXT,
         categoryIcon TEXT,
         allocatedAmount REAL NOT NULL,
+        baseAllocation REAL NOT NULL DEFAULT 0,
         storedSpentAmount REAL NOT NULL DEFAULT 0
       )''');
 
@@ -109,6 +110,11 @@ class DatabaseHelper {
     }
     if (oldVersion < 4) {
       await _addColumnIfMissing(db, 'transaction', 'coverage', 'TEXT');
+    }
+    if (oldVersion < 5) {
+      await _addColumnIfMissing(
+          db, 'category', 'baseAllocation', 'REAL NOT NULL DEFAULT 0');
+      await db.execute('UPDATE category SET baseAllocation = allocatedAmount');
     }
   }
 

@@ -43,7 +43,10 @@ class MonthCycleService {
 
   static const _cycleStartKey = 'cycle_start';
 
-  static const _savingName = 'Saving';
+  static const _vaultKey = 'vault_total';
+
+  static double vaultTotal() =>
+      (CacheHelper.getData(key: _vaultKey) as num?)?.toDouble() ?? 0.0;
 
   static const _monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -69,7 +72,7 @@ class MonthCycleService {
     final endedCycleStart = currentCycleStart() ?? DateTime.now();
     final categories = await _categoryRepository.getAll();
 
-    final saved = await _sweepLeftoverToSaving(categories, endedCycleStart);
+    final saved = await _sweepLeftoverToVault(categories, endedCycleStart);
     final (posted, flagged) = await _postRecurringExpenses();
 
     await _setCycleStart(DateTime.now());
@@ -81,21 +84,24 @@ class MonthCycleService {
     );
   }
 
-  /// Returns the leftover amount swept into Saving (0 if none).
-  Future<double> _sweepLeftoverToSaving(
+  Future<double> _sweepLeftoverToVault(
     List<Category> categories,
     DateTime endedCycleStart,
   ) async {
     var leftover = 0.0;
     for (final category in categories) {
-      if (category.name == _savingName) continue;
       final remaining = category.allocatedAmount - category.spentAmount;
       if (remaining > 0) leftover += remaining;
     }
 
-    // Fresh month: spend resets to zero, the allocation plan stays.
     for (final category in categories) {
-      if (category.id == null || category.name == _savingName) continue;
+      if (category.id == null) continue;
+      if (category.allocatedAmount != category.baseAllocation) {
+        await _categoryRepository.update(
+          category.id!,
+          category.copyWith(allocatedAmount: category.baseAllocation),
+        );
+      }
       if (category.spentAmount != 0) {
         await _categoryRepository.updateSpentAmount(category.id!, 0);
       }
@@ -103,21 +109,18 @@ class MonthCycleService {
 
     if (leftover <= 0) return 0;
 
-    final savingIndex = categories.indexWhere((c) => c.name == _savingName);
-    if (savingIndex == -1 || categories[savingIndex].id == null) return 0;
-    final saving = categories[savingIndex];
+    await CacheHelper.saveData(key: _vaultKey, value: vaultTotal() + leftover);
 
-    await _transactionRepository.add(Transaction(
-      categoryId: saving.id!,
-      amount: leftover,
-      date: DateTime.now(),
-      type: TransactionType.rollover,
-      note: 'Month-end savings · ${_monthLabel(endedCycleStart)}',
-    ));
-    await _categoryRepository.update(
-      saving.id!,
-      saving.copyWith(allocatedAmount: saving.allocatedAmount + leftover),
-    );
+    final anchorIndex = categories.indexWhere((c) => c.id != null);
+    if (anchorIndex != -1) {
+      await _transactionRepository.add(Transaction(
+        categoryId: categories[anchorIndex].id!,
+        amount: leftover,
+        date: DateTime.now(),
+        type: TransactionType.rollover,
+        note: 'Month-end savings · ${_monthLabel(endedCycleStart)}',
+      ));
+    }
     return leftover;
   }
 

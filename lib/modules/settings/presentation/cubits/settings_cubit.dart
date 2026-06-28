@@ -53,6 +53,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         _subcategoryRepository.resetAllSpentAmounts(),
       ]);
       CacheHelper.removeData(key: 'cycle_start');
+      CacheHelper.removeData(key: 'vault_total');
       emit(state.copyWith(status: SettingsStatus.success, wasReset: true));
     } catch (_) {
       emit(state.copyWith(
