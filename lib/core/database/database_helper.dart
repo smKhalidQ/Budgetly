@@ -18,7 +18,7 @@ class DatabaseHelper {
     try {
       Database myDb = await openDatabase(
         path,
-        version: 5,
+        version: 6,
         onCreate: _onCreate,
         onUpgrade: _onUpgrade,
         onOpen: (db) async {
@@ -115,6 +115,10 @@ class DatabaseHelper {
       await _addColumnIfMissing(
           db, 'category', 'baseAllocation', 'REAL NOT NULL DEFAULT 0');
       await db.execute('UPDATE category SET baseAllocation = allocatedAmount');
+    }
+    if (oldVersion < 6) {
+      await db.execute(
+          "UPDATE category SET categoryName = 'Saving & Goals' WHERE categoryName = 'Saving'");
     }
   }
 

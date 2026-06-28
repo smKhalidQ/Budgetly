@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/services/month_cycle_service.dart';
 import 'package:budget_buddy/core/utilities/cache_helper.dart';
 import 'package:budget_buddy/core/utilities/listener_mixin.dart';
 import 'package:budget_buddy/modules/category/domain/default_categories.dart';
@@ -15,7 +16,8 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
   static CategoryCubit get(BuildContext context) => BlocProvider.of(context);
 
   List<Category> _sortWithSavingLast(List<Category> list) {
-    final savingIndex = list.indexWhere((c) => c.name == 'Saving');
+    final savingIndex =
+        list.indexWhere((c) => c.name == MonthCycleService.savingName);
     if (savingIndex == -1 || savingIndex == list.length - 1) return list;
     final sorted = List<Category>.from(list)
       ..removeAt(savingIndex)
@@ -215,7 +217,8 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
 
   /// Allocates remaining budget to the Saving category, then completes setup.
   Future<void> allocateRemainingToSavings() async {
-    final savingIdx = state.categories.indexWhere((c) => c.name == 'Saving');
+    final savingIdx = state.categories
+        .indexWhere((c) => c.name == MonthCycleService.savingName);
     if (savingIdx != -1 && state.remainingBudget > 0) {
       final remaining = state.remainingBudget;
       final saving = state.categories[savingIdx];

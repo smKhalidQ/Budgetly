@@ -1,6 +1,5 @@
 // run build_runner
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:budget_buddy/core/services/month_cycle_service.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 
 part 'reconcile_state.freezed.dart';
@@ -24,8 +23,7 @@ extension ReconcileStateX on ReconcileState {
   }
 
   double get expected =>
-      categories.fold<double>(0.0, (sum, c) => sum + remainingOf(c)) +
-      MonthCycleService.vaultTotal();
+      categories.fold<double>(0.0, (sum, c) => sum + remainingOf(c));
 
   double get diff => expected - actual;
   bool get isLoading => status == ReconcileStatus.loading;

@@ -46,7 +46,7 @@ final List<Category> defaultCategories = [
   ),
   Category(
     id: 7,
-    name: 'Saving',
+    name: 'Saving & Goals',
     color: 'Color(0xfff9a825)',
     icon: Icons.savings_rounded.codePoint.toString(),
     allocatedAmount: 0,

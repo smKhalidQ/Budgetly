@@ -33,19 +33,17 @@ class HomeHeaderWidget extends StatelessWidget {
         return BlocBuilder<CategoryCubit, CategoryState>(
           buildWhen: (prev, curr) => prev.categories != curr.categories,
           builder: (context, catState) {
-            final totalSpent = catState.categories.fold(
-              0.0,
-              (sum, c) => sum + c.spentAmount,
-            );
-            final totalBudget = catState.categories.fold(
-              0.0,
-              (sum, c) => sum + c.allocatedAmount,
-            );
-            final salary = catState.categories.fold(
-              0.0,
-              (sum, c) => sum + c.baseAllocation,
-            );
-            final saving = MonthCycleService.vaultTotal();
+            final spendable = catState.categories
+                .where((c) => c.name != MonthCycleService.savingName);
+            final totalSpent =
+                spendable.fold(0.0, (sum, c) => sum + c.spentAmount);
+            final totalBudget =
+                spendable.fold(0.0, (sum, c) => sum + c.allocatedAmount);
+            final salary = catState.categories
+                .fold(0.0, (sum, c) => sum + c.baseAllocation);
+            final saving = catState.categories
+                .where((c) => c.name == MonthCycleService.savingName)
+                .fold(0.0, (sum, c) => sum + c.allocatedAmount);
             final remaining = totalBudget - totalSpent;
             final isOver = remaining < 0;
             final progress = totalBudget == 0

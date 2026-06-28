@@ -43,10 +43,7 @@ class MonthCycleService {
 
   static const _cycleStartKey = 'cycle_start';
 
-  static const _vaultKey = 'vault_total';
-
-  static double vaultTotal() =>
-      (CacheHelper.getData(key: _vaultKey) as num?)?.toDouble() ?? 0.0;
+  static const savingName = 'Saving & Goals';
 
   static const _monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -90,12 +87,13 @@ class MonthCycleService {
   ) async {
     var leftover = 0.0;
     for (final category in categories) {
+      if (category.name == savingName) continue;
       final remaining = category.allocatedAmount - category.spentAmount;
       if (remaining > 0) leftover += remaining;
     }
 
     for (final category in categories) {
-      if (category.id == null) continue;
+      if (category.id == null || category.name == savingName) continue;
       if (category.allocatedAmount != category.baseAllocation) {
         await _categoryRepository.update(
           category.id!,
@@ -107,21 +105,31 @@ class MonthCycleService {
       }
     }
 
-    if (leftover <= 0) return 0;
+    final savingIndex = categories.indexWhere((c) => c.name == savingName);
+    if (savingIndex == -1 || categories[savingIndex].id == null) return 0;
+    final saving = categories[savingIndex];
 
-    await CacheHelper.saveData(key: _vaultKey, value: vaultTotal() + leftover);
+    final savingRemaining =
+        (saving.allocatedAmount - saving.spentAmount).clamp(0.0, double.infinity);
+    final newAllocated = savingRemaining + saving.baseAllocation + leftover;
 
-    final anchorIndex = categories.indexWhere((c) => c.id != null);
-    if (anchorIndex != -1) {
-      await _transactionRepository.add(Transaction(
-        categoryId: categories[anchorIndex].id!,
-        amount: leftover,
-        date: DateTime.now(),
-        type: TransactionType.rollover,
-        note: 'Month-end savings · ${_monthLabel(endedCycleStart)}',
-      ));
-    }
-    return leftover;
+    await _categoryRepository.update(
+      saving.id!,
+      saving.copyWith(allocatedAmount: newAllocated),
+    );
+    await _categoryRepository.updateSpentAmount(saving.id!, 0);
+
+    final swept = saving.baseAllocation + leftover;
+    if (swept <= 0) return 0;
+
+    await _transactionRepository.add(Transaction(
+      categoryId: saving.id!,
+      amount: swept,
+      date: DateTime.now(),
+      type: TransactionType.rollover,
+      note: 'Month-end savings · ${_monthLabel(endedCycleStart)}',
+    ));
+    return swept;
   }
 
   /// Posts each active fixed expense against its (freshly reset) envelope.
