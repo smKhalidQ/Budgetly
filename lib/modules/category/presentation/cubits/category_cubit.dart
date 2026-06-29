@@ -11,7 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CategoryCubit extends Cubit<CategoryState> with StreamListener {
   final CategoryRepository _repository;
 
-  CategoryCubit(this._repository) : super(const CategoryState());
+  CategoryCubit(this._repository) : super(const CategoryState()) {
+    listen(_repository.onCategoryChanged, (_) => fetchCategories());
+  }
 
   static CategoryCubit get(BuildContext context) => BlocProvider.of(context);
 

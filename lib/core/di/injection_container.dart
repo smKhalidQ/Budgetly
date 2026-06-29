@@ -18,6 +18,7 @@ import 'package:budget_buddy/modules/user_info/domain/repositories/user_info_rep
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/reconcile/presentation/cubits/reconcile_cubit.dart';
 import 'package:budget_buddy/modules/recurring/presentation/cubits/recurring_cubit.dart';
+import 'package:budget_buddy/modules/settings/presentation/cubits/manage_categories_cubit.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_cubit.dart';
@@ -44,7 +45,7 @@ void initializeDependencies() {
   GetIt.I.registerLazySingleton(
       () => ReconcileService(GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I()));
 
-  GetIt.I.registerFactory(() => CategoryCubit(GetIt.I()));
+  GetIt.I.registerLazySingleton(() => CategoryCubit(GetIt.I()));
   GetIt.I.registerFactory(() => ReconcileCubit(GetIt.I()));
   GetIt.I.registerFactory(() => SubcategoryCubit(GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(
@@ -54,6 +55,7 @@ void initializeDependencies() {
   GetIt.I.registerFactory(() => SettingCubit(GetIt.I()));
   GetIt.I.registerFactory(
       () => SettingsCubit(GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I()));
+  GetIt.I.registerFactory(() => ManageCategoriesCubit(GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(
       () => RecurringCubit(GetIt.I(), GetIt.I(), GetIt.I()));
 }

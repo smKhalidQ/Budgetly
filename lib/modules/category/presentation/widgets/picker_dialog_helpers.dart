@@ -118,8 +118,11 @@ class _CategoryPickerDialogState extends State<_CategoryPickerDialog> {
               setState(() => _hasError = true);
               return;
             }
+            final maxId = state.categories.fold<int>(
+              0, (m, c) => (c.id ?? 0) > m ? (c.id ?? 0) : m,
+            );
             widget.pickerFunction(Category(
-              id: state.categories.length,
+              id: maxId + 1,
               name: _nameCtrl.text.trim(),
               allocatedAmount: 0.0,
               color:
