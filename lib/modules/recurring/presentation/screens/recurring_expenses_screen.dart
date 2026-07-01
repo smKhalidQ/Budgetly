@@ -4,9 +4,12 @@ import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/recurring/domain/models/recurring_expense.dart';
 import 'package:budget_buddy/modules/recurring/presentation/cubits/recurring_cubit.dart';
 import 'package:budget_buddy/modules/recurring/presentation/cubits/recurring_state.dart';
+import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
+import 'package:budget_buddy/modules/settings/presentation/cubits/settings_state.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
@@ -14,87 +17,189 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RecurringExpensesScreen extends StatelessWidget {
+class RecurringExpensesScreen extends StatefulWidget {
   const RecurringExpensesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.I<RecurringCubit>()..initialize(),
-      child: const _RecurringView(),
-    );
-  }
+  State<RecurringExpensesScreen> createState() =>
+      _RecurringExpensesScreenState();
 }
 
-class _RecurringView extends StatelessWidget {
-  const _RecurringView();
+class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
+  late final RecurringCubit _recurringCubit;
+  late final SettingsCubit _settingsCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _recurringCubit = GetIt.I<RecurringCubit>()..initialize();
+    _settingsCubit = GetIt.I<SettingsCubit>();
+  }
+
+  @override
+  void dispose() {
+    _recurringCubit.close();
+    _settingsCubit.close();
+    super.dispose();
+  }
 
   void _openEditor(BuildContext context, {RecurringExpense? existing}) {
-    final cubit = context.read<RecurringCubit>();
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => BlocProvider.value(
-        value: cubit,
+        value: _recurringCubit,
         child: _ExpenseEditorSheet(existing: existing),
+      ),
+    );
+  }
+
+  void _confirmStartNewMonth(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          'Start a new month?',
+          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Leftover in every category moves to Saving, spending resets, and '
+          'your active fixed expenses are posted.',
+          style: GoogleFonts.cairo(
+            fontSize: 13.sp,
+            color: AppColor.textSecondary,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.cairo(color: AppColor.textSecondary),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              _settingsCubit.startNewMonth();
+            },
+            child: const Text('Start'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onCycleDone(BuildContext context, SettingsState state) {
+    final summary = state.lastCycle;
+    if (summary == null) return;
+
+    GetIt.I<CategoryCubit>().fetchCategories();
+    _recurringCubit.initialize();
+
+    final parts = <String>[
+      'Saved ${summary.savedToSaving.toStringAsFixed(0)} to Saving',
+      if (summary.recurringPosted > 0) '${summary.recurringPosted} fixed posted',
+      if (summary.recurringFlagged > 0)
+        '${summary.recurringFlagged} need attention',
+    ];
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'New month started · ${parts.join(' · ')}',
+          style: GoogleFonts.cairo(fontSize: 12.sp),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColor.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppColor.backgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Text(
-          'Fixed Expenses',
-          style: GoogleFonts.cairo(
-            color: AppColor.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 18.sp,
-          ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _recurringCubit),
+        BlocProvider.value(value: _settingsCubit),
+      ],
+      child: BlocListener<SettingsCubit, SettingsState>(
+        listenWhen: (prev, curr) =>
+            prev.status != curr.status &&
+            curr.status == SettingsStatus.success &&
+            curr.lastCycle != null,
+        listener: _onCycleDone,
+        child: BlocBuilder<RecurringCubit, RecurringState>(
+          builder: (context, recurringState) {
+            return BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, settingsState) {
+                return Scaffold(
+                  backgroundColor: AppColor.backgroundColor,
+                  appBar: AppBar(
+                    backgroundColor: AppColor.backgroundColor,
+                    elevation: 0,
+                    scrolledUnderElevation: 0,
+                    title: Text(
+                      'Fixed Expenses',
+                      style: GoogleFonts.cairo(
+                        color: AppColor.primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.sp,
+                      ),
+                    ),
+                  ),
+                  floatingActionButton: FloatingActionButton(
+                    backgroundColor: AppColor.accentColor,
+                    onPressed: () => _openEditor(context),
+                    child: const Icon(Icons.add_rounded, color: Colors.white),
+                  ),
+                  body: Builder(
+                    builder: (_) {
+                      if (recurringState.isLoading && recurringState.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (recurringState.isEmpty) {
+                        return const _EmptyState();
+                      }
+
+                      final symbol = _currencySymbol(context);
+                      final byId = recurringState.categoriesById;
+                      final subById = recurringState.subcategoriesById;
+
+                      return ListView(
+                        padding:
+                            EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 96.h),
+                        children: [
+                          _TotalBanner(
+                            total: recurringState.activeTotal,
+                            symbol: symbol,
+                            isLoading: settingsState.isLoading,
+                            onNewMonth: () => _confirmStartNewMonth(context),
+                          ),
+                          SizedBox(height: 12.h),
+                          for (final item in recurringState.items)
+                            _ExpenseRow(
+                              item: item,
+                              category: byId[item.categoryId],
+                              subcategoryName: item.subcategoryId == null
+                                  ? null
+                                  : subById[item.subcategoryId!]?.name,
+                              symbol: symbol,
+                              onTap: () =>
+                                  _openEditor(context, existing: item),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              },
+            );
+          },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColor.accentColor,
-        onPressed: () => _openEditor(context),
-        child: const Icon(Icons.add_rounded, color: Colors.white),
-      ),
-      body: BlocBuilder<RecurringCubit, RecurringState>(
-        builder: (context, state) {
-          if (state.isLoading && state.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state.isEmpty) {
-            return const _EmptyState();
-          }
-
-          final symbol = _currencySymbol(context);
-          final byId = state.categoriesById;
-          final subById = state.subcategoriesById;
-
-          return ListView(
-            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 96.h),
-            children: [
-              _TotalBanner(total: state.activeTotal, symbol: symbol),
-              SizedBox(height: 12.h),
-              for (final item in state.items)
-                _ExpenseRow(
-                  item: item,
-                  category: byId[item.categoryId],
-                  subcategoryName: item.subcategoryId == null
-                      ? null
-                      : subById[item.subcategoryId!]?.name,
-                  symbol: symbol,
-                  onTap: () => _openEditor(context, existing: item),
-                ),
-            ],
-          );
-        },
       ),
     );
   }
@@ -111,36 +216,98 @@ String _currencySymbol(BuildContext context) {
 class _TotalBanner extends StatelessWidget {
   final double total;
   final String symbol;
+  final bool isLoading;
+  final VoidCallback onNewMonth;
 
-  const _TotalBanner({required this.total, required this.symbol});
+  const _TotalBanner({
+    required this.total,
+    required this.symbol,
+    required this.isLoading,
+    required this.onNewMonth,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: AppColor.primaryColor.withValues(alpha: 0.08),
+        gradient: LinearGradient(
+          colors: [
+            AppColor.primaryColor,
+            AppColor.primaryColor.withValues(alpha: 0.8),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(AppRadius.lg.r),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.calculate_rounded, color: AppColor.primaryColor, size: 22.sp),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Text(
-              'Posted automatically each new month',
-              style: GoogleFonts.cairo(
-                fontSize: 12.sp,
-                color: AppColor.textSecondary,
-              ),
+          Text(
+            'Monthly fixed total',
+            style: GoogleFonts.cairo(
+              fontSize: 12.sp,
+              color: Colors.white.withValues(alpha: 0.75),
             ),
           ),
+          SizedBox(height: 4.h),
           Text(
             '$symbol${total.toStringAsFixed(0)}',
             style: AppTextStyle.number(
-              size: 16.sp,
+              size: 28.sp,
               weight: FontWeight.bold,
-              color: AppColor.primaryColor,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            'Posted automatically on the first day of each month',
+            style: GoogleFonts.cairo(
+              fontSize: 11.sp,
+              color: Colors.white.withValues(alpha: 0.6),
+            ),
+          ),
+          SizedBox(height: 14.h),
+          Material(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.r),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10.r),
+              onTap: isLoading ? null : onNewMonth,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: isLoading
+                      ? [
+                          SizedBox(
+                            width: 16.w,
+                            height: 16.w,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColor.primaryColor,
+                            ),
+                          ),
+                        ]
+                      : [
+                          Icon(
+                            Icons.event_repeat_rounded,
+                            size: 17.sp,
+                            color: AppColor.primaryColor,
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            'Start New Month',
+                            style: GoogleFonts.cairo(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColor.primaryColor,
+                            ),
+                          ),
+                        ],
+                ),
+              ),
             ),
           ),
         ],
@@ -393,11 +560,26 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = context.select<RecurringCubit, List<Category>>(
-      (c) => c.state.categories,
-    );
-    final canSave = _categoryId != null &&
-        (double.tryParse(_amountCtrl.text.trim()) ?? 0) > 0;
+    final state = context.select<RecurringCubit, RecurringState>((c) => c.state);
+    final categories = state.categories;
+
+    final amount = double.tryParse(_amountCtrl.text.trim()) ?? 0;
+    final selectedCategory =
+        _categoryId == null ? null : categories.firstWhere(
+              (c) => c.id == _categoryId,
+              orElse: () => categories.first,
+            );
+    final otherFixed = _categoryId == null
+        ? 0.0
+        : state.items
+            .where((i) =>
+                i.isActive &&
+                i.categoryId == _categoryId &&
+                i.id != widget.existing?.id)
+            .fold(0.0, (sum, i) => sum + i.amount);
+    final budget = selectedCategory?.baseAllocation ?? 0.0;
+    final isOver = budget > 0 && (otherFixed + amount) > budget;
+    final canSave = _categoryId != null && amount > 0 && !isOver;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -486,6 +668,15 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
                   },
                 ),
               ),
+              if (budget > 0) ...[
+                SizedBox(height: 10.h),
+                _AllocationBar(
+                  budget: budget,
+                  otherFixed: otherFixed,
+                  current: amount,
+                  symbol: _currencySymbol(context),
+                ),
+              ],
               if (_categoryId != null) ...[
                 SizedBox(height: 16.h),
                 Text(
@@ -629,6 +820,69 @@ class _SubcategorySelector extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+// ─── Allocation Bar ───────────────────────────────────────────────────────────
+
+class _AllocationBar extends StatelessWidget {
+  final double budget;
+  final double otherFixed;
+  final double current;
+  final String symbol;
+
+  const _AllocationBar({
+    required this.budget,
+    required this.otherFixed,
+    required this.current,
+    required this.symbol,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final totalUsed = otherFixed + current;
+    final isOver = totalUsed > budget;
+    final progress = (totalUsed / budget).clamp(0.0, 1.0);
+    final remaining = budget - totalUsed;
+    final color = isOver ? AppColor.expenseColor : AppColor.accentColor;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4.r),
+          child: LinearProgressIndicator(
+            value: progress,
+            minHeight: 6.h,
+            backgroundColor: AppColor.surfaceMuted,
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+          ),
+        ),
+        SizedBox(height: 4.h),
+        Row(
+          children: [
+            Icon(
+              isOver
+                  ? Icons.warning_amber_rounded
+                  : Icons.info_outline_rounded,
+              size: 12.sp,
+              color: color,
+            ),
+            SizedBox(width: 4.w),
+            Text(
+              isOver
+                  ? 'Exceeds budget by $symbol${(-remaining).toStringAsFixed(0)}'
+                  : '$symbol${remaining.toStringAsFixed(0)} remaining of $symbol${budget.toStringAsFixed(0)} budget',
+              style: GoogleFonts.cairo(
+                fontSize: 11.sp,
+                color: color,
+                fontWeight: isOver ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

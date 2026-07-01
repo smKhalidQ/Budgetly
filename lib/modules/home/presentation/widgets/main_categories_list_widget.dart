@@ -19,16 +19,14 @@ class MainCategoriesListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingCubit, SettingState>(
-      buildWhen: (prev, curr) =>
-          prev.selectedCurrency != curr.selectedCurrency,
+      buildWhen: (prev, curr) => prev.selectedCurrency != curr.selectedCurrency,
       builder: (context, settingState) {
         final currency = settingState.selectedCurrency ?? currencies.keys.first;
         final symbol = currencies[currency]?['currencySymbol'] ?? '';
 
         return BlocBuilder<CategoryCubit, CategoryState>(
           buildWhen: (prev, curr) =>
-              prev.categories != curr.categories ||
-              prev.status != curr.status,
+              prev.categories != curr.categories || prev.status != curr.status,
           builder: (context, state) {
             if (state.isLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -63,116 +61,122 @@ class MainCategoriesListWidget extends StatelessWidget {
                               .clamp(0.0, 1.0);
                       final remaining =
                           category.allocatedAmount - category.spentAmount;
-                      return Material(
-                        color: AppColor.cardBackground,
+                      return ClipRRect(
                         borderRadius: BorderRadius.circular(AppRadius.lg.r),
-                        shadowColor: AppColor.backgroundCardShadow,
-                        elevation: 3,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(AppRadius.lg.r),
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CategoryDetailScreen(category: category),
+                        child: Material(
+                          color: AppColor.cardBackground,
+                          child: InkWell(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    CategoryDetailScreen(category: category),
+                              ),
                             ),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 5.w,
-                                height: 76.h,
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(AppRadius.lg.r),
-                                    bottomLeft: Radius.circular(AppRadius.lg.r),
+                            child: IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Container(
+                                    width: 7.w,
+                                    color: color,
                                   ),
-                                ),
-                              ),
-                              SizedBox(width: 14.w),
-                              Container(
-                                width: 42.w,
-                                height: 42.w,
-                                decoration: BoxDecoration(
-                                  color: color.withValues(alpha: 0.12),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  IconData(
-                                    int.parse(category.icon),
-                                    fontFamily: 'MaterialIcons',
+                                  SizedBox(width: 14.w),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 14.h),
+                                    child: Container(
+                                      width: 42.w,
+                                      height: 42.w,
+                                      decoration: BoxDecoration(
+                                        color: color.withValues(alpha: 0.12),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        IconData(
+                                          int.parse(category.icon),
+                                          fontFamily: 'MaterialIcons',
+                                        ),
+                                        color: color,
+                                        size: 20.sp,
+                                      ),
+                                    ),
                                   ),
-                                  color: color,
-                                  size: 20.sp,
-                                ),
-                              ),
-                              SizedBox(width: 12.w),
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        category.name,
-                                        style: GoogleFonts.cairo(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColor.textPrimary,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 8.h),
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(4.r),
-                                        child: LinearProgressIndicator(
-                                          value: progress,
-                                          minHeight: 4.h,
-                                          backgroundColor: AppColor.surfaceMuted,
-                                          valueColor: AlwaysStoppedAnimation<Color>(
-                                              color),
-                                        ),
-                                      ),
-                                      SizedBox(height: 8.h),
-                                      Row(
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 14.h),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          _AmountChip(
-                                            label: context.tr.spent,
-                                            value:
-                                                '$symbol${category.spentAmount.toStringAsFixed(0)}',
-                                            color: AppColor.textSecondary,
+                                          Text(
+                                            category.name,
+                                            style: GoogleFonts.cairo(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColor.textPrimary,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          Container(
-                                            width: 1.w,
-                                            height: 14.h,
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 8.w),
-                                            color: AppColor.dividerColor,
+                                          SizedBox(height: 8.h),
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(4.r),
+                                            child: LinearProgressIndicator(
+                                              value: progress,
+                                              minHeight: 4.h,
+                                              backgroundColor:
+                                                  AppColor.surfaceMuted,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      color),
+                                            ),
                                           ),
-                                          _AmountChip(
-                                            label: context.tr.remaining,
-                                            value:
-                                                '$symbol${remaining.toStringAsFixed(0)}',
-                                            color: remaining == 0
-                                                ? AppColor.textSecondary
-                                                : color,
+                                          SizedBox(height: 8.h),
+                                          Row(
+                                            children: [
+                                              _AmountChip(
+                                                label: context.tr.spent,
+                                                value:
+                                                    '$symbol${category.spentAmount.toStringAsFixed(0)}',
+                                                color: AppColor.textSecondary,
+                                              ),
+                                              Container(
+                                                width: 1.w,
+                                                height: 14.h,
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 8.w),
+                                                color: AppColor.dividerColor,
+                                              ),
+                                              _AmountChip(
+                                                label: context.tr.remaining,
+                                                value:
+                                                    '$symbol${remaining.toStringAsFixed(0)}',
+                                                color: remaining == 0
+                                                    ? AppColor.textSecondary
+                                                    : color,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 12.w),
+                                    child: Icon(
+                                      Icons.chevron_right_rounded,
+                                      color: AppColor.textSecondary
+                                          .withValues(alpha: 0.4),
+                                      size: 20.sp,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(right: 12.w),
-                                child: Icon(
-                                  Icons.chevron_right_rounded,
-                                  color: AppColor.textSecondary.withValues(alpha: 0.4),
-                                  size: 20.sp,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       );
@@ -207,14 +211,14 @@ class _AmountChip extends StatelessWidget {
           TextSpan(
             text: '$label: ',
             style: GoogleFonts.cairo(
-              fontSize: 11.sp,
+              fontSize: 13.sp,
               color: AppColor.textSecondary,
             ),
           ),
           TextSpan(
             text: value,
             style: AppTextStyle.number(
-              size: 11.sp,
+              size: 13.sp,
               weight: FontWeight.w600,
               color: color,
             ),

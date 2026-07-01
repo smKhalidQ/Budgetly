@@ -27,47 +27,6 @@ class SettingsScreen extends StatelessWidget {
 class _SettingsView extends StatelessWidget {
   const _SettingsView();
 
-  void _confirmStartNewMonth(BuildContext context) {
-    final cubit = context.read<SettingsCubit>();
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-          'Start a new month?',
-          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Leftover in every category moves to Saving, spending resets, and '
-          'your active fixed expenses are posted.',
-          style: GoogleFonts.cairo(
-            fontSize: 13.sp,
-            color: AppColor.textSecondary,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.cairo(color: AppColor.textSecondary),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColor.primaryColor,
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              cubit.startNewMonth();
-            },
-            child: const Text('Start'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _confirmReset(BuildContext context) {
     final cubit = context.read<SettingsCubit>();
     showDialog<void>(
@@ -109,37 +68,12 @@ class _SettingsView extends StatelessWidget {
     );
   }
 
-  void _onCycleDone(BuildContext context, SettingsState state) {
-    if (state.wasReset) {
-      context.read<CategoryCubit>().fetchCategories();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Reset complete — back to post-setup state',
-            style: GoogleFonts.cairo(fontSize: 12.sp),
-          ),
-        ),
-      );
-      return;
-    }
-
-    final summary = state.lastCycle;
-    if (summary == null) return;
-
+  void _onResetDone(BuildContext context, SettingsState state) {
     context.read<CategoryCubit>().fetchCategories();
-
-    final parts = <String>[
-      'Saved ${summary.savedToSaving.toStringAsFixed(0)} to Saving',
-      if (summary.recurringPosted > 0)
-        '${summary.recurringPosted} fixed posted',
-      if (summary.recurringFlagged > 0)
-        '${summary.recurringFlagged} need attention',
-    ];
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'New month started · ${parts.join(' · ')}',
+          'Reset complete — back to post-setup state',
           style: GoogleFonts.cairo(fontSize: 12.sp),
         ),
       ),
@@ -167,33 +101,12 @@ class _SettingsView extends StatelessWidget {
         listenWhen: (prev, curr) =>
             prev.status != curr.status &&
             curr.status == SettingsStatus.success &&
-            (curr.lastCycle != null || curr.wasReset),
-        listener: _onCycleDone,
+            curr.wasReset,
+        listener: _onResetDone,
         builder: (context, state) {
           return ListView(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             children: [
-              _SectionLabel('Month'),
-              _SettingsTile(
-                icon: Icons.event_repeat_rounded,
-                iconColor: AppColor.accentColor,
-                title: 'Start a new month',
-                subtitle: 'Sweep leftover to Saving & post fixed expenses',
-                trailing: state.isLoading
-                    ? SizedBox(
-                        width: 18.w,
-                        height: 18.w,
-                        child: const CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Icon(
-                        Icons.chevron_right_rounded,
-                        color: AppColor.textSecondary.withValues(alpha: 0.4),
-                        size: 22.sp,
-                      ),
-                onTap:
-                    state.isLoading ? null : () => _confirmStartNewMonth(context),
-              ),
-              SizedBox(height: 16.h),
               _SectionLabel('Categories'),
               _SettingsTile(
                 icon: Icons.category_rounded,
@@ -218,7 +131,7 @@ class _SettingsView extends StatelessWidget {
                 icon: Icons.push_pin_rounded,
                 iconColor: AppColor.primaryColor,
                 title: 'Manage fixed expenses',
-                subtitle: 'Bills posted automatically each new month',
+                subtitle: 'Bills & start a new month',
                 trailing: Icon(
                   Icons.chevron_right_rounded,
                   color: AppColor.textSecondary.withValues(alpha: 0.4),
