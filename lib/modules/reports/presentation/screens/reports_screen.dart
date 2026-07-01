@@ -1,0 +1,1066 @@
+import 'package:budget_buddy/core/responsive/responsive_manager.dart';
+import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_radius.dart';
+import 'package:budget_buddy/core/theming/app_text_style.dart';
+import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:budget_buddy/modules/reports/presentation/pages/monthly_summary_page.dart';
+import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
+import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
+import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
+import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_cubit.dart';
+import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_state.dart';
+import 'package:budget_buddy/modules/transaction/presentation/widgets/add_transaction_sheet.dart';
+import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get_it/get_it.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+// ─── Screen ───────────────────────────────────────────────────────────────────
+
+class ReportsScreen extends StatefulWidget {
+  const ReportsScreen({super.key});
+
+  @override
+  State<ReportsScreen> createState() => _ReportsScreenState();
+}
+
+class _ReportsScreenState extends State<ReportsScreen> {
+  late final TransactionCubit _cubit;
+  late final PageController _pageController;
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = GetIt.I<TransactionCubit>()..initialize();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onPageChanged(int index) => setState(() => _currentPage = index);
+
+  void _jumpToPage(int index) => _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+
+  void _openAddTransaction() {
+    AddTransactionSheet.show(
+      context,
+      onSuccess: () => context.read<CategoryCubit>().fetchCategories(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: _cubit,
+      child: Scaffold(
+        backgroundColor: AppColor.backgroundColor,
+        appBar: AppBar(
+          backgroundColor: AppColor.backgroundColor,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          title: Text(
+            'Reports',
+            style: GoogleFonts.cairo(
+              color: AppColor.primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 18.sp,
+            ),
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add_rounded,
+                  color: AppColor.accentColor, size: 26.sp),
+              onPressed: _openAddTransaction,
+              tooltip: 'Add transaction',
+            ),
+            SizedBox(width: 4.w),
+          ],
+        ),
+        body: Column(
+          children: [
+            _TabChips(currentIndex: _currentPage, onTap: _jumpToPage),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: _onPageChanged,
+                children: const [_TransactionsPage(), MonthlySummaryPage()],
+              ),
+            ),
+            _DotsIndicator(
+                count: 2, current: _currentPage, onDotTap: _jumpToPage),
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 8.h),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Tab Chips ────────────────────────────────────────────────────────────────
+
+class _TabChips extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+
+  const _TabChips({required this.currentIndex, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    const labels = ['Transactions', 'Monthly'];
+    return SizedBox(
+      height: 40.h,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        itemCount: labels.length,
+        separatorBuilder: (_, __) => SizedBox(width: 8.w),
+        itemBuilder: (_, i) {
+          final isSelected = i == currentIndex;
+          return GestureDetector(
+            onTap: () => onTap(i),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: EdgeInsets.symmetric(horizontal: 14.w),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColor.primaryColor
+                    : AppColor.cardBackground,
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(
+                  color:
+                      isSelected ? AppColor.primaryColor : AppColor.borderColor,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                labels[i],
+                style: GoogleFonts.cairo(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                  color: isSelected ? Colors.white : AppColor.textSecondary,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ─── Dots Indicator ───────────────────────────────────────────────────────────
+
+class _DotsIndicator extends StatelessWidget {
+  final int count;
+  final int current;
+  final ValueChanged<int> onDotTap;
+
+  const _DotsIndicator(
+      {required this.count, required this.current, required this.onDotTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(count, (i) {
+          final isActive = i == current;
+          return GestureDetector(
+            onTap: () => onDotTap(i),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
+              width: isActive ? 20.w : 6.w,
+              height: 6.h,
+              decoration: BoxDecoration(
+                color: isActive ? AppColor.primaryColor : AppColor.borderColor,
+                borderRadius: BorderRadius.circular(3.r),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+// ─── Transactions Page ────────────────────────────────────────────────────────
+
+class _TransactionsPage extends StatelessWidget {
+  const _TransactionsPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        _FilterBar(),
+        _SummaryStrip(),
+        Expanded(child: _Body()),
+      ],
+    );
+  }
+}
+
+// ─── Filter Bar ───────────────────────────────────────────────────────────────
+
+class _FilterBar extends StatelessWidget {
+  const _FilterBar();
+
+  static const _periodLabels = {
+    TransactionPeriod.today: 'Today',
+    TransactionPeriod.week: 'This Week',
+    TransactionPeriod.month: 'This Month',
+  };
+
+  void _showPeriodDropdown(
+      BuildContext context, TransactionPeriod current, TransactionCubit cubit) {
+    final button = context.findRenderObject() as RenderBox;
+    final overlay =
+        Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+    final position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero),
+            ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu<TransactionPeriod>(
+      context: context,
+      position: position,
+      color: AppColor.cardBackground,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md.r)),
+      elevation: 4,
+      items: TransactionPeriod.values
+          .map((p) => PopupMenuItem(
+                value: p,
+                height: 42.h,
+                child: Row(
+                  children: [
+                    Icon(
+                      p == TransactionPeriod.today
+                          ? Icons.today_rounded
+                          : p == TransactionPeriod.week
+                              ? Icons.date_range_rounded
+                              : Icons.calendar_month_rounded,
+                      size: 16.sp,
+                      color: p == current
+                          ? AppColor.primaryColor
+                          : AppColor.textSecondary,
+                    ),
+                    SizedBox(width: 10.w),
+                    Text(
+                      _periodLabels[p]!,
+                      style: GoogleFonts.cairo(
+                        fontSize: 13.sp,
+                        fontWeight:
+                            p == current ? FontWeight.w700 : FontWeight.w500,
+                        color: p == current
+                            ? AppColor.primaryColor
+                            : AppColor.textPrimary,
+                      ),
+                    ),
+                    if (p == current) ...[
+                      const Spacer(),
+                      Icon(Icons.check_rounded,
+                          size: 14.sp, color: AppColor.primaryColor),
+                    ],
+                  ],
+                ),
+              ))
+          .toList(),
+    ).then((selected) {
+      if (selected != null) cubit.setPeriod(selected);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final (period, grouping) = context
+        .select<TransactionCubit, (TransactionPeriod, TransactionGrouping)>(
+            (c) => (c.state.period, c.state.grouping));
+    final cubit = context.read<TransactionCubit>();
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
+      child: Row(
+        children: [
+          Builder(
+            builder: (btnCtx) => GestureDetector(
+              onTap: () => _showPeriodDropdown(btnCtx, period, cubit),
+              child: Container(
+                padding:
+                    EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+                decoration: BoxDecoration(
+                  color: AppColor.primaryColor,
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _periodLabels[period]!,
+                      style: GoogleFonts.cairo(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(width: 4.w),
+                    Icon(Icons.keyboard_arrow_down_rounded,
+                        size: 15.sp, color: Colors.white),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const Spacer(),
+          _GroupingIcon(
+            icon: Icons.calendar_today_rounded,
+            isSelected: grouping == TransactionGrouping.byDate,
+            onTap: () => cubit.setGrouping(TransactionGrouping.byDate),
+          ),
+          SizedBox(width: 16.w),
+          _GroupingIcon(
+            icon: Icons.category_rounded,
+            isSelected: grouping == TransactionGrouping.byCategory,
+            onTap: () => cubit.setGrouping(TransactionGrouping.byCategory),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GroupingIcon extends StatelessWidget {
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _GroupingIcon(
+      {required this.icon, required this.isSelected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Icon(
+        icon,
+        size: 22.sp,
+        color: isSelected
+            ? AppColor.primaryColor
+            : AppColor.textSecondary.withValues(alpha: 0.4),
+      ),
+    );
+  }
+}
+
+// ─── Summary Strip ────────────────────────────────────────────────────────────
+
+class _SummaryStrip extends StatelessWidget {
+  const _SummaryStrip();
+
+  @override
+  Widget build(BuildContext context) {
+    final (expense, income) =
+        context.select<TransactionCubit, (double, double)>(
+            (c) => (c.state.filteredExpense, c.state.filteredIncome));
+    final currencySymbol = context.select<SettingCubit, String>((c) {
+      final key = c.state.selectedCurrency ?? currencies.keys.first;
+      return currencies[key]?['currencySymbol'] ?? '';
+    });
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
+      child: Row(
+        children: [
+          _StripStat(
+              label: 'Spent',
+              value: '$currencySymbol${expense.toStringAsFixed(0)}',
+              color: AppColor.expenseColor),
+          SizedBox(width: 16.w),
+          _StripStat(
+              label: 'Income',
+              value: '$currencySymbol${income.toStringAsFixed(0)}',
+              color: AppColor.incomeColor),
+        ],
+      ),
+    );
+  }
+}
+
+class _StripStat extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _StripStat(
+      {required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 8.w,
+          height: 8.w,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        SizedBox(width: 5.w),
+        Text('$label ',
+            style:
+                GoogleFonts.cairo(fontSize: 12.sp, color: AppColor.textSecondary)),
+        Text(value,
+            style: AppTextStyle.number(
+                size: 12.sp, weight: FontWeight.bold, color: color)),
+      ],
+    );
+  }
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+
+class _Body extends StatelessWidget {
+  const _Body();
+
+  @override
+  Widget build(BuildContext context) {
+    final (grouping, isLoading) = context
+        .select<TransactionCubit, (TransactionGrouping, bool)>(
+            (c) => (c.state.grouping, c.state.isLoading));
+
+    if (isLoading) return const Center(child: CircularProgressIndicator());
+
+    return grouping == TransactionGrouping.byDate
+        ? const _ByDateList()
+        : const _ByCategoryList();
+  }
+}
+
+// ─── By Date ─────────────────────────────────────────────────────────────────
+
+class _ByDateList extends StatelessWidget {
+  const _ByDateList();
+
+  @override
+  Widget build(BuildContext context) {
+    final groups = context.select<TransactionCubit,
+            List<MapEntry<DateTime, List<Transaction>>>>(
+        (c) => c.state.filteredGroupedByDay);
+
+    if (groups.isEmpty) return const _EmptyState();
+
+    final currencySymbol = context.select<SettingCubit, String>((c) {
+      final key = c.state.selectedCurrency ?? currencies.keys.first;
+      return currencies[key]?['currencySymbol'] ?? '';
+    });
+    final categoriesById = context
+        .select<TransactionCubit, Map<int, Category>>(
+            (c) => c.state.categoriesById);
+
+    return CustomScrollView(
+      slivers: [
+        for (final group in groups) ...[
+          SliverToBoxAdapter(child: _DayHeader(day: group.key)),
+          SliverList.builder(
+            itemCount: group.value.length,
+            itemBuilder: (_, i) => _TransactionRow(
+              transaction: group.value[i],
+              category: categoriesById[group.value[i].categoryId],
+              categoriesById: categoriesById,
+              currencySymbol: currencySymbol,
+            ),
+          ),
+        ],
+        SliverToBoxAdapter(child: SizedBox(height: 16.h)),
+      ],
+    );
+  }
+}
+
+// ─── By Category ─────────────────────────────────────────────────────────────
+
+class _ByCategoryList extends StatelessWidget {
+  const _ByCategoryList();
+
+  @override
+  Widget build(BuildContext context) {
+    final groups = context.select<TransactionCubit,
+            List<MapEntry<Category, List<Transaction>>>>(
+        (c) => c.state.filteredGroupedByCategory);
+
+    if (groups.isEmpty) return const _EmptyState();
+
+    final currencySymbol = context.select<SettingCubit, String>((c) {
+      final key = c.state.selectedCurrency ?? currencies.keys.first;
+      return currencies[key]?['currencySymbol'] ?? '';
+    });
+    final categoriesById = context
+        .select<TransactionCubit, Map<int, Category>>(
+            (c) => c.state.categoriesById);
+
+    return ListView.builder(
+      padding: EdgeInsets.only(bottom: 16.h),
+      itemCount: groups.length,
+      itemBuilder: (_, i) {
+        final cat = groups[i].key;
+        final txns = groups[i].value;
+        final total = txns
+            .where((t) => t.type == TransactionType.expense)
+            .fold(0.0, (s, t) => s + t.amount);
+        return _CategoryGroup(
+          category: cat,
+          transactions: txns,
+          totalSpent: total,
+          color: parseColorFromString(cat.color),
+          currencySymbol: currencySymbol,
+          categoriesById: categoriesById,
+        );
+      },
+    );
+  }
+}
+
+class _CategoryGroup extends StatefulWidget {
+  final Category category;
+  final List<Transaction> transactions;
+  final double totalSpent;
+  final Color color;
+  final String currencySymbol;
+  final Map<int, Category> categoriesById;
+
+  const _CategoryGroup({
+    required this.category,
+    required this.transactions,
+    required this.totalSpent,
+    required this.color,
+    required this.currencySymbol,
+    required this.categoriesById,
+  });
+
+  @override
+  State<_CategoryGroup> createState() => _CategoryGroupState();
+}
+
+class _CategoryGroupState extends State<_CategoryGroup> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () => setState(() => _expanded = !_expanded),
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+              decoration: BoxDecoration(
+                color: AppColor.cardBackground,
+                borderRadius: _expanded
+                    ? BorderRadius.vertical(
+                        top: Radius.circular(AppRadius.md.r))
+                    : BorderRadius.circular(AppRadius.md.r),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 38.w,
+                    height: 38.w,
+                    decoration: BoxDecoration(
+                      color: widget.color.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      IconData(int.parse(widget.category.icon),
+                          fontFamily: 'MaterialIcons'),
+                      color: widget.color,
+                      size: 18.sp,
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.category.name,
+                            style: GoogleFonts.cairo(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColor.textPrimary)),
+                        Text('${widget.transactions.length} transactions',
+                            style: GoogleFonts.cairo(
+                                fontSize: 11.sp,
+                                color: AppColor.textSecondary)),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    '-${widget.currencySymbol}${widget.totalSpent.toStringAsFixed(0)}',
+                    style: AppTextStyle.number(
+                        size: 14.sp,
+                        weight: FontWeight.bold,
+                        color: widget.color),
+                  ),
+                  SizedBox(width: 4.w),
+                  AnimatedRotation(
+                    turns: _expanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(Icons.keyboard_arrow_down_rounded,
+                        size: 18.sp,
+                        color: AppColor.textSecondary.withValues(alpha: 0.5)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ClipRect(
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: _expanded
+                  ? Container(
+                      decoration: BoxDecoration(
+                        color: AppColor.surfaceMuted,
+                        borderRadius: BorderRadius.vertical(
+                            bottom: Radius.circular(AppRadius.md.r)),
+                      ),
+                      child: Column(
+                        children: widget.transactions
+                            .map((t) => _TransactionRow(
+                                  transaction: t,
+                                  category: widget.category,
+                                  categoriesById: widget.categoriesById,
+                                  currencySymbol: widget.currencySymbol,
+                                  insideGroup: true,
+                                ))
+                            .toList(),
+                      ),
+                    )
+                  : const SizedBox(width: double.infinity),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Day Header ───────────────────────────────────────────────────────────────
+
+class _DayHeader extends StatelessWidget {
+  final DateTime day;
+  const _DayHeader({required this.day});
+
+  String _label() {
+    final today = DateTime.now();
+    final d = DateTime(today.year, today.month, today.day);
+    final diff = d.difference(day).inDays;
+    if (diff == 0) return 'Today';
+    if (diff == 1) return 'Yesterday';
+    return '${day.day}/${day.month}/${day.year}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 8.h),
+      child: Text(_label(),
+          style: GoogleFonts.cairo(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColor.textSecondary)),
+    );
+  }
+}
+
+// ─── Transaction Row ──────────────────────────────────────────────────────────
+
+class _TransactionRow extends StatefulWidget {
+  final Transaction transaction;
+  final Category? category;
+  final Map<int, Category> categoriesById;
+  final String currencySymbol;
+  final bool insideGroup;
+
+  const _TransactionRow({
+    required this.transaction,
+    required this.category,
+    required this.categoriesById,
+    required this.currencySymbol,
+    this.insideGroup = false,
+  });
+
+  @override
+  State<_TransactionRow> createState() => _TransactionRowState();
+}
+
+class _TransactionRowState extends State<_TransactionRow> {
+  bool _expanded = false;
+  Transaction get _txn => widget.transaction;
+
+  void _deleteWithUndo() {
+    final categoryCubit = context.read<CategoryCubit>();
+    final repo = GetIt.I<TransactionRepository>();
+    final balanceService = GetIt.I<TransactionBalanceService>();
+    final messenger = ScaffoldMessenger.of(context);
+    final removed = _txn;
+
+    repo
+        .delete(removed.id!)
+        .then((_) => balanceService.reverseEffect(removed))
+        .then((_) => categoryCubit.fetchCategories());
+
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(SnackBar(
+        content: Text('Transaction deleted',
+            style: GoogleFonts.cairo(fontSize: 12.sp)),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () => repo
+              .add(removed.copyWith(id: null))
+              .then((_) => balanceService.applyEffect(removed))
+              .then((_) => categoryCubit.fetchCategories()),
+        ),
+      ));
+  }
+
+  void _openEdit() {
+    AddTransactionSheet.show(
+      context,
+      editing: _txn,
+      onSuccess: () => context.read<CategoryCubit>().fetchCategories(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_txn.type == TransactionType.rollover) return const SizedBox.shrink();
+
+    final isIncome = _txn.type == TransactionType.income;
+    final color = widget.category != null
+        ? parseColorFromString(widget.category!.color)
+        : AppColor.categoryOthers;
+    final amountColor = isIncome ? AppColor.incomeColor : AppColor.expenseColor;
+    final coverage = TransactionCoverage.parse(_txn.coverage);
+
+    final rowContent = GestureDetector(
+      onTap: () => setState(() => _expanded = !_expanded),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color:
+              widget.insideGroup ? Colors.transparent : AppColor.cardBackground,
+          borderRadius: _expanded && !widget.insideGroup
+              ? BorderRadius.vertical(top: Radius.circular(AppRadius.md.r))
+              : (!widget.insideGroup
+                  ? BorderRadius.circular(AppRadius.md.r)
+                  : null),
+        ),
+        child: Row(
+          children: [
+            if (!widget.insideGroup) ...[
+              Container(
+                width: 40.w,
+                height: 40.w,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  widget.category != null
+                      ? IconData(int.parse(widget.category!.icon),
+                          fontFamily: 'MaterialIcons')
+                      : Icons.help_outline_rounded,
+                  color: color,
+                  size: 20.sp,
+                ),
+              ),
+              SizedBox(width: 12.w),
+            ] else
+              SizedBox(width: 14.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.insideGroup
+                        ? (_txn.note?.isNotEmpty == true
+                            ? _txn.note!
+                            : '${_txn.date.day.toString().padLeft(2, '0')}/${_txn.date.month.toString().padLeft(2, '0')}')
+                        : (widget.category?.name ?? 'Unknown'),
+                    style: GoogleFonts.cairo(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColor.textPrimary),
+                  ),
+                  if (!widget.insideGroup &&
+                      _txn.note != null &&
+                      _txn.note!.isNotEmpty) ...[
+                    SizedBox(height: 2.h),
+                    Text(_txn.note!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.cairo(
+                            fontSize: 11.sp, color: AppColor.textSecondary)),
+                  ],
+                ],
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              '${isIncome ? '+' : '-'}${widget.currencySymbol}${_txn.amount.toStringAsFixed(2)}',
+              style: AppTextStyle.number(
+                  size: 13.sp, weight: FontWeight.bold, color: amountColor),
+            ),
+            SizedBox(width: 4.w),
+            AnimatedRotation(
+              turns: _expanded ? 0.5 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: Icon(Icons.keyboard_arrow_down_rounded,
+                  size: 16.sp,
+                  color: AppColor.textSecondary.withValues(alpha: 0.5)),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return Padding(
+      padding: widget.insideGroup
+          ? EdgeInsets.zero
+          : EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      child: Column(
+        children: [
+          Slidable(
+            key: ValueKey('txn-${_txn.id}'),
+            endActionPane: ActionPane(
+              motion: const DrawerMotion(),
+              extentRatio: 0.5,
+              children: [
+                SlidableAction(
+                  onPressed: (_) => _openEdit(),
+                  backgroundColor: AppColor.accentColor,
+                  foregroundColor: Colors.white,
+                  icon: Icons.edit_rounded,
+                  label: 'Edit',
+                  borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(AppRadius.md.r)),
+                ),
+                SlidableAction(
+                  onPressed: (_) => _deleteWithUndo(),
+                  backgroundColor: AppColor.expenseColor,
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete_rounded,
+                  label: 'Delete',
+                  borderRadius: BorderRadius.horizontal(
+                      right: Radius.circular(AppRadius.md.r)),
+                ),
+              ],
+            ),
+            child: rowContent,
+          ),
+          ClipRect(
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: _expanded
+                  ? _ExpandedDetails(
+                      transaction: _txn,
+                      coverage: coverage,
+                      categoriesById: widget.categoriesById,
+                      currencySymbol: widget.currencySymbol,
+                      insideGroup: widget.insideGroup,
+                    )
+                  : const SizedBox(width: double.infinity),
+            ),
+          ),
+          if (widget.insideGroup)
+            Divider(height: 1, thickness: 1, color: AppColor.dividerColor),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Expanded Details ─────────────────────────────────────────────────────────
+
+class _ExpandedDetails extends StatelessWidget {
+  final Transaction transaction;
+  final TransactionCoverage? coverage;
+  final Map<int, Category> categoriesById;
+  final String currencySymbol;
+  final bool insideGroup;
+
+  const _ExpandedDetails({
+    required this.transaction,
+    required this.coverage,
+    required this.categoriesById,
+    required this.currencySymbol,
+    required this.insideGroup,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final d = transaction.date;
+    final dateLabel =
+        '${d.day}/${d.month}/${d.year} · ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
+    final cov = coverage;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        color: AppColor.surfaceMuted,
+        borderRadius: insideGroup
+            ? null
+            : BorderRadius.vertical(bottom: Radius.circular(AppRadius.md.r)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _DetailLine(label: 'Date', value: dateLabel),
+          if (transaction.note != null && transaction.note!.isNotEmpty)
+            _DetailLine(label: 'Note', value: transaction.note!),
+          if (cov != null && (cov.sources.isNotEmpty || cov.income > 0)) ...[
+            SizedBox(height: 6.h),
+            Text('Covered from',
+                style: GoogleFonts.cairo(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColor.textSecondary)),
+            SizedBox(height: 4.h),
+            for (final s in cov.sources)
+              _CoverageChip(
+                  name: categoriesById[s.categoryId]?.name ?? 'Unknown',
+                  amount: s.amount,
+                  currencySymbol: currencySymbol),
+            if (cov.income > 0)
+              _CoverageChip(
+                  name: 'New income',
+                  amount: cov.income,
+                  currencySymbol: currencySymbol),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailLine extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _DetailLine({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 2.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 40.w,
+            child: Text(label,
+                style: GoogleFonts.cairo(
+                    fontSize: 11.sp, color: AppColor.textSecondary)),
+          ),
+          Expanded(
+            child: Text(value,
+                style: GoogleFonts.cairo(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColor.textPrimary)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CoverageChip extends StatelessWidget {
+  final String name;
+  final double amount;
+  final String currencySymbol;
+
+  const _CoverageChip(
+      {required this.name, required this.amount, required this.currencySymbol});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 4.h),
+      child: Row(
+        children: [
+          Icon(Icons.arrow_right_rounded,
+              size: 14.sp, color: AppColor.textSecondary),
+          SizedBox(width: 4.w),
+          Text(name,
+              style:
+                  GoogleFonts.cairo(fontSize: 11.sp, color: AppColor.textPrimary)),
+          const Spacer(),
+          Text('$currencySymbol${amount.toStringAsFixed(0)}',
+              style: AppTextStyle.number(
+                  size: 11.sp,
+                  weight: FontWeight.bold,
+                  color: AppColor.textSecondary)),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Empty State ──────────────────────────────────────────────────────────────
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.receipt_long_rounded,
+              size: 64.sp,
+              color: AppColor.primaryColor.withValues(alpha: 0.15)),
+          SizedBox(height: 12.h),
+          Text('No transactions',
+              style: GoogleFonts.cairo(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColor.textSecondary)),
+          SizedBox(height: 4.h),
+          Text('Try a different period',
+              style: GoogleFonts.cairo(
+                  fontSize: 12.sp,
+                  color: AppColor.textSecondary.withValues(alpha: 0.6))),
+        ],
+      ),
+    );
+  }
+}

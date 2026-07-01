@@ -59,6 +59,10 @@ class TransactionCubit extends Cubit<TransactionState> with StreamListener {
 
   void toggleEditMode() => emit(state.copyWith(isEditMode: !state.isEditMode));
 
+  void setPeriod(TransactionPeriod period) => emit(state.copyWith(period: period));
+
+  void setGrouping(TransactionGrouping grouping) => emit(state.copyWith(grouping: grouping));
+
   Future<void> deleteTransaction(Transaction txn) async {
     if (txn.id == null) return;
     await _repository.delete(txn.id!);

@@ -4,14 +4,12 @@ import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/home_header_widget.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/main_categories_list_widget.dart';
-import 'package:budget_buddy/modules/home/presentation/widgets/transactions_tab_widget.dart';
+import 'package:budget_buddy/modules/reports/presentation/screens/reports_screen.dart';
 import 'package:budget_buddy/modules/settings/presentation/screens/settings_screen.dart';
-import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_cubit.dart';
 import 'package:budget_buddy/modules/transaction/presentation/widgets/add_transaction_sheet.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  void _openAddTransactionSheet() {
+  void _openAddTransaction() {
     AddTransactionSheet.show(
       context,
       onSuccess: () => context.read<CategoryCubit>().fetchCategories(),
@@ -41,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _currentIndex,
         children: const [
           _HomeTab(),
-          _TransactionsTab(),
+          ReportsScreen(),
           SettingsScreen(),
         ],
       ),
@@ -75,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () => setState(() => _currentIndex = 1),
                 ),
                 GestureDetector(
-                  onTap: _openAddTransactionSheet,
+                  onTap: _openAddTransaction,
                   child: Container(
                     width: 52.w,
                     height: 52.w,
@@ -224,34 +222,6 @@ class _HomeTab extends StatelessWidget {
           sliver: const SliverToBoxAdapter(child: MainCategoriesListWidget()),
         ),
       ],
-    );
-  }
-}
-
-class _TransactionsTab extends StatelessWidget {
-  const _TransactionsTab();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColor.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppColor.backgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Text(
-          context.tr.transactions,
-          style: GoogleFonts.cairo(
-            color: AppColor.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 18.sp,
-          ),
-        ),
-      ),
-      body: BlocProvider(
-        create: (_) => GetIt.I<TransactionCubit>()..initialize(),
-        child: const TransactionsTabWidget(),
-      ),
     );
   }
 }
