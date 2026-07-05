@@ -3,6 +3,7 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/home_header_widget.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/main_categories_list_widget.dart';
+import 'package:budget_buddy/modules/home/presentation/widgets/quick_add_widget.dart';
 import 'package:budget_buddy/modules/reports/presentation/screens/reports_screen.dart';
 import 'package:budget_buddy/modules/settings/presentation/screens/settings_screen.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -170,6 +171,12 @@ class _HomeTab extends StatelessWidget {
               ),
               const HomeHeaderWidget(),
             ],
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.only(top: 16.h),
+            child: QuickAddWidget(),
           ),
         ),
         SliverToBoxAdapter(

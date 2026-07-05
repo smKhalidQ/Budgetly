@@ -16,6 +16,7 @@ import 'package:budget_buddy/modules/reconcile/domain/services/reconcile_service
 import 'package:budget_buddy/modules/user_info/domain/repositories/user_info_repository.dart';
 
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:budget_buddy/modules/home/presentation/cubits/quick_add_cubit.dart';
 import 'package:budget_buddy/modules/reconcile/presentation/cubits/reconcile_cubit.dart';
 import 'package:budget_buddy/modules/recurring/presentation/cubits/recurring_cubit.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/manage_categories_cubit.dart';
@@ -52,6 +53,8 @@ void initializeDependencies() {
       () => TransactionCubit(GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(
       () => AddTransactionCubit(GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I()));
+  GetIt.I.registerFactory(
+      () => QuickAddCubit(GetIt.I(), GetIt.I(), GetIt.I()));
   GetIt.I.registerFactory(() => SettingCubit(GetIt.I()));
   GetIt.I.registerFactory(
       () => SettingsCubit(GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I(), GetIt.I()));

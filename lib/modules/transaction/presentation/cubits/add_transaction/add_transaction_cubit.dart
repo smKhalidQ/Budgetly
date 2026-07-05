@@ -117,7 +117,8 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
 
     var seeded = false;
     for (final category in categories) {
-      if (category.id == null || parentsWithSubs.contains(category.id)) continue;
+      if (category.id == null || parentsWithSubs.contains(category.id))
+        continue;
       for (final sub in getDefaultSubcategories(category)) {
         await _subcategoryRepository
             .insert(sub.copyWith(parentCategoryId: category.id));
@@ -127,7 +128,8 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
     return seeded;
   }
 
-  void setType(TransactionType type) => emit(state.copyWith(transactionType: type));
+  void setType(TransactionType type) =>
+      emit(state.copyWith(transactionType: type));
 
   /// Opening a category also selects it (so the submit action is enabled) and
   /// starts a fresh amount.
@@ -388,14 +390,14 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         await _reverseOriginal(editing);
       }
 
-      final transferred =
-          splits.fold(0.0, (sum, split) => sum + split.amount);
+      final transferred = splits.fold(0.0, (sum, split) => sum + split.amount);
       final primaryIncrease = transferred + incomeContribution;
 
       if (primaryIncrease > 0) {
         for (final split in splits) {
           if (split.amount <= 0) continue;
-          await _balanceService.adjustAllocated(split.category.id!, -split.amount);
+          await _balanceService.adjustAllocated(
+              split.category.id!, -split.amount);
         }
         await _balanceService.adjustAllocated(primary.id!, primaryIncrease);
       }
@@ -413,7 +415,8 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
 
   Future<void> _reverseOriginal(Transaction original) async {
     if (original.type == TransactionType.income) {
-      await _balanceService.adjustAllocated(original.categoryId, -original.amount);
+      await _balanceService.adjustAllocated(
+          original.categoryId, -original.amount);
     }
   }
 
