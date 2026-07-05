@@ -1,12 +1,10 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/home_header_widget.dart';
 import 'package:budget_buddy/modules/home/presentation/widgets/main_categories_list_widget.dart';
 import 'package:budget_buddy/modules/reports/presentation/screens/reports_screen.dart';
 import 'package:budget_buddy/modules/settings/presentation/screens/settings_screen.dart';
-import 'package:budget_buddy/modules/transaction/presentation/widgets/add_transaction_sheet.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,13 +19,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-
-  void _openAddTransaction() {
-    AddTransactionSheet.show(
-      context,
-      onSuccess: () => context.read<CategoryCubit>().fetchCategories(),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,29 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   label: t.transactions,
                   isSelected: _currentIndex == 1,
                   onTap: () => setState(() => _currentIndex = 1),
-                ),
-                GestureDetector(
-                  onTap: _openAddTransaction,
-                  child: Container(
-                    width: 52.w,
-                    height: 52.w,
-                    decoration: BoxDecoration(
-                      color: AppColor.accentColor,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColor.accentColor.withValues(alpha: 0.4),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.add_rounded,
-                      color: Colors.white,
-                      size: 28.sp,
-                    ),
-                  ),
                 ),
                 _NavItem(
                   icon: Icons.settings_rounded,

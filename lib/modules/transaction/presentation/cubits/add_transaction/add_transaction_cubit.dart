@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/services/month_cycle_service.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
 import 'package:budget_buddy/modules/subcategory/domain/default_subcategories.dart';
@@ -23,7 +24,10 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
     this._balanceService,
   ) : super(const AddTransactionState());
 
-  Future<void> initialize() async {
+  Future<void> initialize({
+    int? initialCategoryId,
+    int? initialSubcategoryId,
+  }) async {
     final categories = await _categoryRepository.getAll();
     var subcategories = await _subcategoryRepository.getAll();
 
@@ -44,8 +48,22 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
     emit(state.copyWith(
       categories: categories,
       subcategoriesMap: map,
-      topSubcategories: await _mostUsedSubcategories(subcategories),
     ));
+
+    if (initialCategoryId != null) {
+      final index = categories.indexWhere((c) => c.id == initialCategoryId);
+      if (index == -1) return;
+      selectCategory(categories[index]);
+      if (initialSubcategoryId != null) {
+        final subs = map[initialCategoryId] ?? [];
+        final subIndex = subs.indexWhere((s) => s.id == initialSubcategoryId);
+        if (subIndex != -1) selectSubcategory(subs[subIndex]);
+      }
+    } else if (state.transactionType == TransactionType.income) {
+      final savingIndex =
+          categories.indexWhere((c) => c.name == MonthCycleService.savingName);
+      if (savingIndex != -1) selectCategory(categories[savingIndex]);
+    }
   }
 
   Future<void> initializeForEdit(Transaction txn) async {
@@ -74,10 +92,10 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
     emit(state.copyWith(
       categories: categories,
       subcategoriesMap: map,
-      topSubcategories: await _mostUsedSubcategories(subcategories),
       transactionType: txn.type,
       selectedCategory: category,
       selectedSubcategory: subcategory,
+      subcategoryChosen: true,
       expandedCategoryId: txn.categoryId,
       amountInput: _formatAmount(txn.amount),
       note: txn.note ?? '',
@@ -87,43 +105,6 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
 
   String _formatAmount(double v) =>
       v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
-
-  Future<List<Subcategory>> _mostUsedSubcategories(
-    List<Subcategory> subcategories,
-  ) async {
-    final transactions = await _transactionRepository.getAll();
-    final usage = <int, int>{};
-    for (final t in transactions) {
-      if (t.type == TransactionType.expense && t.subcategoryId != null) {
-        usage[t.subcategoryId!] = (usage[t.subcategoryId!] ?? 0) + 1;
-      }
-    }
-
-    final subById = {
-      for (final s in subcategories)
-        if (s.id != null) s.id!: s,
-    };
-
-    final ranked = usage.entries
-        .where((e) => subById.containsKey(e.key))
-        .toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-
-    return ranked.take(10).map((e) => subById[e.key]!).toList();
-  }
-
-  void selectFromTop(Subcategory subcategory) {
-    final parentId = subcategory.parentCategoryId;
-    if (parentId == null) return;
-    final index = state.categories.indexWhere((c) => c.id == parentId);
-    if (index == -1) return;
-    emit(state.copyWith(
-      selectedCategory: state.categories[index],
-      selectedSubcategory: subcategory,
-      expandedCategoryId: parentId,
-      amountInput: '',
-    ));
-  }
 
   /// Seeds default subcategories for any default category that has none yet.
   /// Returns true if anything was inserted (so callers can reload).
@@ -153,8 +134,12 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   void selectCategory(Category category) => emit(state.copyWith(
         selectedCategory: category,
         selectedSubcategory: null,
+        subcategoryChosen: false,
         expandedCategoryId: category.id,
         amountInput: '',
+        pendingValue: null,
+        pendingOperator: null,
+        expressionLog: '',
       ));
 
   /// Collapses the open category and clears the in-progress entry — closing the
@@ -163,11 +148,17 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         expandedCategoryId: null,
         selectedCategory: null,
         selectedSubcategory: null,
+        subcategoryChosen: false,
         amountInput: '',
+        pendingValue: null,
+        pendingOperator: null,
+        expressionLog: '',
       ));
 
-  void selectSubcategory(Subcategory? subcategory) =>
-      emit(state.copyWith(selectedSubcategory: subcategory));
+  void selectSubcategory(Subcategory? subcategory) => emit(state.copyWith(
+        selectedSubcategory: subcategory,
+        subcategoryChosen: true,
+      ));
 
   void appendDigit(String digit) {
     final current = state.amountInput;
@@ -187,9 +178,83 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
 
   void removeDigit() {
     final current = state.amountInput;
-    if (current.isEmpty) return;
+    if (current.isNotEmpty) {
+      emit(state.copyWith(
+        amountInput:
+            current.length == 1 ? '' : current.substring(0, current.length - 1),
+      ));
+      return;
+    }
+    if (state.pendingOperator == null) return;
+    final tokens = state.expressionLog.split(' ');
+    tokens.removeLast();
+    final lastOperand = tokens.removeLast();
+    if (tokens.isEmpty) {
+      emit(state.copyWith(
+        amountInput: lastOperand,
+        pendingValue: null,
+        pendingOperator: null,
+        expressionLog: '',
+      ));
+      return;
+    }
     emit(state.copyWith(
-      amountInput: current.length == 1 ? '' : current.substring(0, current.length - 1),
+      amountInput: lastOperand,
+      pendingValue: _foldTokens(tokens),
+      pendingOperator: tokens.last,
+      expressionLog: tokens.join(' '),
+    ));
+  }
+
+  double _foldTokens(List<String> tokens) {
+    var value = double.tryParse(tokens.first) ?? 0;
+    for (var i = 1; i + 1 < tokens.length; i += 2) {
+      final operand = double.tryParse(tokens[i + 1]) ?? 0;
+      value = applyOperator(value, operand, tokens[i]);
+    }
+    return value;
+  }
+
+  void clearAmount() => emit(state.copyWith(
+        amountInput: '',
+        pendingValue: null,
+        pendingOperator: null,
+        expressionLog: '',
+      ));
+
+  void appendOperator(String operator) {
+    final current = double.tryParse(state.amountInput);
+    if (state.pendingValue == null) {
+      if (current == null) return;
+      emit(state.copyWith(
+        pendingValue: current,
+        pendingOperator: operator,
+        expressionLog: '${state.amountInput} $operator',
+        amountInput: '',
+      ));
+    } else if (current == null) {
+      emit(state.copyWith(
+        pendingOperator: operator,
+        expressionLog:
+            '${state.expressionLog.substring(0, state.expressionLog.length - 1)}$operator',
+      ));
+    } else {
+      emit(state.copyWith(
+        pendingValue: state.liveResult,
+        pendingOperator: operator,
+        expressionLog: '${state.expressionLog} ${state.amountInput} $operator',
+        amountInput: '',
+      ));
+    }
+  }
+
+  void evaluate() {
+    if (state.pendingValue == null) return;
+    emit(state.copyWith(
+      amountInput: _formatAmount(state.liveResult),
+      pendingValue: null,
+      pendingOperator: null,
+      expressionLog: '',
     ));
   }
 
@@ -218,6 +283,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   }
 
   Future<void> submit() async {
+    if (state.hasPendingOperation) evaluate();
     if (!state.canSubmit) return;
 
     final amount = state.parsedAmount;

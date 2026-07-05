@@ -6,6 +6,8 @@ import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
+import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
+import 'package:budget_buddy/modules/transaction/presentation/screens/add_transaction_screen.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_state.dart';
 import 'package:flutter/material.dart';
@@ -139,6 +141,44 @@ class HomeHeaderWidget extends StatelessWidget {
                                     color: Colors.white.withValues(alpha: 0.7),
                                     fontSize: 10.sp,
                                     fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              GestureDetector(
+                                onTap: () => AddTransactionScreen.show(
+                                  context,
+                                  initialType: TransactionType.income,
+                                  onSuccess: () => context
+                                      .read<CategoryCubit>()
+                                      .fetchCategories(),
+                                ),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w, vertical: 3.h),
+                                  decoration: BoxDecoration(
+                                    color: AppColor.accentColor
+                                        .withValues(alpha: 0.25),
+                                    borderRadius: BorderRadius.circular(20.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.add_rounded,
+                                        color: AppColor.accentColor,
+                                        size: 12.sp,
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      Text(
+                                        'Income',
+                                        style: GoogleFonts.cairo(
+                                          color: AppColor.accentColor,
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

@@ -15,10 +15,12 @@ import 'package:budget_buddy/core/widgets/pickers/icon_picker_widget.dart';
 
 class SubcategoriesListWidget extends StatelessWidget {
   final Category category;
+  final ValueChanged<Subcategory> onSubcategoryTap;
 
   const SubcategoriesListWidget({
     super.key,
     required this.category,
+    required this.onSubcategoryTap,
   });
 
   @override
@@ -133,60 +135,65 @@ class SubcategoriesListWidget extends StatelessWidget {
     final color = parseColorFromString(item.color);
     final spent = double.tryParse(item.spentAmount ?? '0') ?? 0;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      child: Row(
-        children: [
-          Container(
-            width: 48.w,
-            height: 48.w,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12.r),
+    return GestureDetector(
+      // In edit mode taps are reserved for the edit/delete actions.
+      onTap: isEditMode ? null : () => onSubcategoryTap(item),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        child: Row(
+          children: [
+            Container(
+              width: 48.w,
+              height: 48.w,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Icon(
+                IconData(int.parse(item.icon), fontFamily: 'MaterialIcons'),
+                color: color,
+                size: 24.sp,
+              ),
             ),
-            child: Icon(
-              IconData(int.parse(item.icon), fontFamily: 'MaterialIcons'),
-              color: color,
-              size: 24.sp,
-            ),
-          ),
-          SizedBox(width: 16.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name,
-                  style: GoogleFonts.roboto(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                if (spent > 0)
+            SizedBox(width: 16.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    spent.toStringAsFixed(0),
+                    item.name,
                     style: GoogleFonts.roboto(
-                      fontSize: 12.sp,
-                      color: AppColor.textSecondary,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-              ],
+                  if (spent > 0)
+                    Text(
+                      spent.toStringAsFixed(0),
+                      style: GoogleFonts.roboto(
+                        fontSize: 12.sp,
+                        color: AppColor.textSecondary,
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-          if (isEditMode) ...[
-            _svgActionBtn(
-              assetPath: 'assets/image/edit.svg',
-              color: Colors.blueGrey,
-              onTap: () => _showEditDialog(context, cubit, item),
-            ),
-            SizedBox(width: 8.w),
-            _svgActionBtn(
-              assetPath: 'assets/image/trash-can.svg',
-              color: Colors.redAccent,
-              onTap: () => _confirmDelete(context, cubit, item),
-            ),
+            if (isEditMode) ...[
+              _svgActionBtn(
+                assetPath: 'assets/image/edit.svg',
+                color: Colors.blueGrey,
+                onTap: () => _showEditDialog(context, cubit, item),
+              ),
+              SizedBox(width: 8.w),
+              _svgActionBtn(
+                assetPath: 'assets/image/trash-can.svg',
+                color: Colors.redAccent,
+                onTap: () => _confirmDelete(context, cubit, item),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

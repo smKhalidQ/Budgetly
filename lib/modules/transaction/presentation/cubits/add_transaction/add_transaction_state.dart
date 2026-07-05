@@ -32,11 +32,14 @@ sealed class AddTransactionState with _$AddTransactionState {
     @Default(TransactionType.expense) TransactionType transactionType,
     @Default([]) List<Category> categories,
     @Default({}) Map<int, List<Subcategory>> subcategoriesMap,
-    @Default([]) List<Subcategory> topSubcategories,
     int? expandedCategoryId,
     Category? selectedCategory,
     Subcategory? selectedSubcategory,
+    @Default(false) bool subcategoryChosen,
     @Default('') String amountInput,
+    double? pendingValue,
+    String? pendingOperator,
+    @Default('') String expressionLog,
     @Default('') String note,
     @Default(AddTransactionStatus.idle) AddTransactionStatus status,
     double? overflowDeficit,
@@ -50,10 +53,48 @@ extension AddTransactionStateX on AddTransactionState {
   double get parsedAmount => double.tryParse(amountInput) ?? 0.0;
   bool get isLoading => status == AddTransactionStatus.loading;
   bool get isEditing => editingTransaction != null;
-  bool get canSubmit => parsedAmount > 0 && selectedCategory != null && !isLoading;
+  bool get hasPendingOperation => pendingOperator != null;
+  double get liveResult {
+    final pending = pendingValue;
+    if (pending == null) return parsedAmount;
+    final current = double.tryParse(amountInput);
+    if (current == null) return pending;
+    return applyOperator(pending, current, pendingOperator!);
+  }
+
+  bool get canSubmit =>
+      liveResult > 0 && selectedCategory != null && !isLoading;
+  bool get showNumpad =>
+      transactionType == TransactionType.income || subcategoryChosen;
+  String get amountExpression =>
+      amountInput.isEmpty ? expressionLog : '$expressionLog $amountInput';
+
+  String get displayTotal {
+    if (pendingValue == null) return amountInput.isEmpty ? '0' : amountInput;
+    return _formatOperand(liveResult);
+  }
+
   bool get isOverflow => overflowDeficit != null;
   double get overflowCovered =>
       overflowSplits.fold(0.0, (sum, s) => sum + s.amount) + overflowIncome;
   bool get overflowFullyCovered =>
       isOverflow && (overflowCovered - overflowDeficit!).abs() < 0.01;
+}
+
+String _formatOperand(double v) =>
+    v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
+
+double applyOperator(double a, double b, String operator) {
+  switch (operator) {
+    case '+':
+      return a + b;
+    case '−':
+      return a - b;
+    case '×':
+      return a * b;
+    case '÷':
+      return b == 0 ? a : a / b;
+    default:
+      return b;
+  }
 }

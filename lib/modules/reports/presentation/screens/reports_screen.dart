@@ -12,7 +12,7 @@ import 'package:budget_buddy/modules/transaction/domain/repositories/transaction
 import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_cubit.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_state.dart';
-import 'package:budget_buddy/modules/transaction/presentation/widgets/add_transaction_sheet.dart';
+import 'package:budget_buddy/modules/transaction/presentation/screens/add_transaction_screen.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,13 +55,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
         curve: Curves.easeInOut,
       );
 
-  void _openAddTransaction() {
-    AddTransactionSheet.show(
-      context,
-      onSuccess: () => context.read<CategoryCubit>().fetchCategories(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -80,15 +73,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
               fontSize: 18.sp,
             ),
           ),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.add_rounded,
-                  color: AppColor.accentColor, size: 26.sp),
-              onPressed: _openAddTransaction,
-              tooltip: 'Add transaction',
-            ),
-            SizedBox(width: 4.w),
-          ],
         ),
         body: Column(
           children: [
@@ -747,7 +731,7 @@ class _TransactionRowState extends State<_TransactionRow> {
   }
 
   void _openEdit() {
-    AddTransactionSheet.show(
+    AddTransactionScreen.show(
       context,
       editing: _txn,
       onSuccess: () => context.read<CategoryCubit>().fetchCategories(),

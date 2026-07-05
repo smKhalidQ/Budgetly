@@ -17,11 +17,14 @@ mixin _$AddTransactionState {
   TransactionType get transactionType;
   List<Category> get categories;
   Map<int, List<Subcategory>> get subcategoriesMap;
-  List<Subcategory> get topSubcategories;
   int? get expandedCategoryId;
   Category? get selectedCategory;
   Subcategory? get selectedSubcategory;
+  bool get subcategoryChosen;
   String get amountInput;
+  double? get pendingValue;
+  String? get pendingOperator;
+  String get expressionLog;
   String get note;
   AddTransactionStatus get status;
   double? get overflowDeficit;
@@ -48,16 +51,22 @@ mixin _$AddTransactionState {
                 .equals(other.categories, categories) &&
             const DeepCollectionEquality()
                 .equals(other.subcategoriesMap, subcategoriesMap) &&
-            const DeepCollectionEquality()
-                .equals(other.topSubcategories, topSubcategories) &&
             (identical(other.expandedCategoryId, expandedCategoryId) ||
                 other.expandedCategoryId == expandedCategoryId) &&
             (identical(other.selectedCategory, selectedCategory) ||
                 other.selectedCategory == selectedCategory) &&
             (identical(other.selectedSubcategory, selectedSubcategory) ||
                 other.selectedSubcategory == selectedSubcategory) &&
+            (identical(other.subcategoryChosen, subcategoryChosen) ||
+                other.subcategoryChosen == subcategoryChosen) &&
             (identical(other.amountInput, amountInput) ||
                 other.amountInput == amountInput) &&
+            (identical(other.pendingValue, pendingValue) ||
+                other.pendingValue == pendingValue) &&
+            (identical(other.pendingOperator, pendingOperator) ||
+                other.pendingOperator == pendingOperator) &&
+            (identical(other.expressionLog, expressionLog) ||
+                other.expressionLog == expressionLog) &&
             (identical(other.note, note) || other.note == note) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.overflowDeficit, overflowDeficit) ||
@@ -76,11 +85,14 @@ mixin _$AddTransactionState {
       transactionType,
       const DeepCollectionEquality().hash(categories),
       const DeepCollectionEquality().hash(subcategoriesMap),
-      const DeepCollectionEquality().hash(topSubcategories),
       expandedCategoryId,
       selectedCategory,
       selectedSubcategory,
+      subcategoryChosen,
       amountInput,
+      pendingValue,
+      pendingOperator,
+      expressionLog,
       note,
       status,
       overflowDeficit,
@@ -90,7 +102,7 @@ mixin _$AddTransactionState {
 
   @override
   String toString() {
-    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, topSubcategories: $topSubcategories, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome, editingTransaction: $editingTransaction)';
+    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, subcategoryChosen: $subcategoryChosen, amountInput: $amountInput, pendingValue: $pendingValue, pendingOperator: $pendingOperator, expressionLog: $expressionLog, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome, editingTransaction: $editingTransaction)';
   }
 }
 
@@ -104,11 +116,14 @@ abstract mixin class $AddTransactionStateCopyWith<$Res> {
       {TransactionType transactionType,
       List<Category> categories,
       Map<int, List<Subcategory>> subcategoriesMap,
-      List<Subcategory> topSubcategories,
       int? expandedCategoryId,
       Category? selectedCategory,
       Subcategory? selectedSubcategory,
+      bool subcategoryChosen,
       String amountInput,
+      double? pendingValue,
+      String? pendingOperator,
+      String expressionLog,
       String note,
       AddTransactionStatus status,
       double? overflowDeficit,
@@ -137,11 +152,14 @@ class _$AddTransactionStateCopyWithImpl<$Res>
     Object? transactionType = null,
     Object? categories = null,
     Object? subcategoriesMap = null,
-    Object? topSubcategories = null,
     Object? expandedCategoryId = freezed,
     Object? selectedCategory = freezed,
     Object? selectedSubcategory = freezed,
+    Object? subcategoryChosen = null,
     Object? amountInput = null,
+    Object? pendingValue = freezed,
+    Object? pendingOperator = freezed,
+    Object? expressionLog = null,
     Object? note = null,
     Object? status = null,
     Object? overflowDeficit = freezed,
@@ -162,10 +180,6 @@ class _$AddTransactionStateCopyWithImpl<$Res>
           ? _self.subcategoriesMap
           : subcategoriesMap // ignore: cast_nullable_to_non_nullable
               as Map<int, List<Subcategory>>,
-      topSubcategories: null == topSubcategories
-          ? _self.topSubcategories
-          : topSubcategories // ignore: cast_nullable_to_non_nullable
-              as List<Subcategory>,
       expandedCategoryId: freezed == expandedCategoryId
           ? _self.expandedCategoryId
           : expandedCategoryId // ignore: cast_nullable_to_non_nullable
@@ -178,9 +192,25 @@ class _$AddTransactionStateCopyWithImpl<$Res>
           ? _self.selectedSubcategory
           : selectedSubcategory // ignore: cast_nullable_to_non_nullable
               as Subcategory?,
+      subcategoryChosen: null == subcategoryChosen
+          ? _self.subcategoryChosen
+          : subcategoryChosen // ignore: cast_nullable_to_non_nullable
+              as bool,
       amountInput: null == amountInput
           ? _self.amountInput
           : amountInput // ignore: cast_nullable_to_non_nullable
+              as String,
+      pendingValue: freezed == pendingValue
+          ? _self.pendingValue
+          : pendingValue // ignore: cast_nullable_to_non_nullable
+              as double?,
+      pendingOperator: freezed == pendingOperator
+          ? _self.pendingOperator
+          : pendingOperator // ignore: cast_nullable_to_non_nullable
+              as String?,
+      expressionLog: null == expressionLog
+          ? _self.expressionLog
+          : expressionLog // ignore: cast_nullable_to_non_nullable
               as String,
       note: null == note
           ? _self.note
@@ -347,11 +377,14 @@ extension AddTransactionStatePatterns on AddTransactionState {
             TransactionType transactionType,
             List<Category> categories,
             Map<int, List<Subcategory>> subcategoriesMap,
-            List<Subcategory> topSubcategories,
             int? expandedCategoryId,
             Category? selectedCategory,
             Subcategory? selectedSubcategory,
+            bool subcategoryChosen,
             String amountInput,
+            double? pendingValue,
+            String? pendingOperator,
+            String expressionLog,
             String note,
             AddTransactionStatus status,
             double? overflowDeficit,
@@ -368,11 +401,14 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.transactionType,
             _that.categories,
             _that.subcategoriesMap,
-            _that.topSubcategories,
             _that.expandedCategoryId,
             _that.selectedCategory,
             _that.selectedSubcategory,
+            _that.subcategoryChosen,
             _that.amountInput,
+            _that.pendingValue,
+            _that.pendingOperator,
+            _that.expressionLog,
             _that.note,
             _that.status,
             _that.overflowDeficit,
@@ -403,11 +439,14 @@ extension AddTransactionStatePatterns on AddTransactionState {
             TransactionType transactionType,
             List<Category> categories,
             Map<int, List<Subcategory>> subcategoriesMap,
-            List<Subcategory> topSubcategories,
             int? expandedCategoryId,
             Category? selectedCategory,
             Subcategory? selectedSubcategory,
+            bool subcategoryChosen,
             String amountInput,
+            double? pendingValue,
+            String? pendingOperator,
+            String expressionLog,
             String note,
             AddTransactionStatus status,
             double? overflowDeficit,
@@ -423,11 +462,14 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.transactionType,
             _that.categories,
             _that.subcategoriesMap,
-            _that.topSubcategories,
             _that.expandedCategoryId,
             _that.selectedCategory,
             _that.selectedSubcategory,
+            _that.subcategoryChosen,
             _that.amountInput,
+            _that.pendingValue,
+            _that.pendingOperator,
+            _that.expressionLog,
             _that.note,
             _that.status,
             _that.overflowDeficit,
@@ -455,11 +497,14 @@ extension AddTransactionStatePatterns on AddTransactionState {
             TransactionType transactionType,
             List<Category> categories,
             Map<int, List<Subcategory>> subcategoriesMap,
-            List<Subcategory> topSubcategories,
             int? expandedCategoryId,
             Category? selectedCategory,
             Subcategory? selectedSubcategory,
+            bool subcategoryChosen,
             String amountInput,
+            double? pendingValue,
+            String? pendingOperator,
+            String expressionLog,
             String note,
             AddTransactionStatus status,
             double? overflowDeficit,
@@ -475,11 +520,14 @@ extension AddTransactionStatePatterns on AddTransactionState {
             _that.transactionType,
             _that.categories,
             _that.subcategoriesMap,
-            _that.topSubcategories,
             _that.expandedCategoryId,
             _that.selectedCategory,
             _that.selectedSubcategory,
+            _that.subcategoryChosen,
             _that.amountInput,
+            _that.pendingValue,
+            _that.pendingOperator,
+            _that.expressionLog,
             _that.note,
             _that.status,
             _that.overflowDeficit,
@@ -499,11 +547,14 @@ class _AddTransactionState implements AddTransactionState {
       {this.transactionType = TransactionType.expense,
       final List<Category> categories = const [],
       final Map<int, List<Subcategory>> subcategoriesMap = const {},
-      final List<Subcategory> topSubcategories = const [],
       this.expandedCategoryId,
       this.selectedCategory,
       this.selectedSubcategory,
+      this.subcategoryChosen = false,
       this.amountInput = '',
+      this.pendingValue,
+      this.pendingOperator,
+      this.expressionLog = '',
       this.note = '',
       this.status = AddTransactionStatus.idle,
       this.overflowDeficit,
@@ -512,7 +563,6 @@ class _AddTransactionState implements AddTransactionState {
       this.editingTransaction})
       : _categories = categories,
         _subcategoriesMap = subcategoriesMap,
-        _topSubcategories = topSubcategories,
         _overflowSplits = overflowSplits;
 
   @override
@@ -536,16 +586,6 @@ class _AddTransactionState implements AddTransactionState {
     return EqualUnmodifiableMapView(_subcategoriesMap);
   }
 
-  final List<Subcategory> _topSubcategories;
-  @override
-  @JsonKey()
-  List<Subcategory> get topSubcategories {
-    if (_topSubcategories is EqualUnmodifiableListView)
-      return _topSubcategories;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_topSubcategories);
-  }
-
   @override
   final int? expandedCategoryId;
   @override
@@ -554,7 +594,17 @@ class _AddTransactionState implements AddTransactionState {
   final Subcategory? selectedSubcategory;
   @override
   @JsonKey()
+  final bool subcategoryChosen;
+  @override
+  @JsonKey()
   final String amountInput;
+  @override
+  final double? pendingValue;
+  @override
+  final String? pendingOperator;
+  @override
+  @JsonKey()
+  final String expressionLog;
   @override
   @JsonKey()
   final String note;
@@ -598,16 +648,22 @@ class _AddTransactionState implements AddTransactionState {
                 .equals(other._categories, _categories) &&
             const DeepCollectionEquality()
                 .equals(other._subcategoriesMap, _subcategoriesMap) &&
-            const DeepCollectionEquality()
-                .equals(other._topSubcategories, _topSubcategories) &&
             (identical(other.expandedCategoryId, expandedCategoryId) ||
                 other.expandedCategoryId == expandedCategoryId) &&
             (identical(other.selectedCategory, selectedCategory) ||
                 other.selectedCategory == selectedCategory) &&
             (identical(other.selectedSubcategory, selectedSubcategory) ||
                 other.selectedSubcategory == selectedSubcategory) &&
+            (identical(other.subcategoryChosen, subcategoryChosen) ||
+                other.subcategoryChosen == subcategoryChosen) &&
             (identical(other.amountInput, amountInput) ||
                 other.amountInput == amountInput) &&
+            (identical(other.pendingValue, pendingValue) ||
+                other.pendingValue == pendingValue) &&
+            (identical(other.pendingOperator, pendingOperator) ||
+                other.pendingOperator == pendingOperator) &&
+            (identical(other.expressionLog, expressionLog) ||
+                other.expressionLog == expressionLog) &&
             (identical(other.note, note) || other.note == note) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.overflowDeficit, overflowDeficit) ||
@@ -626,11 +682,14 @@ class _AddTransactionState implements AddTransactionState {
       transactionType,
       const DeepCollectionEquality().hash(_categories),
       const DeepCollectionEquality().hash(_subcategoriesMap),
-      const DeepCollectionEquality().hash(_topSubcategories),
       expandedCategoryId,
       selectedCategory,
       selectedSubcategory,
+      subcategoryChosen,
       amountInput,
+      pendingValue,
+      pendingOperator,
+      expressionLog,
       note,
       status,
       overflowDeficit,
@@ -640,7 +699,7 @@ class _AddTransactionState implements AddTransactionState {
 
   @override
   String toString() {
-    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, topSubcategories: $topSubcategories, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, amountInput: $amountInput, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome, editingTransaction: $editingTransaction)';
+    return 'AddTransactionState(transactionType: $transactionType, categories: $categories, subcategoriesMap: $subcategoriesMap, expandedCategoryId: $expandedCategoryId, selectedCategory: $selectedCategory, selectedSubcategory: $selectedSubcategory, subcategoryChosen: $subcategoryChosen, amountInput: $amountInput, pendingValue: $pendingValue, pendingOperator: $pendingOperator, expressionLog: $expressionLog, note: $note, status: $status, overflowDeficit: $overflowDeficit, overflowSplits: $overflowSplits, overflowIncome: $overflowIncome, editingTransaction: $editingTransaction)';
   }
 }
 
@@ -656,11 +715,14 @@ abstract mixin class _$AddTransactionStateCopyWith<$Res>
       {TransactionType transactionType,
       List<Category> categories,
       Map<int, List<Subcategory>> subcategoriesMap,
-      List<Subcategory> topSubcategories,
       int? expandedCategoryId,
       Category? selectedCategory,
       Subcategory? selectedSubcategory,
+      bool subcategoryChosen,
       String amountInput,
+      double? pendingValue,
+      String? pendingOperator,
+      String expressionLog,
       String note,
       AddTransactionStatus status,
       double? overflowDeficit,
@@ -692,11 +754,14 @@ class __$AddTransactionStateCopyWithImpl<$Res>
     Object? transactionType = null,
     Object? categories = null,
     Object? subcategoriesMap = null,
-    Object? topSubcategories = null,
     Object? expandedCategoryId = freezed,
     Object? selectedCategory = freezed,
     Object? selectedSubcategory = freezed,
+    Object? subcategoryChosen = null,
     Object? amountInput = null,
+    Object? pendingValue = freezed,
+    Object? pendingOperator = freezed,
+    Object? expressionLog = null,
     Object? note = null,
     Object? status = null,
     Object? overflowDeficit = freezed,
@@ -717,10 +782,6 @@ class __$AddTransactionStateCopyWithImpl<$Res>
           ? _self._subcategoriesMap
           : subcategoriesMap // ignore: cast_nullable_to_non_nullable
               as Map<int, List<Subcategory>>,
-      topSubcategories: null == topSubcategories
-          ? _self._topSubcategories
-          : topSubcategories // ignore: cast_nullable_to_non_nullable
-              as List<Subcategory>,
       expandedCategoryId: freezed == expandedCategoryId
           ? _self.expandedCategoryId
           : expandedCategoryId // ignore: cast_nullable_to_non_nullable
@@ -733,9 +794,25 @@ class __$AddTransactionStateCopyWithImpl<$Res>
           ? _self.selectedSubcategory
           : selectedSubcategory // ignore: cast_nullable_to_non_nullable
               as Subcategory?,
+      subcategoryChosen: null == subcategoryChosen
+          ? _self.subcategoryChosen
+          : subcategoryChosen // ignore: cast_nullable_to_non_nullable
+              as bool,
       amountInput: null == amountInput
           ? _self.amountInput
           : amountInput // ignore: cast_nullable_to_non_nullable
+              as String,
+      pendingValue: freezed == pendingValue
+          ? _self.pendingValue
+          : pendingValue // ignore: cast_nullable_to_non_nullable
+              as double?,
+      pendingOperator: freezed == pendingOperator
+          ? _self.pendingOperator
+          : pendingOperator // ignore: cast_nullable_to_non_nullable
+              as String?,
+      expressionLog: null == expressionLog
+          ? _self.expressionLog
+          : expressionLog // ignore: cast_nullable_to_non_nullable
               as String,
       note: null == note
           ? _self.note

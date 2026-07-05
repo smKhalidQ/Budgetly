@@ -11,8 +11,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// The conscious-decision view: when an expense exceeds a category's balance,
 /// the user deliberately chooses which other envelopes cover the difference.
-/// Embedded inline inside [AddTransactionSheet] (no nested modal) — [onBack]
-/// returns to the entry view, confirmation is handled by the parent sheet.
+/// Embedded inline inside AddTransactionScreen (no nested modal) — [onBack]
+/// returns to the entry view, confirmation is handled by the parent screen.
 class OverflowDecisionView extends StatelessWidget {
   final VoidCallback onBack;
 
