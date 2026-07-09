@@ -92,16 +92,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     Map<int, double> spentBySub,
     double generalSpent,
   ) {
-    const palette = [
-      Color(0xFF4F959D),
-      Color(0xFFEF6C6C),
-      Color(0xFFF2A65A),
-      Color(0xFF6C8EEF),
-      Color(0xFF9B6CEF),
-      Color(0xFF5BBF8A),
-      Color(0xFFE5C454),
-      Color(0xFFEF6CB0),
-    ];
+    const palette = AppColor.categoryPalette;
 
     final entries = <({String name, double amount})>[
       for (final s in subs)

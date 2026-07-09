@@ -139,13 +139,13 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
                 return Scaffold(
                   backgroundColor: AppColor.backgroundColor,
                   appBar: AppBar(
-                    backgroundColor: AppColor.backgroundColor,
+                    backgroundColor: AppColor.primaryColor,
                     elevation: 0,
                     scrolledUnderElevation: 0,
                     title: Text(
                       'Fixed Expenses',
                       style: GoogleFonts.cairo(
-                        color: AppColor.primaryColor,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 18.sp,
                       ),

@@ -54,7 +54,7 @@ class _SettingsView extends StatelessWidget {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: AppColor.expenseColor,
               foregroundColor: Colors.white,
             ),
             onPressed: () {
@@ -167,7 +167,7 @@ class _SettingsView extends StatelessWidget {
               _SectionLabel('Debug'),
               _SettingsTile(
                 icon: Icons.restart_alt_rounded,
-                iconColor: Colors.red,
+                iconColor: AppColor.expenseColor,
                 title: 'Reset to post-setup state',
                 subtitle:
                     'Wipe all transactions & spending — keeps salary and allocations',

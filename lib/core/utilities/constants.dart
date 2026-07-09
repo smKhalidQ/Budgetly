@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_buddy/core/theming/app_color.dart';
 
 Map<String, Map<String, String>> currencies = {
   "OMR": {"currencyName": "Omani Rial", "currencySymbol": "﷼", "flag": "🇴🇲"},
@@ -29,7 +30,7 @@ Color parseColorFromString(String colorString) {
     if (colorString.startsWith('0x') || colorString.startsWith('0X')) {
       value = int.parse(colorString);
     } else if (colorString.startsWith('MaterialAccent')) {
-      return Colors.blueAccent;
+      return AppColor.accentColor;
     } else {
       value = int.parse('0xff${colorString.padLeft(6, '0')}');
     }
@@ -40,6 +41,6 @@ Color parseColorFromString(String colorString) {
       value & 0xFF,
     );
   } catch (_) {
-    return const Color(0xff2196f3);
+    return AppColor.categoryOthers;
   }
 }

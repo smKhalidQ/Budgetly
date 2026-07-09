@@ -21,6 +21,19 @@ class AppColor {
 
   static const Color categoryOthers = Color(0xFF90A4AE);
 
+  static const List<Color> categoryPalette = [
+    Color(0xFF4F959D),
+    Color(0xFF3B566D),
+    Color(0xFF52A07D),
+    Color(0xFFDC6B6B),
+    Color(0xFFE0A458),
+    Color(0xFF6C8EEF),
+    Color(0xFF9B6CEF),
+    Color(0xFFEF6CB0),
+    Color(0xFF5BBF8A),
+    Color(0xFF90A4AE),
+  ];
+
   // ── Surfaces ───────────────────────────────────────────────────────────
   static const Color backgroundColor = Color(0xFFF5F7FA);
   static const Color cardBackground = Colors.white;

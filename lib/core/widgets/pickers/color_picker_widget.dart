@@ -1,4 +1,5 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
+import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:flutter/material.dart';
 
 class ColorPickerWidget extends StatelessWidget {
@@ -11,34 +12,7 @@ class ColorPickerWidget extends StatelessWidget {
     required this.onColorSelected,
   });
 
-  static const List<Color> colorOptions = [
-    Colors.red,
-    Colors.pink,
-    Colors.purple,
-    Colors.deepPurple,
-    Colors.indigo,
-    Color(0xff1565c0),
-    Colors.blue,
-    Colors.lightBlue,
-    Colors.cyan,
-    Colors.teal,
-    Color(0xff2e7d32),
-    Colors.green,
-    Colors.lightGreen,
-    Colors.lime,
-    Colors.yellow,
-    Colors.amber,
-    Color(0xfff9a825),
-    Colors.orange,
-    Color(0xfff57c00),
-    Colors.deepOrange,
-    Colors.brown,
-    Color(0xff546e7a),
-    Colors.blueGrey,
-    Colors.grey,
-    Color(0xff90a4ae),
-    Color(0xff6a1b9a),
-  ];
+  static const List<Color> colorOptions = AppColor.categoryPalette;
 
   static bool _match(Color a, Color b) {
     return (a.r * 255).round() == (b.r * 255).round() &&

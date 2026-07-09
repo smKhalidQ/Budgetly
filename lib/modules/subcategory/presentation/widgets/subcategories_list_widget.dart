@@ -59,7 +59,7 @@ class SubcategoriesListWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.category_outlined,
-              size: 48.sp, color: Colors.grey.withValues(alpha: 0.4)),
+              size: 48.sp, color: AppColor.textTertiary),
           SizedBox(height: 12.h),
           Text(
             "No subcategories yet",
@@ -87,7 +87,7 @@ class SubcategoriesListWidget extends StatelessWidget {
       height: 40.h,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
       width: double.infinity,
-      color: Colors.grey[200],
+      color: AppColor.surfaceMuted,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -102,7 +102,7 @@ class SubcategoriesListWidget extends StatelessWidget {
           IconButton(
             icon: Icon(
               isEditMode ? Icons.close : Icons.settings,
-              color: Colors.blueGrey[700],
+              color: AppColor.textSecondary,
               size: 20.sp,
             ),
             onPressed: cubit.toggleSubCategoryEditModeState,
@@ -120,7 +120,7 @@ class SubcategoriesListWidget extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 16.h),
       itemCount: items.length,
       separatorBuilder: (_, __) => Divider(
-        color: Colors.grey[200],
+        color: AppColor.dividerColor,
         height: 1,
         indent: 16,
         endIndent: 16,
@@ -188,13 +188,13 @@ class SubcategoriesListWidget extends StatelessWidget {
             if (isEditMode) ...[
               _svgActionBtn(
                 assetPath: 'assets/image/edit.svg',
-                color: Colors.blueGrey,
+                color: AppColor.accentColor,
                 onTap: () => _showEditDialog(context, cubit, item),
               ),
               SizedBox(width: 8.w),
               _svgActionBtn(
                 assetPath: 'assets/image/trash-can.svg',
-                color: Colors.redAccent,
+                color: AppColor.expenseColor,
                 onTap: () => _confirmDelete(context, cubit, item),
               ),
             ],
@@ -214,7 +214,7 @@ class SubcategoriesListWidget extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(6.r),
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: AppColor.surfaceMuted,
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: SvgPicture.asset(
@@ -247,11 +247,12 @@ class SubcategoriesListWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text("Cancel", style: TextStyle(color: Colors.grey[600])),
+            child: Text("Cancel",
+                style: TextStyle(color: AppColor.textSecondary)),
           ),
           ElevatedButton(
-            style:
-                ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColor.expenseColor),
             onPressed: () {
               cubit.removeSubcategory(item.id!);
               Navigator.pop(dialogContext);
@@ -374,7 +375,7 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
                     shape: BoxShape.circle,
                     color: _page == i
                         ? AppColor.primaryColor
-                        : Colors.grey.withValues(alpha: 0.5),
+                        : AppColor.borderColor,
                   ),
                 ),
               ),
@@ -385,7 +386,8 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text("Cancel", style: TextStyle(color: Colors.grey[600])),
+          child: Text("Cancel",
+              style: TextStyle(color: AppColor.textSecondary)),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
