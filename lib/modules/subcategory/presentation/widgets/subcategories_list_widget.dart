@@ -179,6 +179,12 @@ class SubcategoriesListWidget extends StatelessWidget {
                 ],
               ),
             ),
+            if (!isEditMode)
+              Icon(
+                Icons.add_circle_outline_rounded,
+                color: color.withValues(alpha: 0.6),
+                size: 22.sp,
+              ),
             if (isEditMode) ...[
               _svgActionBtn(
                 assetPath: 'assets/image/edit.svg',

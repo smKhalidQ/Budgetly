@@ -168,10 +168,9 @@ class MainCategoriesListWidget extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.only(right: 12.w),
                                     child: Icon(
-                                      Icons.chevron_right_rounded,
-                                      color: AppColor.textSecondary
-                                          .withValues(alpha: 0.4),
-                                      size: 20.sp,
+                                      Icons.add_circle_outline_rounded,
+                                      color: color.withValues(alpha: 0.6),
+                                      size: 22.sp,
                                     ),
                                   ),
                                 ],
