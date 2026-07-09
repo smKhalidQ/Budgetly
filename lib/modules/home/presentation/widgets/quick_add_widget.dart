@@ -74,6 +74,7 @@ class _QuickAddTile extends StatelessWidget {
         context,
         initialCategoryId: item.category.id,
         initialSubcategoryId: item.subcategory?.id,
+        subcategoryPreselected: true,
         onSuccess: onAdded,
       ),
       child: Container(

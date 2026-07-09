@@ -6,9 +6,7 @@ import 'package:budget_buddy/modules/home/presentation/widgets/main_categories_l
 import 'package:budget_buddy/modules/home/presentation/widgets/quick_add_widget.dart';
 import 'package:budget_buddy/modules/reports/presentation/screens/reports_screen.dart';
 import 'package:budget_buddy/modules/settings/presentation/screens/settings_screen.dart';
-import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -82,18 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
 class _HomeTab extends StatelessWidget {
   const _HomeTab();
 
-  static String _greeting() {
-    final h = DateTime.now().hour;
-    if (h < 12) return 'Good Morning';
-    if (h < 17) return 'Good Afternoon';
-    return 'Good Evening';
-  }
-
   @override
   Widget build(BuildContext context) {
-    final name = context
-        .select<SettingCubit, String>((c) => c.state.userName.split(' ').first);
-
     return CustomScrollView(
       slivers: [
         SliverAppBar(
@@ -102,77 +90,18 @@ class _HomeTab extends StatelessWidget {
           backgroundColor: AppColor.primaryColor,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
+          scrolledUnderElevation: 0,
           automaticallyImplyLeading: false,
-          titleSpacing: 20.w,
-          title: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _greeting(),
-                      style: GoogleFonts.cairo(
-                        fontSize: 12.sp,
-                        color: Colors.white.withValues(alpha: 0.65),
-                      ),
-                    ),
-                    if (name.isNotEmpty)
-                      Text(
-                        name,
-                        style: GoogleFonts.cairo(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          height: 1.1,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 4.w),
-                child: Container(
-                  width: 38.w,
-                  height: 38.w,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.person_rounded,
-                    color: Colors.white,
-                    size: 20.sp,
-                  ),
-                ),
-              ),
-            ],
+          title: Text(
+            'Home',
+            style: GoogleFonts.cairo(
+              fontWeight: FontWeight.bold,
+              fontSize: 18.sp,
+              color: Colors.white,
+            ),
           ),
         ),
-        SliverToBoxAdapter(
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                // 60% of card visual height (card margin-top 12.h + 60% of ~152.h inner)
-                height: 160.h,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColor.primaryColor,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(32.r),
-                      bottomRight: Radius.circular(32.r),
-                    ),
-                  ),
-                ),
-              ),
-              const HomeHeaderWidget(),
-            ],
-          ),
-        ),
+        const SliverToBoxAdapter(child: HomeHeaderWidget()),
         SliverToBoxAdapter(
           child: Padding(
             padding: EdgeInsets.only(top: 16.h),

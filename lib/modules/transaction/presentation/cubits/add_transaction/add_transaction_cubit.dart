@@ -27,6 +27,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   Future<void> initialize({
     int? initialCategoryId,
     int? initialSubcategoryId,
+    bool subcategoryPreselected = false,
   }) async {
     final categories = await _categoryRepository.getAll();
     var subcategories = await _subcategoryRepository.getAll();
@@ -58,6 +59,8 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         final subs = map[initialCategoryId] ?? [];
         final subIndex = subs.indexWhere((s) => s.id == initialSubcategoryId);
         if (subIndex != -1) selectSubcategory(subs[subIndex]);
+      } else if (subcategoryPreselected) {
+        selectSubcategory(null);
       }
     } else if (state.transactionType == TransactionType.income) {
       final savingIndex =

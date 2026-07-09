@@ -20,6 +20,7 @@ class AddTransactionScreen extends StatelessWidget {
   final Transaction? editing;
   final int? initialCategoryId;
   final int? initialSubcategoryId;
+  final bool subcategoryPreselected;
   final TransactionType? initialType;
   final Animation<double> animation;
 
@@ -30,6 +31,7 @@ class AddTransactionScreen extends StatelessWidget {
     this.editing,
     this.initialCategoryId,
     this.initialSubcategoryId,
+    this.subcategoryPreselected = false,
     this.initialType,
   });
 
@@ -39,6 +41,7 @@ class AddTransactionScreen extends StatelessWidget {
     Transaction? editing,
     int? initialCategoryId,
     int? initialSubcategoryId,
+    bool subcategoryPreselected = false,
     TransactionType? initialType,
   }) {
     Navigator.push(
@@ -51,6 +54,7 @@ class AddTransactionScreen extends StatelessWidget {
           editing: editing,
           initialCategoryId: initialCategoryId,
           initialSubcategoryId: initialSubcategoryId,
+          subcategoryPreselected: subcategoryPreselected,
           initialType: initialType,
           animation: animation,
         ),
@@ -70,6 +74,7 @@ class AddTransactionScreen extends StatelessWidget {
           cubit.initialize(
             initialCategoryId: initialCategoryId,
             initialSubcategoryId: initialSubcategoryId,
+            subcategoryPreselected: subcategoryPreselected,
           );
         }
         return cubit;
@@ -192,6 +197,7 @@ class _EntryView extends StatelessWidget {
 
     return Column(
       children: [
+        const _EntryAppBar(),
         Expanded(
           child: ClipRect(
             child: SlideTransition(
@@ -224,7 +230,6 @@ class _TopHalf extends StatelessWidget {
 
     return Column(
       children: [
-        const _EntryAppBar(),
         SizedBox(height: 8.h),
         Expanded(
           child: isIncome ? const _IncomeTop() : const _ExpenseTop(),
@@ -252,12 +257,22 @@ class _EntryAppBar extends StatelessWidget {
         : (isEditing ? 'Edit Expense' : 'Add Expense');
 
     return AppBar(
+      backgroundColor: AppColor.primaryColor,
+      elevation: 0,
+      scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
-      title: Text(title),
+      title: Text(
+        title,
+        style: GoogleFonts.cairo(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 18.sp,
+        ),
+      ),
       actions: [
         IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.close_rounded),
+          icon: const Icon(Icons.close_rounded, color: Colors.white),
         ),
       ],
     );
