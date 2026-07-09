@@ -105,11 +105,11 @@ class _TabChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const labels = ['Transactions', 'Monthly'];
-    return SizedBox(
-      height: 40.h,
+    return Container(
+      height: 44.h,
+      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
         itemCount: labels.length,
         separatorBuilder: (_, __) => SizedBox(width: 8.w),
         itemBuilder: (_, i) {
@@ -123,7 +123,7 @@ class _TabChips extends StatelessWidget {
                 color: isSelected
                     ? AppColor.primaryColor
                     : AppColor.cardBackground,
-                borderRadius: BorderRadius.circular(20.r),
+                borderRadius: BorderRadius.circular(8.r),
                 border: Border.all(
                   color:
                       isSelected ? AppColor.primaryColor : AppColor.borderColor,
@@ -283,7 +283,7 @@ class _FilterBar extends StatelessWidget {
     final cubit = context.read<TransactionCubit>();
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
+      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 10.h),
       child: Row(
         children: [
           Builder(
@@ -293,52 +293,80 @@ class _FilterBar extends StatelessWidget {
                 padding:
                     EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
                 decoration: BoxDecoration(
-                  color: AppColor.primaryColor,
-                  borderRadius: BorderRadius.circular(20.r),
+                  color: AppColor.cardBackground,
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: AppColor.borderColor),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Icon(Icons.event_rounded,
+                        size: 14.sp, color: AppColor.primaryColor),
+                    SizedBox(width: 6.w),
                     Text(
                       _periodLabels[period]!,
                       style: GoogleFonts.cairo(
                         fontSize: 12.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        color: AppColor.textPrimary,
                       ),
                     ),
-                    SizedBox(width: 4.w),
+                    SizedBox(width: 2.w),
                     Icon(Icons.keyboard_arrow_down_rounded,
-                        size: 15.sp, color: Colors.white),
+                        size: 16.sp, color: AppColor.textSecondary),
                   ],
                 ),
               ),
             ),
           ),
           const Spacer(),
-          _GroupingIcon(
-            icon: Icons.calendar_today_rounded,
-            isSelected: grouping == TransactionGrouping.byDate,
-            onTap: () => cubit.setGrouping(TransactionGrouping.byDate),
-          ),
-          SizedBox(width: 16.w),
-          _GroupingIcon(
-            icon: Icons.category_rounded,
-            isSelected: grouping == TransactionGrouping.byCategory,
-            onTap: () => cubit.setGrouping(TransactionGrouping.byCategory),
-          ),
+          _GroupingTabs(grouping: grouping, onChanged: cubit.setGrouping),
         ],
       ),
     );
   }
 }
 
-class _GroupingIcon extends StatelessWidget {
+class _GroupingTabs extends StatelessWidget {
+  final TransactionGrouping grouping;
+  final ValueChanged<TransactionGrouping> onChanged;
+
+  const _GroupingTabs({required this.grouping, required this.onChanged});
+
+  static const _tabs = [
+    (TransactionGrouping.byDate, Icons.event_rounded),
+    (TransactionGrouping.byCategory, Icons.grid_view_rounded),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(3.w),
+      decoration: BoxDecoration(
+        color: AppColor.surfaceMuted,
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final (value, icon) in _tabs)
+            _GroupingTabIcon(
+              icon: icon,
+              isSelected: grouping == value,
+              onTap: () => onChanged(value),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GroupingTabIcon extends StatelessWidget {
   final IconData icon;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _GroupingIcon(
+  const _GroupingTabIcon(
       {required this.icon, required this.isSelected, required this.onTap});
 
   @override
@@ -346,12 +374,27 @@ class _GroupingIcon extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: Icon(
-        icon,
-        size: 22.sp,
-        color: isSelected
-            ? AppColor.primaryColor
-            : AppColor.textSecondary.withValues(alpha: 0.4),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColor.cardBackground : Colors.transparent,
+          borderRadius: BorderRadius.circular(6.r),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColor.backgroundCardShadow,
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ]
+              : null,
+        ),
+        child: Icon(
+          icon,
+          size: 17.sp,
+          color: isSelected ? AppColor.primaryColor : AppColor.textSecondary,
+        ),
       ),
     );
   }
