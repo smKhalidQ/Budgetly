@@ -77,6 +77,7 @@ class CategoryRepository {
       categoryId: id,
       storedSpentAmount: spentAmount,
     );
+    _changedController.add(const CategoryChangedEvent());
   }
 
   Future<void> resetAllSpentAmounts() async {
