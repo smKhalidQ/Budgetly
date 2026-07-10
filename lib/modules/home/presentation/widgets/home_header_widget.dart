@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/services/month_cycle_service.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
@@ -23,8 +22,7 @@ class HomeHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.tr;
-    final now = DateTime.now();
-    final monthYear = DateFormat('MMMM yyyy').format(now);
+    final monthYear = DateFormat('MMMM yyyy').format(DateTime.now());
 
     return BlocBuilder<SettingCubit, SettingState>(
       buildWhen: (prev, curr) => prev.selectedCurrency != curr.selectedCurrency,
@@ -47,132 +45,118 @@ class HomeHeaderWidget extends StatelessWidget {
                 .where((c) => c.name == MonthCycleService.savingName)
                 .fold(0.0, (sum, c) => sum + c.allocatedAmount);
             final remaining = totalBudget - totalSpent;
-            final isOver = remaining < 0;
             final progress = totalBudget == 0
                 ? 0.0
                 : (totalSpent / totalBudget).clamp(0.0, 1.0);
+            final statusColor = _statusColor(progress, remaining);
 
             return Container(
               margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
-              clipBehavior: Clip.antiAlias,
+              padding: EdgeInsets.all(18.w),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.r),
+                color: AppColor.cardBackground,
+                borderRadius: BorderRadius.circular(AppRadius.xl.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColor.backgroundCardShadow,
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    color: AppColor.secondaryColor,
-                    padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 18.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        t.budgetOverview,
+                        style: GoogleFonts.cairo(
+                          color: AppColor.textSecondary,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          _Chip(label: monthYear),
+                          SizedBox(width: 6.w),
+                          GestureDetector(
+                            onTap: () => AddTransactionScreen.show(
+                              context,
+                              initialType: TransactionType.income,
+                              onSuccess: () =>
+                                  context.read<CategoryCubit>().fetchCategories(),
+                            ),
+                            child: _Chip(
+                              label: 'Income',
+                              background: AppColor.accentColor,
+                              foreground: Colors.white,
+                              icon: Icons.add_rounded,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 18.h),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _BudgetRing(progress: progress, color: statusColor, size: 64.w),
+                      SizedBox(width: 16.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              t.budgetOverview,
+                              '$symbol${remaining.abs().toStringAsFixed(0)}',
+                              style: AppTextStyle.number(
+                                size: 26.sp,
+                                color: statusColor,
+                                height: 1,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              remaining < 0
+                                  ? '${t.remaining} · over budget'
+                                  : t.remaining,
                               style: GoogleFonts.cairo(
-                                color: Colors.white.withValues(alpha: 0.7),
+                                color: AppColor.textSecondary,
                                 fontSize: 12.sp,
-                                fontWeight: FontWeight.w600,
                               ),
-                            ),
-                            Row(
-                              children: [
-                                _Chip(
-                                  label: monthYear,
-                                  background:
-                                      Colors.white.withValues(alpha: 0.15),
-                                  foreground:
-                                      Colors.white.withValues(alpha: 0.9),
-                                ),
-                                SizedBox(width: 6.w),
-                                GestureDetector(
-                                  onTap: () => AddTransactionScreen.show(
-                                    context,
-                                    initialType: TransactionType.income,
-                                    onSuccess: () => context
-                                        .read<CategoryCubit>()
-                                        .fetchCategories(),
-                                  ),
-                                  child: _Chip(
-                                    label: 'Income',
-                                    background: AppColor.accentColor,
-                                    foreground: Colors.white,
-                                    icon: Icons.add_rounded,
-                                  ),
-                                ),
-                              ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 16.h),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    '$symbol${remaining.abs().toStringAsFixed(0)}',
-                                    style: AppTextStyle.number(
-                                      size: 28.sp,
-                                      weight: FontWeight.bold,
-                                      color: Colors.white,
-                                      height: 1,
-                                      letterSpacing: -0.5,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4.h),
-                                  Text(
-                                    isOver ? '⚠ ${t.remaining}' : t.remaining,
-                                    style: GoogleFonts.cairo(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.7),
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 14.w),
-                            _BudgetRing(
-                              progress: progress,
-                              isOver: isOver,
-                              size: 52.w,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Container(
-                    color: AppColor.headerGradientEnd,
-                    padding: EdgeInsets.symmetric(vertical: 14.h),
-                    child: Row(
-                      children: [
-                        _StatItem(
-                          label: t.spent,
-                          value: '$symbol${totalSpent.toStringAsFixed(0)}',
-                          dotColor: AppColor.expenseColor,
-                        ),
-                        _Divider(),
-                        _StatItem(
-                          label: 'Saving',
-                          value: '$symbol${saving.toStringAsFixed(0)}',
-                          dotColor: AppColor.incomeColor,
-                        ),
-                        _Divider(),
-                        _StatItem(
-                          label: 'Salary',
-                          value: '$symbol${salary.toStringAsFixed(0)}',
-                          dotColor: Colors.white,
-                        ),
-                      ],
-                    ),
+                  SizedBox(height: 18.h),
+                  Divider(color: AppColor.dividerColor, height: 1),
+                  SizedBox(height: 14.h),
+                  Row(
+                    children: [
+                      _StatItem(
+                        label: t.spent,
+                        value: '$symbol${totalSpent.toStringAsFixed(0)}',
+                        dotColor: AppColor.expenseColor,
+                      ),
+                      _StatDivider(),
+                      _StatItem(
+                        label: 'Saving',
+                        value: '$symbol${saving.toStringAsFixed(0)}',
+                        dotColor: AppColor.incomeColor,
+                      ),
+                      _StatDivider(),
+                      _StatItem(
+                        label: 'Salary',
+                        value: '$symbol${salary.toStringAsFixed(0)}',
+                        dotColor: AppColor.primaryColor,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -182,40 +166,48 @@ class HomeHeaderWidget extends StatelessWidget {
       },
     );
   }
+
+  Color _statusColor(double progress, double remaining) {
+    if (remaining < 0) return AppColor.expenseColor;
+    if (progress >= 0.85) return AppColor.warningColor;
+    return AppColor.incomeColor;
+  }
 }
 
 class _Chip extends StatelessWidget {
   final String label;
-  final Color background;
-  final Color foreground;
+  final Color? background;
+  final Color? foreground;
   final IconData? icon;
 
   const _Chip({
     required this.label,
-    required this.background,
-    required this.foreground,
+    this.background,
+    this.foreground,
     this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bg = background ?? AppColor.surfaceMuted;
+    final fg = foreground ?? AppColor.textSecondary;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(20.r),
+        color: bg,
+        borderRadius: BorderRadius.circular(AppRadius.pill.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 12.sp, color: foreground),
+            Icon(icon, size: 12.sp, color: fg),
             SizedBox(width: 2.w),
           ],
           Text(
             label,
             style: GoogleFonts.cairo(
-              color: foreground,
+              color: fg,
               fontSize: 11.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -226,13 +218,13 @@ class _Chip extends StatelessWidget {
   }
 }
 
-class _Divider extends StatelessWidget {
+class _StatDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 0.5,
+      width: 1,
       height: 28.h,
-      color: Colors.white.withValues(alpha: 0.15),
+      color: AppColor.dividerColor,
     );
   }
 }
@@ -266,7 +258,7 @@ class _StatItem extends StatelessWidget {
               Text(
                 label,
                 style: GoogleFonts.cairo(
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: AppColor.textSecondary,
                   fontSize: 11.sp,
                 ),
               ),
@@ -275,7 +267,7 @@ class _StatItem extends StatelessWidget {
           SizedBox(height: 4.h),
           Text(
             value,
-            style: AppTextStyle.number(size: 14.sp, color: Colors.white),
+            style: AppTextStyle.number(size: 14.sp),
           ),
         ],
       ),
@@ -285,75 +277,40 @@ class _StatItem extends StatelessWidget {
 
 class _BudgetRing extends StatelessWidget {
   final double progress;
-  final bool isOver;
+  final Color color;
   final double size;
 
   const _BudgetRing({
     required this.progress,
-    required this.isOver,
+    required this.color,
     required this.size,
   });
 
   @override
   Widget build(BuildContext context) {
-    final ringColor = isOver ? AppColor.expenseColor : Colors.white;
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(
-        painter: _RingPainter(progress: progress, color: ringColor),
-        child: Center(
-          child: Text(
-            '${(progress * 100).toStringAsFixed(0)}%',
-            style: AppTextStyle.number(
-              size: 11.sp,
-              weight: FontWeight.w700,
-              color: Colors.white,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          SizedBox(
+            width: size,
+            height: size,
+            child: CircularProgressIndicator(
+              value: progress,
+              strokeWidth: 6,
+              strokeCap: StrokeCap.round,
+              backgroundColor: AppColor.surfaceMuted,
+              valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
           ),
-        ),
+          Text(
+            '${(progress * 100).toStringAsFixed(0)}%',
+            style: AppTextStyle.number(size: 13.sp, color: color),
+          ),
+        ],
       ),
     );
-  }
-}
-
-class _RingPainter extends CustomPainter {
-  final double progress;
-  final Color color;
-
-  _RingPainter({required this.progress, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = size.center(Offset.zero);
-    final radius = size.width / 2 - 5;
-    const strokeWidth = 5.0;
-
-    final trackPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.25)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    final progressPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawCircle(center, radius, trackPaint);
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -pi / 2,
-      2 * pi * progress,
-      false,
-      progressPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _RingPainter oldDelegate) {
-    return oldDelegate.progress != progress || oldDelegate.color != color;
   }
 }

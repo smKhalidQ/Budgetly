@@ -1,3 +1,4 @@
+import 'package:budget_buddy/core/services/month_cycle_service.dart';
 import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
 import 'package:budget_buddy/modules/home/presentation/cubits/quick_add_state.dart';
 import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
@@ -54,6 +55,14 @@ class QuickAddCubit extends Cubit<QuickAddState> {
       final subcategory =
           parts.length > 1 ? subcategoryById[int.parse(parts[1])] : null;
       items.add(QuickAddItem(category: category, subcategory: subcategory));
+    }
+
+    if (items.isEmpty) {
+      for (final category in categories) {
+        if (items.length >= _maxItems) break;
+        if (category.name == MonthCycleService.savingName) continue;
+        items.add(QuickAddItem(category: category));
+      }
     }
 
     emit(state.copyWith(items: items));

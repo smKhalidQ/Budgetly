@@ -29,14 +29,14 @@ class QuickAddWidget extends StatelessWidget {
                 child: Text(
                   'Quick Add',
                   style: GoogleFonts.cairo(
-                    fontSize: 17.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.bold,
                     color: AppColor.textPrimary,
                   ),
                 ),
               ),
               SizedBox(
-                height: 92.h,
+                height: 46.h,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -78,20 +78,18 @@ class _QuickAddTile extends StatelessWidget {
         onSuccess: onAdded,
       ),
       child: Container(
-        width: 76.w,
-        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 6.w),
+        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
         decoration: BoxDecoration(
           color: AppColor.cardBackground,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(color: color.withValues(alpha: 0.25)),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 32.w,
-              height: 32.w,
+              width: 26.w,
+              height: 26.w,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
@@ -99,20 +97,21 @@ class _QuickAddTile extends StatelessWidget {
               child: Icon(
                 IconData(int.parse(item.icon), fontFamily: 'MaterialIcons'),
                 color: color,
-                size: 16.sp,
+                size: 14.sp,
               ),
             ),
-            SizedBox(height: 6.h),
-            Text(
-              item.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.cairo(
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w600,
-                height: 1.1,
-                color: AppColor.textPrimary,
+            SizedBox(width: 8.w),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 72.w),
+              child: Text(
+                item.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.cairo(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColor.textPrimary,
+                ),
               ),
             ),
           ],
