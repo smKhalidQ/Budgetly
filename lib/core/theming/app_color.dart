@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 /// desaturated semantic colors for income/expense so nothing screams at the user.
 class AppColor {
   // ── Brand ──────────────────────────────────────────────────────────────
-  static const Color primaryColor = Color(0xFF3B566D); // slate blue
+  static const Color primaryColor = Color(0xFF2B3A67); // deep navy blue
+  static const Color primaryColorLight = Color(0xFF3D4F87); // tab bar
   static const Color secondaryColor = Color(0xFF2A3F50); // deep slate
   static const Color accentColor = Color(0xFF4F959D); // teal — the one accent
 
-  // Header gradient (start = secondaryColor, end = deeper slate).
-  static const Color headerGradientStart = secondaryColor;
-  static const Color headerGradientEnd = Color(0xFF16242F);
+  // Header gradient (start = primaryColor, end = deeper navy).
+  static const Color headerGradientStart = primaryColor;
+  static const Color headerGradientEnd = Color(0xFF1B2444);
 
   // ── Semantic ───────────────────────────────────────────────────────────
   static const Color incomeColor = Color(0xFF52A07D); // calm sage green

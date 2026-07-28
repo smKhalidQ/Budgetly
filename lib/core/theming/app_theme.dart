@@ -1,6 +1,7 @@
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Global app theme, driven entirely by [AppColor].
@@ -35,6 +36,13 @@ final ThemeData appTheme = ThemeData(
       fontSize: 18,
     ),
     iconTheme: const IconThemeData(color: AppColor.textWhite),
+    systemOverlayStyle: const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
   ),
   progressIndicatorTheme: const ProgressIndicatorThemeData(
     color: AppColor.accentColor,

@@ -7,6 +7,7 @@ import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
+import 'package:budget_buddy/modules/settings/presentation/screens/settings_screen.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
 import 'package:budget_buddy/modules/transaction/presentation/screens/add_transaction_screen.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -15,6 +16,57 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+
+class HomeHeaderSliver extends StatelessWidget {
+  const HomeHeaderSliver({super.key});
+
+  static const double maxExtent = 280;
+  static const double minExtent = 64;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      pinned: true,
+      automaticallyImplyLeading: false,
+      backgroundColor: AppColor.headerGradientStart,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      expandedHeight: maxExtent.h,
+      collapsedHeight: minExtent.h,
+      flexibleSpace: LayoutBuilder(
+        builder: (context, constraints) {
+          final shrinkRange = maxExtent.h - minExtent.h;
+          final shrinkProgress = shrinkRange == 0
+              ? 1.0
+              : (1 - ((constraints.maxHeight - minExtent.h) / shrinkRange))
+                  .clamp(0.0, 1.0);
+          final titleOpacity = ((shrinkProgress - 0.85) / 0.15).clamp(0.0, 1.0);
+
+          return FlexibleSpaceBar(
+            centerTitle: true,
+            titlePadding:
+                EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+            title: Opacity(
+              opacity: titleOpacity,
+              child: Text(
+                'عَنْ مَالِهِ فِيمَا أَنْفَقَهُ',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.cairo(
+                  color: AppColor.textWhite,
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            background: const HomeHeaderWidget(),
+          );
+        },
+      ),
+    );
+  }
+}
 
 class HomeHeaderWidget extends StatelessWidget {
   const HomeHeaderWidget({super.key});
@@ -51,110 +103,183 @@ class HomeHeaderWidget extends StatelessWidget {
             final statusColor = _statusColor(progress, remaining);
 
             return Container(
-              margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
-              padding: EdgeInsets.all(18.w),
-              decoration: BoxDecoration(
-                color: AppColor.cardBackground,
-                borderRadius: BorderRadius.circular(AppRadius.xl.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColor.backgroundCardShadow,
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColor.headerGradientStart,
+                    AppColor.headerGradientEnd,
+                  ],
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        t.budgetOverview,
-                        style: GoogleFonts.cairo(
-                          color: AppColor.textSecondary,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          _Chip(label: monthYear),
-                          SizedBox(width: 6.w),
-                          GestureDetector(
-                            onTap: () => AddTransactionScreen.show(
-                              context,
-                              initialType: TransactionType.income,
-                              onSuccess: () =>
-                                  context.read<CategoryCubit>().fetchCategories(),
-                            ),
-                            child: _Chip(
-                              label: 'Income',
-                              background: AppColor.accentColor,
-                              foreground: Colors.white,
-                              icon: Icons.add_rounded,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  Positioned(
+                    top: -60.h,
+                    right: -30.w,
+                    child: _DecorativeCircle(size: 160.w),
                   ),
-                  SizedBox(height: 18.h),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Positioned(
+                    top: 160.h,
+                    left: -40.w,
+                    child: _DecorativeCircle(size: 100.w),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      _BudgetRing(progress: progress, color: statusColor, size: 64.w),
-                      SizedBox(width: 16.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '$symbol${remaining.abs().toStringAsFixed(0)}',
-                              style: AppTextStyle.number(
-                                size: 26.sp,
-                                color: statusColor,
+                      Container(
+                        margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          color: AppColor.backgroundGlass,
+                          borderRadius: BorderRadius.circular(AppRadius.xl.r),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.12),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(18.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                const SettingsScreen(),
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.settings_outlined,
+                                          size: 16.sp,
+                                          color: Colors.white
+                                              .withValues(alpha: 0.8),
+                                        ),
+                                      ),
+                                      SizedBox(width: 6.w),
+                                      Text(
+                                        t.budgetOverview,
+                                        style: GoogleFonts.cairo(
+                                          color: Colors.white
+                                              .withValues(alpha: 0.8),
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      _Chip(label: monthYear),
+                                      SizedBox(width: 6.w),
+                                      GestureDetector(
+                                        onTap: () => AddTransactionScreen.show(
+                                          context,
+                                          initialType: TransactionType.income,
+                                          onSuccess: () => context
+                                              .read<CategoryCubit>()
+                                              .fetchCategories(),
+                                        ),
+                                        child: _Chip(
+                                          label: 'Income',
+                                          background: AppColor.accentColor,
+                                          foreground: Colors.white,
+                                          icon: Icons.add_rounded,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 18.h),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  _BudgetRing(
+                                      progress: progress,
+                                      color: statusColor,
+                                      size: 64.w),
+                                  SizedBox(width: 16.w),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          '$symbol${remaining.abs().toStringAsFixed(0)}',
+                                          style: AppTextStyle.number(
+                                            size: 26.sp,
+                                            color: statusColor,
+                                            height: 1,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4.h),
+                                        Text(
+                                          remaining < 0
+                                              ? '${t.remaining} · over budget'
+                                              : t.remaining,
+                                          style: GoogleFonts.cairo(
+                                            color: Colors.white
+                                                .withValues(alpha: 0.8),
+                                            fontSize: 12.sp,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 18.h),
+                              Divider(
+                                color: Colors.white.withValues(alpha: 0.15),
                                 height: 1,
                               ),
-                            ),
-                            SizedBox(height: 4.h),
-                            Text(
-                              remaining < 0
-                                  ? '${t.remaining} · over budget'
-                                  : t.remaining,
-                              style: GoogleFonts.cairo(
-                                color: AppColor.textSecondary,
-                                fontSize: 12.sp,
+                              SizedBox(height: 14.h),
+                              Row(
+                                children: [
+                                  _StatItem(
+                                    label: t.spent,
+                                    value:
+                                        '$symbol${totalSpent.toStringAsFixed(0)}',
+                                    dotColor: AppColor.expenseColor,
+                                  ),
+                                  Container(
+                                    width: 1,
+                                    height: 28.h,
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                  ),
+                                  _StatItem(
+                                    label: 'Saving',
+                                    value:
+                                        '$symbol${saving.toStringAsFixed(0)}',
+                                    dotColor: AppColor.incomeColor,
+                                  ),
+                                  Container(
+                                    width: 1,
+                                    height: 28.h,
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                  ),
+                                  _StatItem(
+                                    label: 'Salary',
+                                    value:
+                                        '$symbol${salary.toStringAsFixed(0)}',
+                                    dotColor: Colors.white,
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 18.h),
-                  Divider(color: AppColor.dividerColor, height: 1),
-                  SizedBox(height: 14.h),
-                  Row(
-                    children: [
-                      _StatItem(
-                        label: t.spent,
-                        value: '$symbol${totalSpent.toStringAsFixed(0)}',
-                        dotColor: AppColor.expenseColor,
-                      ),
-                      _StatDivider(),
-                      _StatItem(
-                        label: 'Saving',
-                        value: '$symbol${saving.toStringAsFixed(0)}',
-                        dotColor: AppColor.incomeColor,
-                      ),
-                      _StatDivider(),
-                      _StatItem(
-                        label: 'Salary',
-                        value: '$symbol${salary.toStringAsFixed(0)}',
-                        dotColor: AppColor.primaryColor,
                       ),
                     ],
                   ),
@@ -189,8 +314,8 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = background ?? AppColor.surfaceMuted;
-    final fg = foreground ?? AppColor.textSecondary;
+    final bg = background ?? Colors.white.withValues(alpha: 0.12);
+    final fg = foreground ?? Colors.white.withValues(alpha: 0.9);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -214,17 +339,6 @@ class _Chip extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _StatDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 1,
-      height: 28.h,
-      color: AppColor.dividerColor,
     );
   }
 }
@@ -258,7 +372,7 @@ class _StatItem extends StatelessWidget {
               Text(
                 label,
                 style: GoogleFonts.cairo(
-                  color: AppColor.textSecondary,
+                  color: Colors.white.withValues(alpha: 0.8),
                   fontSize: 11.sp,
                 ),
               ),
@@ -267,9 +381,27 @@ class _StatItem extends StatelessWidget {
           SizedBox(height: 4.h),
           Text(
             value,
-            style: AppTextStyle.number(size: 14.sp),
+            style: AppTextStyle.number(size: 14.sp, color: Colors.white),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DecorativeCircle extends StatelessWidget {
+  final double size;
+
+  const _DecorativeCircle({required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white.withValues(alpha: 0.06),
       ),
     );
   }
@@ -301,7 +433,7 @@ class _BudgetRing extends StatelessWidget {
               value: progress,
               strokeWidth: 6,
               strokeCap: StrokeCap.round,
-              backgroundColor: AppColor.surfaceMuted,
+              backgroundColor: Colors.white.withValues(alpha: 0.15),
               valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
           ),

@@ -59,22 +59,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _cubit,
-      child: Scaffold(
-        backgroundColor: AppColor.backgroundColor,
-        appBar: AppBar(
-          backgroundColor: AppColor.primaryColor,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          title: Text(
-            'Reports',
-            style: GoogleFonts.cairo(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 18.sp,
-            ),
-          ),
-        ),
-        body: Column(
+      child: Container(
+        color: AppColor.backgroundColor,
+        child: Column(
           children: [
             _TabChips(currentIndex: _currentPage, onTap: _jumpToPage),
             Expanded(
