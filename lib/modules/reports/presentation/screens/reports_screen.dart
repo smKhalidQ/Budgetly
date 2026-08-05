@@ -5,7 +5,7 @@ import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/reports/presentation/pages/monthly_summary_page.dart';
+import 'package:budget_buddy/modules/transaction/domain/models/monthly_summary.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
 import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
@@ -19,6 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
@@ -31,29 +32,12 @@ class ReportsScreen extends StatefulWidget {
 
 class _ReportsScreenState extends State<ReportsScreen> {
   late final TransactionCubit _cubit;
-  late final PageController _pageController;
-  int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
     _cubit = GetIt.I<TransactionCubit>()..initialize();
-    _pageController = PageController();
   }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  void _onPageChanged(int index) => setState(() => _currentPage = index);
-
-  void _jumpToPage(int index) => _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
 
   @override
   Widget build(BuildContext context) {
@@ -63,126 +47,25 @@ class _ReportsScreenState extends State<ReportsScreen> {
         color: AppColor.backgroundColor,
         child: Column(
           children: [
-            _TabChips(currentIndex: _currentPage, onTap: _jumpToPage),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: _onPageChanged,
-                children: const [_TransactionsPage(), MonthlySummaryPage()],
-              ),
+            CustomScrollView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              slivers: [
+                SliverOverlapInjector(
+                    handle:
+                        NestedScrollView.sliverOverlapAbsorberHandleFor(
+                            context)),
+                const SliverToBoxAdapter(
+                  child: Column(
+                    children: [_FilterBar(), _SummaryStrip()],
+                  ),
+                ),
+              ],
             ),
-            _DotsIndicator(
-                count: 2, current: _currentPage, onDotTap: _jumpToPage),
-            SizedBox(height: MediaQuery.of(context).padding.bottom + 8.h),
+            const Expanded(child: _Body()),
           ],
         ),
       ),
-    );
-  }
-}
-
-// ─── Tab Chips ────────────────────────────────────────────────────────────────
-
-class _TabChips extends StatelessWidget {
-  final int currentIndex;
-  final ValueChanged<int> onTap;
-
-  const _TabChips({required this.currentIndex, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    const labels = ['Transactions', 'Monthly'];
-    return Container(
-      height: 44.h,
-      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: labels.length,
-        separatorBuilder: (_, __) => SizedBox(width: 8.w),
-        itemBuilder: (_, i) {
-          final isSelected = i == currentIndex;
-          return GestureDetector(
-            onTap: () => onTap(i),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: EdgeInsets.symmetric(horizontal: 14.w),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColor.primaryColor
-                    : AppColor.cardBackground,
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(
-                  color:
-                      isSelected ? AppColor.primaryColor : AppColor.borderColor,
-                ),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                labels[i],
-                style: GoogleFonts.cairo(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  color: isSelected ? Colors.white : AppColor.textSecondary,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-// ─── Dots Indicator ───────────────────────────────────────────────────────────
-
-class _DotsIndicator extends StatelessWidget {
-  final int count;
-  final int current;
-  final ValueChanged<int> onDotTap;
-
-  const _DotsIndicator(
-      {required this.count, required this.current, required this.onDotTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(count, (i) {
-          final isActive = i == current;
-          return GestureDetector(
-            onTap: () => onDotTap(i),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: EdgeInsets.symmetric(horizontal: 4.w),
-              width: isActive ? 20.w : 6.w,
-              height: 6.h,
-              decoration: BoxDecoration(
-                color: isActive ? AppColor.primaryColor : AppColor.borderColor,
-                borderRadius: BorderRadius.circular(3.r),
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}
-
-// ─── Transactions Page ────────────────────────────────────────────────────────
-
-class _TransactionsPage extends StatelessWidget {
-  const _TransactionsPage();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        _FilterBar(),
-        _SummaryStrip(),
-        Expanded(child: _Body()),
-      ],
     );
   }
 }
@@ -277,8 +160,7 @@ class _FilterBar extends StatelessWidget {
             builder: (btnCtx) => GestureDetector(
               onTap: () => _showPeriodDropdown(btnCtx, period, cubit),
               child: Container(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
                 decoration: BoxDecoration(
                   color: AppColor.cardBackground,
                   borderRadius: BorderRadius.circular(8.r),
@@ -323,6 +205,7 @@ class _GroupingTabs extends StatelessWidget {
   static const _tabs = [
     (TransactionGrouping.byDate, Icons.event_rounded),
     (TransactionGrouping.byCategory, Icons.grid_view_rounded),
+    (TransactionGrouping.byMonth, Icons.calendar_month_rounded),
   ];
 
   @override
@@ -440,8 +323,8 @@ class _StripStat extends StatelessWidget {
         ),
         SizedBox(width: 5.w),
         Text('$label ',
-            style:
-                GoogleFonts.cairo(fontSize: 12.sp, color: AppColor.textSecondary)),
+            style: GoogleFonts.cairo(
+                fontSize: 12.sp, color: AppColor.textSecondary)),
         Text(value,
             style: AppTextStyle.number(
                 size: 12.sp, weight: FontWeight.bold, color: color)),
@@ -457,15 +340,17 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (grouping, isLoading) = context
-        .select<TransactionCubit, (TransactionGrouping, bool)>(
+    final (grouping, isLoading) =
+        context.select<TransactionCubit, (TransactionGrouping, bool)>(
             (c) => (c.state.grouping, c.state.isLoading));
 
     if (isLoading) return const Center(child: CircularProgressIndicator());
 
-    return grouping == TransactionGrouping.byDate
-        ? const _ByDateList()
-        : const _ByCategoryList();
+    return switch (grouping) {
+      TransactionGrouping.byDate => const _ByDateList(),
+      TransactionGrouping.byCategory => const _ByCategoryList(),
+      TransactionGrouping.byMonth => const _ByMonthList(),
+    };
   }
 }
 
@@ -476,9 +361,9 @@ class _ByDateList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final groups = context.select<TransactionCubit,
-            List<MapEntry<DateTime, List<Transaction>>>>(
-        (c) => c.state.filteredGroupedByDay);
+    final groups = context
+        .select<TransactionCubit, List<MapEntry<DateTime, List<Transaction>>>>(
+            (c) => c.state.filteredGroupedByDay);
 
     if (groups.isEmpty) return const _EmptyState();
 
@@ -486,9 +371,8 @@ class _ByDateList extends StatelessWidget {
       final key = c.state.selectedCurrency ?? currencies.keys.first;
       return currencies[key]?['currencySymbol'] ?? '';
     });
-    final categoriesById = context
-        .select<TransactionCubit, Map<int, Category>>(
-            (c) => c.state.categoriesById);
+    final categoriesById = context.select<TransactionCubit, Map<int, Category>>(
+        (c) => c.state.categoriesById);
 
     return CustomScrollView(
       slivers: [
@@ -517,9 +401,9 @@ class _ByCategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final groups = context.select<TransactionCubit,
-            List<MapEntry<Category, List<Transaction>>>>(
-        (c) => c.state.filteredGroupedByCategory);
+    final groups = context
+        .select<TransactionCubit, List<MapEntry<Category, List<Transaction>>>>(
+            (c) => c.state.filteredGroupedByCategory);
 
     if (groups.isEmpty) return const _EmptyState();
 
@@ -527,9 +411,8 @@ class _ByCategoryList extends StatelessWidget {
       final key = c.state.selectedCurrency ?? currencies.keys.first;
       return currencies[key]?['currencySymbol'] ?? '';
     });
-    final categoriesById = context
-        .select<TransactionCubit, Map<int, Category>>(
-            (c) => c.state.categoriesById);
+    final categoriesById = context.select<TransactionCubit, Map<int, Category>>(
+        (c) => c.state.categoriesById);
 
     return ListView.builder(
       padding: EdgeInsets.only(bottom: 16.h),
@@ -549,6 +432,236 @@ class _ByCategoryList extends StatelessWidget {
           categoriesById: categoriesById,
         );
       },
+    );
+  }
+}
+
+// ─── By Month ─────────────────────────────────────────────────────────────────
+
+class _ByMonthList extends StatelessWidget {
+  const _ByMonthList();
+
+  @override
+  Widget build(BuildContext context) {
+    final summaries = context.select<TransactionCubit, List<MonthlySummary>>(
+        (c) => c.state.monthlySummaries);
+
+    if (summaries.isEmpty) return const _MonthlyEmptyState();
+
+    final currencySymbol = context.select<SettingCubit, String>((c) {
+      final key = c.state.selectedCurrency ?? currencies.keys.first;
+      return currencies[key]?['currencySymbol'] ?? '';
+    });
+
+    return ListView.separated(
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 24.h),
+      itemCount: summaries.length,
+      separatorBuilder: (_, __) => SizedBox(height: 12.h),
+      itemBuilder: (_, i) => _MonthCard(
+        summary: summaries[i],
+        currencySymbol: currencySymbol,
+      ),
+    );
+  }
+}
+
+class _MonthCard extends StatelessWidget {
+  final MonthlySummary summary;
+  final String currencySymbol;
+
+  const _MonthCard({required this.summary, required this.currencySymbol});
+
+  @override
+  Widget build(BuildContext context) {
+    final monthLabel =
+        DateFormat('MMMM yyyy').format(DateTime(summary.year, summary.month));
+    final saved = summary.saved;
+    final savedColor =
+        saved >= 0 ? AppColor.incomeColor : AppColor.expenseColor;
+
+    return Container(
+      padding: EdgeInsets.all(16.r),
+      decoration: BoxDecoration(
+        color: AppColor.cardBackground,
+        borderRadius: BorderRadius.circular(AppRadius.lg.r),
+        border: summary.isCurrentMonth
+            ? Border.all(
+                color: AppColor.accentColor.withValues(alpha: 0.4), width: 1.5)
+            : null,
+        boxShadow: [
+          BoxShadow(
+            color: AppColor.backgroundCardShadow,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  monthLabel,
+                  style: GoogleFonts.cairo(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.textPrimary,
+                  ),
+                ),
+              ),
+              if (summary.isCurrentMonth)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+                  decoration: BoxDecoration(
+                    color: AppColor.accentColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Text(
+                    'Current',
+                    style: GoogleFonts.cairo(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.accentColor,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            '${summary.txCount} transactions',
+            style: GoogleFonts.cairo(
+                fontSize: 11.sp, color: AppColor.textSecondary),
+          ),
+          SizedBox(height: 16.h),
+          Row(
+            children: [
+              Expanded(
+                child: _MonthStatItem(
+                  label: 'Expenses',
+                  value: '$currencySymbol${summary.expense.toStringAsFixed(0)}',
+                  color: AppColor.expenseColor,
+                  icon: Icons.arrow_upward_rounded,
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: _MonthStatItem(
+                  label: 'Income',
+                  value: '$currencySymbol${summary.income.toStringAsFixed(0)}',
+                  color: AppColor.incomeColor,
+                  icon: Icons.arrow_downward_rounded,
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: _MonthStatItem(
+                  label: saved >= 0 ? 'Saved' : 'Deficit',
+                  value: '$currencySymbol${saved.abs().toStringAsFixed(0)}',
+                  color: savedColor,
+                  icon: saved >= 0
+                      ? Icons.savings_rounded
+                      : Icons.warning_amber_rounded,
+                ),
+              ),
+            ],
+          ),
+          if (summary.expense > 0) ...[
+            SizedBox(height: 14.h),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4.r),
+              child: LinearProgressIndicator(
+                value: summary.income > 0
+                    ? (summary.expense / summary.income).clamp(0.0, 1.0)
+                    : 1.0,
+                minHeight: 5.h,
+                backgroundColor: AppColor.surfaceMuted,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  summary.expense > summary.income
+                      ? AppColor.expenseColor
+                      : AppColor.accentColor,
+                ),
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              summary.income > 0
+                  ? '${((summary.expense / summary.income) * 100).toStringAsFixed(0)}% of income spent'
+                  : 'No income recorded',
+              style: GoogleFonts.cairo(
+                  fontSize: 10.sp, color: AppColor.textSecondary),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _MonthStatItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+  final IconData icon;
+
+  const _MonthStatItem({
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(AppRadius.md.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 14.sp),
+          SizedBox(height: 4.h),
+          Text(
+            value,
+            style: AppTextStyle.number(
+                size: 13.sp, weight: FontWeight.bold, color: color),
+          ),
+          Text(label,
+              style: GoogleFonts.cairo(
+                  fontSize: 10.sp, color: AppColor.textSecondary)),
+        ],
+      ),
+    );
+  }
+}
+
+class _MonthlyEmptyState extends StatelessWidget {
+  const _MonthlyEmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.calendar_month_rounded,
+              size: 72.sp,
+              color: AppColor.primaryColor.withValues(alpha: 0.15)),
+          SizedBox(height: 16.h),
+          Text(
+            'No monthly data yet',
+            style: GoogleFonts.cairo(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColor.textSecondary),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1034,8 +1147,8 @@ class _CoverageChip extends StatelessWidget {
               size: 14.sp, color: AppColor.textSecondary),
           SizedBox(width: 4.w),
           Text(name,
-              style:
-                  GoogleFonts.cairo(fontSize: 11.sp, color: AppColor.textPrimary)),
+              style: GoogleFonts.cairo(
+                  fontSize: 11.sp, color: AppColor.textPrimary)),
           const Spacer(),
           Text('$currencySymbol${amount.toStringAsFixed(0)}',
               style: AppTextStyle.number(

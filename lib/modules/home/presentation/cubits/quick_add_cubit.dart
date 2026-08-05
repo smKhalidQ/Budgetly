@@ -11,7 +11,7 @@ class QuickAddCubit extends Cubit<QuickAddState> {
   final SubcategoryRepository _subcategoryRepository;
   final TransactionRepository _transactionRepository;
 
-  static const int _maxItems = 6;
+  static const int _minItems = 7;
 
   QuickAddCubit(
     this._categoryRepository,
@@ -47,22 +47,23 @@ class QuickAddCubit extends Cubit<QuickAddState> {
       ..sort((a, b) => b.value.compareTo(a.value));
 
     final items = <QuickAddItem>[];
+    final usedCategoryIds = <int>{};
     for (final entry in ranked) {
-      if (items.length >= _maxItems) break;
       final parts = entry.key.split(':');
       final category = categoryById[int.parse(parts[0])];
       if (category == null) continue;
       final subcategory =
           parts.length > 1 ? subcategoryById[int.parse(parts[1])] : null;
       items.add(QuickAddItem(category: category, subcategory: subcategory));
+      if (category.id != null) usedCategoryIds.add(category.id!);
     }
 
-    if (items.isEmpty) {
-      for (final category in categories) {
-        if (items.length >= _maxItems) break;
-        if (category.name == MonthCycleService.savingName) continue;
-        items.add(QuickAddItem(category: category));
-      }
+    for (final category in categories) {
+      if (items.length >= _minItems) break;
+      if (category.name == MonthCycleService.savingName) continue;
+      if (usedCategoryIds.contains(category.id)) continue;
+      items.add(QuickAddItem(category: category));
+      if (category.id != null) usedCategoryIds.add(category.id!);
     }
 
     emit(state.copyWith(items: items));
