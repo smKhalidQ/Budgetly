@@ -126,162 +126,114 @@ class HomeHeaderWidget extends StatelessWidget {
                     left: -40.w,
                     child: _DecorativeCircle(size: 100.w),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          color: AppColor.backgroundGlass,
-                          borderRadius: BorderRadius.circular(AppRadius.xl.r),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.12),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(18.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                const SettingsScreen(),
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          Icons.settings_outlined,
-                                          size: 16.sp,
-                                          color: Colors.white
-                                              .withValues(alpha: 0.8),
-                                        ),
-                                      ),
-                                      SizedBox(width: 6.w),
-                                      Text(
-                                        t.budgetOverview,
-                                        style: GoogleFonts.cairo(
-                                          color: Colors.white
-                                              .withValues(alpha: 0.8),
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      _Chip(label: monthYear),
-                                      SizedBox(width: 6.w),
-                                      GestureDetector(
-                                        onTap: () => AddTransactionScreen.show(
-                                          context,
-                                          initialType: TransactionType.income,
-                                          onSuccess: () => context
-                                              .read<CategoryCubit>()
-                                              .fetchCategories(),
-                                        ),
-                                        child: _Chip(
-                                          label: 'Income',
-                                          background: AppColor.accentColor,
-                                          foreground: Colors.white,
-                                          icon: Icons.add_rounded,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 12.h, 16.w, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              t.budgetOverview,
+                              style: GoogleFonts.cairo(
+                                color: Colors.white.withValues(alpha: 0.85),
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
                               ),
-                              SizedBox(height: 18.h),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                            ),
+                            const _SettingsButton(),
+                          ],
+                        ),
+                        SizedBox(height: 14.h),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            _BudgetRing(
+                                progress: progress,
+                                color: statusColor,
+                                size: 64.w),
+                            SizedBox(width: 16.w),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  _BudgetRing(
-                                      progress: progress,
+                                  Text(
+                                    '$symbol${remaining.abs().toStringAsFixed(0)}',
+                                    style: AppTextStyle.number(
+                                      size: 28.sp,
                                       color: statusColor,
-                                      size: 64.w),
-                                  SizedBox(width: 16.w),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          '$symbol${remaining.abs().toStringAsFixed(0)}',
-                                          style: AppTextStyle.number(
-                                            size: 26.sp,
-                                            color: statusColor,
-                                            height: 1,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        Text(
-                                          remaining < 0
-                                              ? '${t.remaining} · over budget'
-                                              : t.remaining,
-                                          style: GoogleFonts.cairo(
-                                            color: Colors.white
-                                                .withValues(alpha: 0.8),
-                                            fontSize: 12.sp,
-                                          ),
-                                        ),
-                                      ],
+                                      height: 1,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    remaining < 0
+                                        ? '${t.remaining} · over budget'
+                                        : t.remaining,
+                                    style: GoogleFonts.cairo(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.75),
+                                      fontSize: 12.sp,
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 18.h),
-                              Divider(
-                                color: Colors.white.withValues(alpha: 0.15),
-                                height: 1,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 14.h),
+                        Row(
+                          children: [
+                            _MonthChip(label: monthYear),
+                            const Spacer(),
+                            _AddIncomeButton(onSuccess: () =>
+                                context.read<CategoryCubit>().fetchCategories()),
+                          ],
+                        ),
+                        SizedBox(height: 12.h),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 14.w, vertical: 10.h),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.08),
+                            borderRadius:
+                                BorderRadius.circular(AppRadius.lg.r),
+                          ),
+                          child: Row(
+                            children: [
+                              _StatItem(
+                                label: t.spent,
+                                value:
+                                    '$symbol${totalSpent.toStringAsFixed(0)}',
+                                dotColor: AppColor.expenseColor,
                               ),
-                              SizedBox(height: 14.h),
-                              Row(
-                                children: [
-                                  _StatItem(
-                                    label: t.spent,
-                                    value:
-                                        '$symbol${totalSpent.toStringAsFixed(0)}',
-                                    dotColor: AppColor.expenseColor,
-                                  ),
-                                  Container(
-                                    width: 1,
-                                    height: 28.h,
-                                    color: Colors.white.withValues(alpha: 0.15),
-                                  ),
-                                  _StatItem(
-                                    label: 'Saving',
-                                    value:
-                                        '$symbol${saving.toStringAsFixed(0)}',
-                                    dotColor: AppColor.incomeColor,
-                                  ),
-                                  Container(
-                                    width: 1,
-                                    height: 28.h,
-                                    color: Colors.white.withValues(alpha: 0.15),
-                                  ),
-                                  _StatItem(
-                                    label: 'Salary',
-                                    value:
-                                        '$symbol${salary.toStringAsFixed(0)}',
-                                    dotColor: Colors.white,
-                                  ),
-                                ],
+                              Container(
+                                width: 1,
+                                height: 28.h,
+                                color: Colors.white.withValues(alpha: 0.15),
+                              ),
+                              _StatItem(
+                                label: 'Saving',
+                                value: '$symbol${saving.toStringAsFixed(0)}',
+                                dotColor: AppColor.incomeColor,
+                              ),
+                              Container(
+                                width: 1,
+                                height: 28.h,
+                                color: Colors.white.withValues(alpha: 0.15),
+                              ),
+                              _StatItem(
+                                label: 'Salary',
+                                value: '$symbol${salary.toStringAsFixed(0)}',
+                                dotColor: Colors.white,
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -299,45 +251,101 @@ class HomeHeaderWidget extends StatelessWidget {
   }
 }
 
-class _Chip extends StatelessWidget {
-  final String label;
-  final Color? background;
-  final Color? foreground;
-  final IconData? icon;
-
-  const _Chip({
-    required this.label,
-    this.background,
-    this.foreground,
-    this.icon,
-  });
+class _SettingsButton extends StatelessWidget {
+  const _SettingsButton();
 
   @override
   Widget build(BuildContext context) {
-    final bg = background ?? Colors.white.withValues(alpha: 0.12);
-    final fg = foreground ?? Colors.white.withValues(alpha: 0.9);
+    return Material(
+      color: Colors.white.withValues(alpha: 0.14),
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const SettingsScreen()),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(8.w),
+          child: Icon(
+            Icons.settings_outlined,
+            size: 18.sp,
+            color: Colors.white.withValues(alpha: 0.95),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MonthChip extends StatelessWidget {
+  final String label;
+
+  const _MonthChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: bg,
         borderRadius: BorderRadius.circular(AppRadius.pill.r),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[
-            Icon(icon, size: 12.sp, color: fg),
-            SizedBox(width: 2.w),
-          ],
+          Icon(Icons.event_rounded,
+              size: 13.sp, color: Colors.white.withValues(alpha: 0.85)),
+          SizedBox(width: 5.w),
           Text(
             label,
             style: GoogleFonts.cairo(
-              color: fg,
-              fontSize: 11.sp,
+              color: Colors.white.withValues(alpha: 0.9),
+              fontSize: 12.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AddIncomeButton extends StatelessWidget {
+  final VoidCallback onSuccess;
+
+  const _AddIncomeButton({required this.onSuccess});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColor.accentColor,
+      borderRadius: BorderRadius.circular(AppRadius.pill.r),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.pill.r),
+        onTap: () => AddTransactionScreen.show(
+          context,
+          initialType: TransactionType.income,
+          onSuccess: onSuccess,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.add_rounded, size: 16.sp, color: Colors.white),
+              SizedBox(width: 5.w),
+              Text(
+                'Add Income',
+                style: GoogleFonts.cairo(
+                  color: Colors.white,
+                  fontSize: 12.5.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
