@@ -23,14 +23,14 @@ import 'package:intl/intl.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
-class ReportsScreen extends StatefulWidget {
-  const ReportsScreen({super.key});
+class TransactionsScreen extends StatefulWidget {
+  const TransactionsScreen({super.key});
 
   @override
-  State<ReportsScreen> createState() => _ReportsScreenState();
+  State<TransactionsScreen> createState() => _TransactionsScreenState();
 }
 
-class _ReportsScreenState extends State<ReportsScreen> {
+class _TransactionsScreenState extends State<TransactionsScreen> {
   late final TransactionCubit _cubit;
 
   @override
