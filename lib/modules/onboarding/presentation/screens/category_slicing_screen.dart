@@ -8,7 +8,6 @@ import 'package:budget_buddy/modules/onboarding/presentation/widgets/category_sl
 import 'package:budget_buddy/modules/onboarding/presentation/widgets/custom_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CategorySlicingScreen extends StatefulWidget {
@@ -26,27 +25,17 @@ class CategorySlicingScreen extends StatefulWidget {
 }
 
 class _CategorySlicingScreenState extends State<CategorySlicingScreen> {
-  late final CategoryCubit _categoryCubit;
-
   @override
   void initState() {
     super.initState();
-    _categoryCubit = GetIt.I<CategoryCubit>()
+    context.read<CategoryCubit>()
       ..fetchCategories()
       ..setRemainingBudget(widget.monthlySalary);
   }
 
   @override
-  void dispose() {
-    _categoryCubit.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _categoryCubit,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColor.backgroundColor,
         appBar: AppBar(
           backgroundColor: AppColor.backgroundColor,
@@ -85,8 +74,7 @@ class _CategorySlicingScreenState extends State<CategorySlicingScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: const CustomSetUpBottomBar(),
-      ),
+      bottomNavigationBar: const CustomSetUpBottomBar(),
     );
   }
 }
