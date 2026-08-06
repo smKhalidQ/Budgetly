@@ -1,13 +1,12 @@
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/monthly_summary.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
 
 enum TransactionStatus { initial, loading, success, error }
 
 enum TransactionPeriod { today, week, month }
 
-enum TransactionGrouping { byDate, byCategory, byMonth }
+enum TransactionGrouping { byDate, byCategory }
 
 class TransactionState {
   final TransactionStatus status;
@@ -131,31 +130,5 @@ extension TransactionStateX on TransactionState {
       return sumB.compareTo(sumA);
     });
     return entries;
-  }
-
-  // Monthly breakdown of the period-filtered transactions
-  List<MonthlySummary> get monthlySummaries {
-    final map = <String, MonthlySummary>{};
-
-    for (final t in filteredTransactions) {
-      final key = '${t.date.year}-${t.date.month.toString().padLeft(2, '0')}';
-      final existing = map[key] ??
-          MonthlySummary(year: t.date.year, month: t.date.month);
-      map[key] = switch (t.type) {
-        TransactionType.expense => existing.copyWith(
-            expense: existing.expense + t.amount,
-            txCount: existing.txCount + 1,
-          ),
-        TransactionType.income =>
-          existing.copyWith(income: existing.income + t.amount),
-        TransactionType.rollover => existing,
-      };
-    }
-
-    return map.values.toList()
-      ..sort((a, b) {
-        final cmp = b.year.compareTo(a.year);
-        return cmp != 0 ? cmp : b.month.compareTo(a.month);
-      });
   }
 }

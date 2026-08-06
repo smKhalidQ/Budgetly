@@ -5,7 +5,6 @@ import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/monthly_summary.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
 import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
@@ -19,7 +18,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
@@ -203,9 +201,8 @@ class _GroupingTabs extends StatelessWidget {
   const _GroupingTabs({required this.grouping, required this.onChanged});
 
   static const _tabs = [
-    (TransactionGrouping.byDate, Icons.event_rounded),
-    (TransactionGrouping.byCategory, Icons.grid_view_rounded),
-    (TransactionGrouping.byMonth, Icons.calendar_month_rounded),
+    (TransactionGrouping.byDate, Icons.event_rounded, 'Date'),
+    (TransactionGrouping.byCategory, Icons.grid_view_rounded, 'Category'),
   ];
 
   @override
@@ -219,9 +216,10 @@ class _GroupingTabs extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          for (final (value, icon) in _tabs)
+          for (final (value, icon, label) in _tabs)
             _GroupingTabIcon(
               icon: icon,
+              label: label,
               isSelected: grouping == value,
               onTap: () => onChanged(value),
             ),
@@ -233,11 +231,16 @@ class _GroupingTabs extends StatelessWidget {
 
 class _GroupingTabIcon extends StatelessWidget {
   final IconData icon;
+  final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _GroupingTabIcon(
-      {required this.icon, required this.isSelected, required this.onTap});
+  const _GroupingTabIcon({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -260,10 +263,25 @@ class _GroupingTabIcon extends StatelessWidget {
                 ]
               : null,
         ),
-        child: Icon(
-          icon,
-          size: 17.sp,
-          color: isSelected ? AppColor.primaryColor : AppColor.textSecondary,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 15.sp,
+              color: isSelected ? AppColor.primaryColor : AppColor.textSecondary,
+            ),
+            SizedBox(width: 5.w),
+            Text(
+              label,
+              style: GoogleFonts.cairo(
+                fontSize: 11.sp,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color:
+                    isSelected ? AppColor.primaryColor : AppColor.textSecondary,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -349,7 +367,6 @@ class _Body extends StatelessWidget {
     return switch (grouping) {
       TransactionGrouping.byDate => const _ByDateList(),
       TransactionGrouping.byCategory => const _ByCategoryList(),
-      TransactionGrouping.byMonth => const _ByMonthList(),
     };
   }
 }
@@ -418,16 +435,9 @@ class _ByCategoryList extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 16.h),
       itemCount: groups.length,
       itemBuilder: (_, i) {
-        final cat = groups[i].key;
-        final txns = groups[i].value;
-        final total = txns
-            .where((t) => t.type == TransactionType.expense)
-            .fold(0.0, (s, t) => s + t.amount);
         return _CategoryGroup(
-          category: cat,
-          transactions: txns,
-          totalSpent: total,
-          color: parseColorFromString(cat.color),
+          category: groups[i].key,
+          transactions: groups[i].value,
           currencySymbol: currencySymbol,
           categoriesById: categoriesById,
         );
@@ -436,249 +446,15 @@ class _ByCategoryList extends StatelessWidget {
   }
 }
 
-// ─── By Month ─────────────────────────────────────────────────────────────────
-
-class _ByMonthList extends StatelessWidget {
-  const _ByMonthList();
-
-  @override
-  Widget build(BuildContext context) {
-    final summaries = context.select<TransactionCubit, List<MonthlySummary>>(
-        (c) => c.state.monthlySummaries);
-
-    if (summaries.isEmpty) return const _MonthlyEmptyState();
-
-    final currencySymbol = context.select<SettingCubit, String>((c) {
-      final key = c.state.selectedCurrency ?? currencies.keys.first;
-      return currencies[key]?['currencySymbol'] ?? '';
-    });
-
-    return ListView.separated(
-      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 24.h),
-      itemCount: summaries.length,
-      separatorBuilder: (_, __) => SizedBox(height: 12.h),
-      itemBuilder: (_, i) => _MonthCard(
-        summary: summaries[i],
-        currencySymbol: currencySymbol,
-      ),
-    );
-  }
-}
-
-class _MonthCard extends StatelessWidget {
-  final MonthlySummary summary;
-  final String currencySymbol;
-
-  const _MonthCard({required this.summary, required this.currencySymbol});
-
-  @override
-  Widget build(BuildContext context) {
-    final monthLabel =
-        DateFormat('MMMM yyyy').format(DateTime(summary.year, summary.month));
-    final saved = summary.saved;
-    final savedColor =
-        saved >= 0 ? AppColor.incomeColor : AppColor.expenseColor;
-
-    return Container(
-      padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
-        color: AppColor.cardBackground,
-        borderRadius: BorderRadius.circular(AppRadius.lg.r),
-        border: summary.isCurrentMonth
-            ? Border.all(
-                color: AppColor.accentColor.withValues(alpha: 0.4), width: 1.5)
-            : null,
-        boxShadow: [
-          BoxShadow(
-            color: AppColor.backgroundCardShadow,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  monthLabel,
-                  style: GoogleFonts.cairo(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.textPrimary,
-                  ),
-                ),
-              ),
-              if (summary.isCurrentMonth)
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-                  decoration: BoxDecoration(
-                    color: AppColor.accentColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Text(
-                    'Current',
-                    style: GoogleFonts.cairo(
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColor.accentColor,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            '${summary.txCount} transactions',
-            style: GoogleFonts.cairo(
-                fontSize: 11.sp, color: AppColor.textSecondary),
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            children: [
-              Expanded(
-                child: _MonthStatItem(
-                  label: 'Expenses',
-                  value: '$currencySymbol${summary.expense.toStringAsFixed(0)}',
-                  color: AppColor.expenseColor,
-                  icon: Icons.arrow_upward_rounded,
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: _MonthStatItem(
-                  label: 'Income',
-                  value: '$currencySymbol${summary.income.toStringAsFixed(0)}',
-                  color: AppColor.incomeColor,
-                  icon: Icons.arrow_downward_rounded,
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: _MonthStatItem(
-                  label: saved >= 0 ? 'Saved' : 'Deficit',
-                  value: '$currencySymbol${saved.abs().toStringAsFixed(0)}',
-                  color: savedColor,
-                  icon: saved >= 0
-                      ? Icons.savings_rounded
-                      : Icons.warning_amber_rounded,
-                ),
-              ),
-            ],
-          ),
-          if (summary.expense > 0) ...[
-            SizedBox(height: 14.h),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4.r),
-              child: LinearProgressIndicator(
-                value: summary.income > 0
-                    ? (summary.expense / summary.income).clamp(0.0, 1.0)
-                    : 1.0,
-                minHeight: 5.h,
-                backgroundColor: AppColor.surfaceMuted,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  summary.expense > summary.income
-                      ? AppColor.expenseColor
-                      : AppColor.accentColor,
-                ),
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              summary.income > 0
-                  ? '${((summary.expense / summary.income) * 100).toStringAsFixed(0)}% of income spent'
-                  : 'No income recorded',
-              style: GoogleFonts.cairo(
-                  fontSize: 10.sp, color: AppColor.textSecondary),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _MonthStatItem extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-  final IconData icon;
-
-  const _MonthStatItem({
-    required this.label,
-    required this.value,
-    required this.color,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(AppRadius.md.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: color, size: 14.sp),
-          SizedBox(height: 4.h),
-          Text(
-            value,
-            style: AppTextStyle.number(
-                size: 13.sp, weight: FontWeight.bold, color: color),
-          ),
-          Text(label,
-              style: GoogleFonts.cairo(
-                  fontSize: 10.sp, color: AppColor.textSecondary)),
-        ],
-      ),
-    );
-  }
-}
-
-class _MonthlyEmptyState extends StatelessWidget {
-  const _MonthlyEmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.calendar_month_rounded,
-              size: 72.sp,
-              color: AppColor.primaryColor.withValues(alpha: 0.15)),
-          SizedBox(height: 16.h),
-          Text(
-            'No monthly data yet',
-            style: GoogleFonts.cairo(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColor.textSecondary),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _CategoryGroup extends StatefulWidget {
   final Category category;
   final List<Transaction> transactions;
-  final double totalSpent;
-  final Color color;
   final String currencySymbol;
   final Map<int, Category> categoriesById;
 
   const _CategoryGroup({
     required this.category,
     required this.transactions,
-    required this.totalSpent,
-    required this.color,
     required this.currencySymbol,
     required this.categoriesById,
   });
@@ -688,107 +464,60 @@ class _CategoryGroup extends StatefulWidget {
 }
 
 class _CategoryGroupState extends State<_CategoryGroup> {
-  bool _expanded = false;
+  bool _expanded = true;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () => setState(() => _expanded = !_expanded),
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-              decoration: BoxDecoration(
-                color: AppColor.cardBackground,
-                borderRadius: _expanded
-                    ? BorderRadius.vertical(
-                        top: Radius.circular(AppRadius.md.r))
-                    : BorderRadius.circular(AppRadius.md.r),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 38.w,
-                    height: 38.w,
-                    decoration: BoxDecoration(
-                      color: widget.color.withValues(alpha: 0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      IconData(int.parse(widget.category.icon),
-                          fontFamily: 'MaterialIcons'),
-                      color: widget.color,
-                      size: 18.sp,
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () => setState(() => _expanded = !_expanded),
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 8.h),
+            child: Row(
+              children: [
+                Text(widget.category.name,
+                    style: GoogleFonts.cairo(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w700,
+                        color: AppColor.textSecondary)),
+                SizedBox(width: 6.w),
+                AnimatedRotation(
+                  turns: _expanded ? 0.5 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(Icons.keyboard_arrow_down_rounded,
+                      size: 16.sp,
+                      color: AppColor.textSecondary.withValues(alpha: 0.5)),
+                ),
+              ],
+            ),
+          ),
+        ),
+        ClipRect(
+          child: AnimatedSize(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            child: _expanded
+                ? Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.category.name,
-                            style: GoogleFonts.cairo(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                color: AppColor.textPrimary)),
-                        Text('${widget.transactions.length} transactions',
-                            style: GoogleFonts.cairo(
-                                fontSize: 11.sp,
-                                color: AppColor.textSecondary)),
-                      ],
+                      children: widget.transactions
+                          .map((t) => _TransactionRow(
+                                transaction: t,
+                                category: widget.category,
+                                categoriesById: widget.categoriesById,
+                                currencySymbol: widget.currencySymbol,
+                              ))
+                          .toList(),
                     ),
-                  ),
-                  Text(
-                    '-${widget.currencySymbol}${widget.totalSpent.toStringAsFixed(0)}',
-                    style: AppTextStyle.number(
-                        size: 14.sp,
-                        weight: FontWeight.bold,
-                        color: widget.color),
-                  ),
-                  SizedBox(width: 4.w),
-                  AnimatedRotation(
-                    turns: _expanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(Icons.keyboard_arrow_down_rounded,
-                        size: 18.sp,
-                        color: AppColor.textSecondary.withValues(alpha: 0.5)),
-                  ),
-                ],
-              ),
-            ),
+                  )
+                : const SizedBox(width: double.infinity),
           ),
-          ClipRect(
-            child: AnimatedSize(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              child: _expanded
-                  ? Container(
-                      decoration: BoxDecoration(
-                        color: AppColor.surfaceMuted,
-                        borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(AppRadius.md.r)),
-                      ),
-                      child: Column(
-                        children: widget.transactions
-                            .map((t) => _TransactionRow(
-                                  transaction: t,
-                                  category: widget.category,
-                                  categoriesById: widget.categoriesById,
-                                  currencySymbol: widget.currencySymbol,
-                                  insideGroup: true,
-                                ))
-                            .toList(),
-                      ),
-                    )
-                  : const SizedBox(width: double.infinity),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -828,14 +557,12 @@ class _TransactionRow extends StatefulWidget {
   final Category? category;
   final Map<int, Category> categoriesById;
   final String currencySymbol;
-  final bool insideGroup;
 
   const _TransactionRow({
     required this.transaction,
     required this.category,
     required this.categoriesById,
     required this.currencySymbol,
-    this.insideGroup = false,
   });
 
   @override
@@ -898,54 +625,42 @@ class _TransactionRowState extends State<_TransactionRow> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color:
-              widget.insideGroup ? Colors.transparent : AppColor.cardBackground,
-          borderRadius: _expanded && !widget.insideGroup
+          color: AppColor.cardBackground,
+          borderRadius: _expanded
               ? BorderRadius.vertical(top: Radius.circular(AppRadius.md.r))
-              : (!widget.insideGroup
-                  ? BorderRadius.circular(AppRadius.md.r)
-                  : null),
+              : BorderRadius.circular(AppRadius.md.r),
         ),
         child: Row(
           children: [
-            if (!widget.insideGroup) ...[
-              Container(
-                width: 40.w,
-                height: 40.w,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  widget.category != null
-                      ? IconData(int.parse(widget.category!.icon),
-                          fontFamily: 'MaterialIcons')
-                      : Icons.help_outline_rounded,
-                  color: color,
-                  size: 20.sp,
-                ),
+            Container(
+              width: 40.w,
+              height: 40.w,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
               ),
-              SizedBox(width: 12.w),
-            ] else
-              SizedBox(width: 14.w),
+              child: Icon(
+                widget.category != null
+                    ? IconData(int.parse(widget.category!.icon),
+                        fontFamily: 'MaterialIcons')
+                    : Icons.help_outline_rounded,
+                color: color,
+                size: 20.sp,
+              ),
+            ),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.insideGroup
-                        ? (_txn.note?.isNotEmpty == true
-                            ? _txn.note!
-                            : '${_txn.date.day.toString().padLeft(2, '0')}/${_txn.date.month.toString().padLeft(2, '0')}')
-                        : (widget.category?.name ?? 'Unknown'),
+                    widget.category?.name ?? 'Unknown',
                     style: GoogleFonts.cairo(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                         color: AppColor.textPrimary),
                   ),
-                  if (!widget.insideGroup &&
-                      _txn.note != null &&
-                      _txn.note!.isNotEmpty) ...[
+                  if (_txn.note != null && _txn.note!.isNotEmpty) ...[
                     SizedBox(height: 2.h),
                     Text(_txn.note!,
                         maxLines: 1,
@@ -976,9 +691,7 @@ class _TransactionRowState extends State<_TransactionRow> {
     );
 
     return Padding(
-      padding: widget.insideGroup
-          ? EdgeInsets.zero
-          : EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       child: Column(
         children: [
           Slidable(
@@ -1020,13 +733,10 @@ class _TransactionRowState extends State<_TransactionRow> {
                       coverage: coverage,
                       categoriesById: widget.categoriesById,
                       currencySymbol: widget.currencySymbol,
-                      insideGroup: widget.insideGroup,
                     )
                   : const SizedBox(width: double.infinity),
             ),
           ),
-          if (widget.insideGroup)
-            Divider(height: 1, thickness: 1, color: AppColor.dividerColor),
         ],
       ),
     );
@@ -1040,14 +750,12 @@ class _ExpandedDetails extends StatelessWidget {
   final TransactionCoverage? coverage;
   final Map<int, Category> categoriesById;
   final String currencySymbol;
-  final bool insideGroup;
 
   const _ExpandedDetails({
     required this.transaction,
     required this.coverage,
     required this.categoriesById,
     required this.currencySymbol,
-    required this.insideGroup,
   });
 
   @override
@@ -1062,9 +770,7 @@ class _ExpandedDetails extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: AppColor.surfaceMuted,
-        borderRadius: insideGroup
-            ? null
-            : BorderRadius.vertical(bottom: Radius.circular(AppRadius.md.r)),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(AppRadius.md.r)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
