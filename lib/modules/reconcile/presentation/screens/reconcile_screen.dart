@@ -63,8 +63,8 @@ class _ReconcileViewState extends State<_ReconcileView> {
         content: Text(
           'Spending resets and $symbol${actual.toStringAsFixed(0)} is re-spread '
           'across your envelopes by their current ratios.',
-          style: GoogleFonts.cairo(
-              fontSize: 13.sp, color: AppColor.textSecondary),
+          style:
+              GoogleFonts.cairo(fontSize: 13.sp, color: AppColor.textSecondary),
         ),
         actions: [
           TextButton(
@@ -98,13 +98,13 @@ class _ReconcileViewState extends State<_ReconcileView> {
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColor.backgroundColor,
+        backgroundColor: AppColor.primaryColor,
         elevation: 0,
         scrolledUnderElevation: 0,
         title: Text(
           'Reconcile balance',
           style: GoogleFonts.cairo(
-            color: AppColor.primaryColor,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 18.sp,
           ),
@@ -266,8 +266,7 @@ class _DistributorState extends State<_Distributor> {
   void initState() {
     super.initState();
     _candidates = widget.categories
-        .where((c) =>
-            c.id != null && (widget.isIncome || _remaining(c) > 0))
+        .where((c) => c.id != null && (widget.isIncome || _remaining(c) > 0))
         .toList();
     for (final c in _candidates) {
       _amounts[c.id!] = 0;
@@ -319,8 +318,7 @@ class _DistributorState extends State<_Distributor> {
 
   @override
   Widget build(BuildContext context) {
-    final leftColor =
-        _balanced ? AppColor.incomeColor : AppColor.accentColor;
+    final leftColor = _balanced ? AppColor.incomeColor : AppColor.accentColor;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
