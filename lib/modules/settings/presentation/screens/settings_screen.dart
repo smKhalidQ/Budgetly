@@ -1,11 +1,11 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
-import 'package:budget_buddy/core/widgets/language_bottom_sheet.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/reconcile/presentation/screens/reconcile_screen.dart';
 import 'package:budget_buddy/modules/recurring/presentation/screens/recurring_expenses_screen.dart';
+import 'package:budget_buddy/modules/settings/presentation/screens/language_screen.dart';
 import 'package:budget_buddy/modules/settings/presentation/screens/manage_categories_screen.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/settings_state.dart';
@@ -122,7 +122,10 @@ class _SettingsView extends StatelessWidget {
                   color: AppColor.textSecondary.withValues(alpha: 0.4),
                   size: 22.sp,
                 ),
-                onTap: () => LanguageBottomSheet.show(context),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LanguageScreen()),
+                ),
               ),
               SizedBox(height: 16.h),
               _SectionLabel(t.categories),

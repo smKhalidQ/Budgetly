@@ -1,8 +1,8 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/widgets/language_bottom_sheet.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/screens/setup_profile_screen.dart';
+import 'package:budget_buddy/modules/settings/presentation/screens/language_screen.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -63,7 +63,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    onPressed: () => LanguageBottomSheet.show(context),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LanguageScreen()),
+                    ),
                     icon: Icon(
                       Icons.language_rounded,
                       color: Colors.white.withValues(alpha: 0.85),
