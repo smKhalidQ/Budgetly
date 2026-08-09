@@ -168,7 +168,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allocated => 'المخصص';
 
   @override
-  String get spent => 'المُنفق';
+  String get spent => 'المُنفَق';
 
   @override
   String get budget => 'الميزانية';
@@ -340,14 +340,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resetToInitialStateMsg =>
-      'سيتم حذف كل المعاملات وتصفير الإنفاق. راتبك وتوزيع الفئات والمصاريف الثابتة هتفضل زي ما هي.';
+      'سيتم حذف كل المعاملات وتصفير الإنفاق. راتبك وتوزيع الفئات والمصاريف الثابتة تبقي كما هي.';
 
   @override
   String get reset => 'إعادة تعيين';
 
   @override
   String get resetCompleteMsg =>
-      'تمت إعادة التعيين — رجعنا لحالة ما بعد الإعداد';
+      'تمت إعادة التعيين — عدنا لحالة ما بعد الإعداد';
 
   @override
   String get manageCategories => 'إدارة الفئات';
@@ -371,7 +371,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reconcileBalance => 'تسوية الرصيد';
 
   @override
-  String get reconcileBalanceSubtitle => 'طابق التطبيق مع فلوسك الفعلية';
+  String get reconcileBalanceSubtitle => 'طابق التطبيق مع نقدوك الفعلية';
 
   @override
   String get debug => 'تصحيح الأخطاء';
@@ -517,7 +517,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editExpense => 'تعديل المصروف';
 
   @override
-  String get addExpense => 'إضافة مصروف';
+  String get addExpense => 'إضافة عملية';
 
   @override
   String remainingAmount(String amount) {
@@ -535,7 +535,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String overflowNeedMore(String amount) {
-    return 'تحتاج $amount إضافية. اختر الفئات التي سيُخصم منها — هتحس بيها بعدين.';
+    return 'تحتاج $amount إضافية. اختر الفئات التي سيُخصم منها';
   }
 
   @override
@@ -702,7 +702,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get envelopesHold => 'مغلفاتك فيها';
 
   @override
-  String get howMuchDoYouHaveNow => 'قد إيه معاك فعليًا دلوقتي؟';
+  String get howMuchDoYouHaveNow => 'كم يتوفر لديك فعليًا الآن؟';
 
   @override
   String whereDidItGoSpent(String amount) {
@@ -711,11 +711,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String whereDidItGoExtra(String amount) {
-    return 'الـ $amount الزيادة جت منين؟ ضيفها كدخل للمغلفات اللي وصلتها.';
+    return 'إلى أين ذهب مبلغ $amount؟ أدخل ما أنفقته من كل مغلف.';
   }
 
   @override
-  String get startFreshInstead => 'ضاع منك الحساب؟ ابدأ من جديد بدلاً من كده';
+  String get startFreshInstead => 'فقدت التتبع؟ ابدأ من جديد بدلاً من ذلك';
 
   @override
   String get allAssigned => 'تم التوزيع بالكامل';
@@ -769,7 +769,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String partiallyAppliedMsg(String names) {
-    return '$names: تم إنفاق أكثر من الميزانية الجديدة بالفعل — الميزانية الجديدة هتتطبق من الشهر الجاي.';
+    return '$names: تم إنفاق أكثر من الميزانية الجديدة بالفعل — الميزانية الجديدة هتتطبق من الشهر القادم.';
   }
 
   @override
