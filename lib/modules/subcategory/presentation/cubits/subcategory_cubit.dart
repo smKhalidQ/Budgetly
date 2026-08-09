@@ -33,7 +33,7 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
     } catch (_) {
       emit(state.copyWith(
         status: SubcategoryStatus.error,
-        errorMessage: 'Failed to load subcategories.',
+        error: SubcategoryError.loadFailed,
       ));
     }
   }
@@ -134,7 +134,7 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
     } catch (_) {
       emit(state.copyWith(
           status: SubcategoryStatus.error,
-          errorMessage: 'Failed to load subcategories.'));
+          error: SubcategoryError.loadFailed));
     }
   }
 
@@ -175,7 +175,7 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
     } catch (_) {
       emit(state.copyWith(
           status: SubcategoryStatus.error,
-          errorMessage: 'Failed to restore defaults.'));
+          error: SubcategoryError.restoreDefaultsFailed));
     }
   }
 

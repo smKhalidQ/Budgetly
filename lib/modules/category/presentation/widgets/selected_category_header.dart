@@ -3,9 +3,13 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/app_localizations.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
+import 'package:budget_buddy/modules/subcategory/domain/models/subcategory_localization.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
 import 'package:budget_buddy/core/widgets/pickers/color_picker_widget.dart';
@@ -35,6 +39,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tr;
     final double progressValue =
         (category.spentAmount / category.allocatedAmount).clamp(0.0, 1.0);
 
@@ -52,7 +57,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildCategoryInfo(),
+                      _buildCategoryInfo(t),
                       _buildActionButtons(context),
                     ],
                   ),
@@ -77,6 +82,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
                         subs,
                         state.spentBySubcategory,
                         state.generalSpent,
+                        t,
                       );
                     },
                   )
@@ -91,14 +97,15 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     List<Subcategory> subs,
     Map<int, double> spentBySub,
     double generalSpent,
+    AppLocalizations t,
   ) {
     const palette = AppColor.categoryPalette;
 
     final entries = <({String name, double amount})>[
       for (final s in subs)
         if ((spentBySub[s.id] ?? 0) > 0)
-          (name: s.name, amount: spentBySub[s.id]!),
-      if (generalSpent > 0) (name: 'General', amount: generalSpent),
+          (name: s.localizedName(t), amount: spentBySub[s.id]!),
+      if (generalSpent > 0) (name: t.general, amount: generalSpent),
     ];
 
     return Padding(
@@ -108,7 +115,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
           Divider(color: AppColor.dividerColor, height: 1),
           SizedBox(height: 16.h),
           if (entries.isEmpty)
-            _buildEmptyChart()
+            _buildEmptyChart(t)
           else
             SizedBox(
               width: 190.w,
@@ -142,7 +149,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyChart() {
+  Widget _buildEmptyChart(AppLocalizations t) {
     return Row(
       children: [
         SizedBox(
@@ -165,7 +172,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
         ),
         SizedBox(width: 16.w),
         Text(
-          "No spending yet",
+          t.noSpendingYet,
           style: GoogleFonts.cairo(
             color: AppColor.textSecondary,
             fontSize: 13.sp,
@@ -205,11 +212,15 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryInfo() {
+  Widget _buildCategoryInfo(AppLocalizations t) {
+    final amountText = remainingAmount < 0
+        ? t.overAmount('\$${(-remainingAmount).toStringAsFixed(0)}')
+        : t.leftAmount('\$${remainingAmount.toStringAsFixed(0)}');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(category.name,
+        Text(category.localizedName(t),
             style: GoogleFonts.cairo(
                 fontSize: 18.sp, fontWeight: FontWeight.bold)),
         SizedBox(height: 4.h),
@@ -222,7 +233,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.md.r),
           ),
           child: Text(
-            "\$${remainingAmount.toStringAsFixed(0)} ${remainingAmount < 0 ? 'over' : 'left'}",
+            amountText,
             style: GoogleFonts.cairo(
               color: AppColor.textPrimary,
               fontSize: 14.sp,
@@ -308,11 +319,12 @@ class _EditCategoryDialogState extends State<_EditCategoryDialog> {
   late Color _color;
   late String _icon;
   int _page = 0;
+  bool _nameInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(text: widget.category.name);
+    _nameCtrl = TextEditingController();
     _pageCtrl = PageController();
     _color = parseColorFromString(widget.category.color);
     _icon = widget.category.icon;
@@ -327,9 +339,15 @@ class _EditCategoryDialogState extends State<_EditCategoryDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tr;
+    if (!_nameInitialized) {
+      _nameCtrl.text = widget.category.localizedName(t);
+      _nameInitialized = true;
+    }
+
     return AlertDialog(
       title: Text(
-        "Edit Category",
+        t.editCategoryDialogTitle,
         style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
       ),
       content: SizedBox(
@@ -339,9 +357,9 @@ class _EditCategoryDialogState extends State<_EditCategoryDialog> {
           children: [
             TextField(
               controller: _nameCtrl,
-              decoration: const InputDecoration(
-                labelText: "Name",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: t.name,
+                border: const OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 16.h),
@@ -354,7 +372,7 @@ class _EditCategoryDialogState extends State<_EditCategoryDialog> {
                     child: Column(
                       children: [
                         Text(
-                          "Select Icon",
+                          t.selectIcon,
                           style: GoogleFonts.roboto(fontWeight: FontWeight.w500),
                         ),
                         SizedBox(height: 10.h),
@@ -375,7 +393,7 @@ class _EditCategoryDialogState extends State<_EditCategoryDialog> {
                     child: Column(
                       children: [
                         Text(
-                          "Select Color",
+                          t.selectColor,
                           style: GoogleFonts.roboto(fontWeight: FontWeight.w500),
                         ),
                         SizedBox(height: 10.h),
@@ -414,7 +432,7 @@ class _EditCategoryDialogState extends State<_EditCategoryDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text("Cancel", style: TextStyle(color: Colors.grey[600])),
+          child: Text(t.cancel, style: TextStyle(color: Colors.grey[600])),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -434,7 +452,7 @@ class _EditCategoryDialogState extends State<_EditCategoryDialog> {
             widget.onSaved(updated);
             Navigator.pop(context);
           },
-          child: const Text("Save"),
+          child: Text(t.save),
         ),
       ],
     );

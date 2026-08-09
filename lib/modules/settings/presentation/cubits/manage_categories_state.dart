@@ -6,6 +6,8 @@ part 'manage_categories_state.freezed.dart';
 
 enum ManageCategoriesStatus { initial, loading, saving, success, error }
 
+enum ManageCategoriesError { loadFailed, saveFailed, addCategoryFailed }
+
 @freezed
 sealed class ManageCategoriesState with _$ManageCategoriesState {
   const factory ManageCategoriesState({
@@ -13,8 +15,8 @@ sealed class ManageCategoriesState with _$ManageCategoriesState {
     @Default([]) List<Category> categories,
     @Default({}) Map<int, double> newBases,
     @Default(0.0) double newSalary,
-    @Default([]) List<String> deferredNames,
-    String? errorMessage,
+    @Default([]) List<Category> deferredCategories,
+    ManageCategoriesError? error,
   }) = _ManageCategoriesState;
 }
 

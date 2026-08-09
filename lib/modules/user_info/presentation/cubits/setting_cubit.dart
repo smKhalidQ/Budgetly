@@ -41,7 +41,7 @@ class SettingCubit extends Cubit<SettingState> with StreamListener {
     } catch (_) {
       emit(state.copyWith(
         status: SettingStatus.error,
-        errorMessage: 'Failed to save profile.',
+        error: SettingError.saveProfileFailed,
       ));
     }
   }

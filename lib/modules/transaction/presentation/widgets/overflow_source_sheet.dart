@@ -2,6 +2,8 @@ import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/translation.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_cubit.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_state.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -97,7 +99,7 @@ class _Header extends StatelessWidget {
               SizedBox(width: 10.w),
               Expanded(
                 child: Text(
-                  'Cover the difference',
+                  context.tr.coverTheDifference,
                   style: GoogleFonts.cairo(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
@@ -111,8 +113,8 @@ class _Header extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 8.w),
             child: Text(
-              'You need $currencySymbol${deficit.toStringAsFixed(2)} more. '
-              'Choose which categories it comes from — you\'ll feel it there later.',
+              context.tr.overflowNeedMore(
+                  '$currencySymbol${deficit.toStringAsFixed(2)}'),
               style: GoogleFonts.cairo(
                 fontSize: 13.sp,
                 color: AppColor.textSecondary,
@@ -134,6 +136,7 @@ class _DeficitMeter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tr;
     final state = context.watch<AddTransactionCubit>().state;
     final amount = state.parsedAmount;
     final deficit = state.overflowDeficit ?? 0;
@@ -143,14 +146,14 @@ class _DeficitMeter extends StatelessWidget {
     final primaryColor = state.selectedCategory != null
         ? parseColorFromString(state.selectedCategory!.color)
         : AppColor.primaryColor;
-    final primaryName = state.selectedCategory?.name ?? 'category';
+    final primaryName = state.selectedCategory?.localizedName(t) ?? t.categoryLabel;
     final primaryPart = amount - deficit;
     final remaining = deficit - covered;
     final remainingColor =
         isFull ? AppColor.incomeColor : AppColor.accentColor;
     final remainingLabel = isFull
-        ? 'All covered'
-        : 'Remaining: $currencySymbol${remaining.toStringAsFixed(0)}';
+        ? t.allCovered
+        : t.remainingAmount('$currencySymbol${remaining.toStringAsFixed(0)}');
 
     final parts = <(int, Color)>[];
     if (primaryPart > 0) parts.add(((primaryPart * 100).round(), primaryColor));
@@ -211,7 +214,8 @@ class _DeficitMeter extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'From $primaryName: $currencySymbol${primaryPart.toStringAsFixed(0)}',
+                  t.fromCategoryAmount(primaryName,
+                      '$currencySymbol${primaryPart.toStringAsFixed(0)}'),
                   style: GoogleFonts.cairo(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
@@ -321,7 +325,7 @@ class _SplitRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  split.category.name,
+                  split.category.localizedName(context.tr),
                   style: GoogleFonts.cairo(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
@@ -329,7 +333,8 @@ class _SplitRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Available: $currencySymbol${(split.available - split.amount).toStringAsFixed(2)}',
+                  context.tr.availableAmount(
+                      '$currencySymbol${(split.available - split.amount).toStringAsFixed(2)}'),
                   style: AppTextStyle.number(
                     size: 11.sp,
                     weight: FontWeight.w400,
@@ -396,7 +401,7 @@ class _IncomeSourceRow extends StatelessWidget {
           SizedBox(width: 8.w),
           Expanded(
             child: Text(
-              'From new income',
+              context.tr.fromNewIncome,
               style: GoogleFonts.cairo(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
@@ -557,7 +562,7 @@ class _ConfirmRow extends StatelessWidget {
                   ),
                 )
               : Text(
-                  'Confirm spend',
+                  context.tr.confirmSpend,
                   style: GoogleFonts.cairo(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,

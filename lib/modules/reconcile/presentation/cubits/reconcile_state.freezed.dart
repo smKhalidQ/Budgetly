@@ -17,7 +17,7 @@ mixin _$ReconcileState {
   ReconcileStatus get status;
   List<Category> get categories;
   double get actual;
-  String? get errorMessage;
+  ReconcileError? get error;
 
   /// Create a copy of ReconcileState
   /// with the given fields replaced by the non-null parameter values.
@@ -36,17 +36,16 @@ mixin _$ReconcileState {
             const DeepCollectionEquality()
                 .equals(other.categories, categories) &&
             (identical(other.actual, actual) || other.actual == actual) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, status,
-      const DeepCollectionEquality().hash(categories), actual, errorMessage);
+      const DeepCollectionEquality().hash(categories), actual, error);
 
   @override
   String toString() {
-    return 'ReconcileState(status: $status, categories: $categories, actual: $actual, errorMessage: $errorMessage)';
+    return 'ReconcileState(status: $status, categories: $categories, actual: $actual, error: $error)';
   }
 }
 
@@ -60,7 +59,7 @@ abstract mixin class $ReconcileStateCopyWith<$Res> {
       {ReconcileStatus status,
       List<Category> categories,
       double actual,
-      String? errorMessage});
+      ReconcileError? error});
 }
 
 /// @nodoc
@@ -79,7 +78,7 @@ class _$ReconcileStateCopyWithImpl<$Res>
     Object? status = null,
     Object? categories = null,
     Object? actual = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
   }) {
     return _then(_self.copyWith(
       status: null == status
@@ -94,10 +93,10 @@ class _$ReconcileStateCopyWithImpl<$Res>
           ? _self.actual
           : actual // ignore: cast_nullable_to_non_nullable
               as double,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as ReconcileError?,
     ));
   }
 }
@@ -194,7 +193,7 @@ extension ReconcileStatePatterns on ReconcileState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(ReconcileStatus status, List<Category> categories,
-            double actual, String? errorMessage)?
+            double actual, ReconcileError? error)?
         $default, {
     required TResult orElse(),
   }) {
@@ -202,7 +201,7 @@ extension ReconcileStatePatterns on ReconcileState {
     switch (_that) {
       case _ReconcileState() when $default != null:
         return $default(
-            _that.status, _that.categories, _that.actual, _that.errorMessage);
+            _that.status, _that.categories, _that.actual, _that.error);
       case _:
         return orElse();
     }
@@ -224,14 +223,14 @@ extension ReconcileStatePatterns on ReconcileState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(ReconcileStatus status, List<Category> categories,
-            double actual, String? errorMessage)
+            double actual, ReconcileError? error)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ReconcileState():
         return $default(
-            _that.status, _that.categories, _that.actual, _that.errorMessage);
+            _that.status, _that.categories, _that.actual, _that.error);
     }
   }
 
@@ -250,14 +249,14 @@ extension ReconcileStatePatterns on ReconcileState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(ReconcileStatus status, List<Category> categories,
-            double actual, String? errorMessage)?
+            double actual, ReconcileError? error)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ReconcileState() when $default != null:
         return $default(
-            _that.status, _that.categories, _that.actual, _that.errorMessage);
+            _that.status, _that.categories, _that.actual, _that.error);
       case _:
         return null;
     }
@@ -271,7 +270,7 @@ class _ReconcileState implements ReconcileState {
       {this.status = ReconcileStatus.initial,
       final List<Category> categories = const [],
       this.actual = 0.0,
-      this.errorMessage})
+      this.error})
       : _categories = categories;
 
   @override
@@ -290,7 +289,7 @@ class _ReconcileState implements ReconcileState {
   @JsonKey()
   final double actual;
   @override
-  final String? errorMessage;
+  final ReconcileError? error;
 
   /// Create a copy of ReconcileState
   /// with the given fields replaced by the non-null parameter values.
@@ -309,17 +308,16 @@ class _ReconcileState implements ReconcileState {
             const DeepCollectionEquality()
                 .equals(other._categories, _categories) &&
             (identical(other.actual, actual) || other.actual == actual) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, status,
-      const DeepCollectionEquality().hash(_categories), actual, errorMessage);
+      const DeepCollectionEquality().hash(_categories), actual, error);
 
   @override
   String toString() {
-    return 'ReconcileState(status: $status, categories: $categories, actual: $actual, errorMessage: $errorMessage)';
+    return 'ReconcileState(status: $status, categories: $categories, actual: $actual, error: $error)';
   }
 }
 
@@ -335,7 +333,7 @@ abstract mixin class _$ReconcileStateCopyWith<$Res>
       {ReconcileStatus status,
       List<Category> categories,
       double actual,
-      String? errorMessage});
+      ReconcileError? error});
 }
 
 /// @nodoc
@@ -354,7 +352,7 @@ class __$ReconcileStateCopyWithImpl<$Res>
     Object? status = null,
     Object? categories = null,
     Object? actual = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
   }) {
     return _then(_ReconcileState(
       status: null == status
@@ -369,10 +367,10 @@ class __$ReconcileStateCopyWithImpl<$Res>
           ? _self.actual
           : actual // ignore: cast_nullable_to_non_nullable
               as double,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as ReconcileError?,
     ));
   }
 }

@@ -117,8 +117,8 @@ class BuildHeaderSection extends StatelessWidget {
               _Hint(
                 done: isDone,
                 text: isDone
-                    ? 'Every $symbol has a job — you\'re ready to go.'
-                    : 'Split your $symbol$monthlySalary across the categories below.',
+                    ? t.everyDollarHasJob(symbol)
+                    : t.splitAcrossCategories(symbol, monthlySalary.toString()),
               ),
             ],
           ),

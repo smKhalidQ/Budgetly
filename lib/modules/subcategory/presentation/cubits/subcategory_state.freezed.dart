@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$SubcategoryState {
   SubcategoryStatus get status;
   List<Subcategory> get subcategories;
-  String? get errorMessage;
+  SubcategoryError? get error;
   String get selectedIcon;
   String get selectedColor;
   bool get isEditMode;
@@ -40,8 +40,7 @@ mixin _$SubcategoryState {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other.subcategories, subcategories) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage) &&
+            (identical(other.error, error) || other.error == error) &&
             (identical(other.selectedIcon, selectedIcon) ||
                 other.selectedIcon == selectedIcon) &&
             (identical(other.selectedColor, selectedColor) ||
@@ -61,7 +60,7 @@ mixin _$SubcategoryState {
       runtimeType,
       status,
       const DeepCollectionEquality().hash(subcategories),
-      errorMessage,
+      error,
       selectedIcon,
       selectedColor,
       isEditMode,
@@ -71,7 +70,7 @@ mixin _$SubcategoryState {
 
   @override
   String toString() {
-    return 'SubcategoryState(status: $status, subcategories: $subcategories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart, spentBySubcategory: $spentBySubcategory, generalSpent: $generalSpent)';
+    return 'SubcategoryState(status: $status, subcategories: $subcategories, error: $error, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart, spentBySubcategory: $spentBySubcategory, generalSpent: $generalSpent)';
   }
 }
 
@@ -84,7 +83,7 @@ abstract mixin class $SubcategoryStateCopyWith<$Res> {
   $Res call(
       {SubcategoryStatus status,
       List<Subcategory> subcategories,
-      String? errorMessage,
+      SubcategoryError? error,
       String selectedIcon,
       String selectedColor,
       bool isEditMode,
@@ -108,7 +107,7 @@ class _$SubcategoryStateCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? subcategories = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
     Object? selectedIcon = null,
     Object? selectedColor = null,
     Object? isEditMode = null,
@@ -125,10 +124,10 @@ class _$SubcategoryStateCopyWithImpl<$Res>
           ? _self.subcategories
           : subcategories // ignore: cast_nullable_to_non_nullable
               as List<Subcategory>,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as SubcategoryError?,
       selectedIcon: null == selectedIcon
           ? _self.selectedIcon
           : selectedIcon // ignore: cast_nullable_to_non_nullable
@@ -251,7 +250,7 @@ extension SubcategoryStatePatterns on SubcategoryState {
     TResult Function(
             SubcategoryStatus status,
             List<Subcategory> subcategories,
-            String? errorMessage,
+            SubcategoryError? error,
             String selectedIcon,
             String selectedColor,
             bool isEditMode,
@@ -267,7 +266,7 @@ extension SubcategoryStatePatterns on SubcategoryState {
         return $default(
             _that.status,
             _that.subcategories,
-            _that.errorMessage,
+            _that.error,
             _that.selectedIcon,
             _that.selectedColor,
             _that.isEditMode,
@@ -297,7 +296,7 @@ extension SubcategoryStatePatterns on SubcategoryState {
     TResult Function(
             SubcategoryStatus status,
             List<Subcategory> subcategories,
-            String? errorMessage,
+            SubcategoryError? error,
             String selectedIcon,
             String selectedColor,
             bool isEditMode,
@@ -312,7 +311,7 @@ extension SubcategoryStatePatterns on SubcategoryState {
         return $default(
             _that.status,
             _that.subcategories,
-            _that.errorMessage,
+            _that.error,
             _that.selectedIcon,
             _that.selectedColor,
             _that.isEditMode,
@@ -339,7 +338,7 @@ extension SubcategoryStatePatterns on SubcategoryState {
     TResult? Function(
             SubcategoryStatus status,
             List<Subcategory> subcategories,
-            String? errorMessage,
+            SubcategoryError? error,
             String selectedIcon,
             String selectedColor,
             bool isEditMode,
@@ -354,7 +353,7 @@ extension SubcategoryStatePatterns on SubcategoryState {
         return $default(
             _that.status,
             _that.subcategories,
-            _that.errorMessage,
+            _that.error,
             _that.selectedIcon,
             _that.selectedColor,
             _that.isEditMode,
@@ -373,7 +372,7 @@ class _SubcategoryState implements SubcategoryState {
   const _SubcategoryState(
       {this.status = SubcategoryStatus.initial,
       final List<Subcategory> subcategories = const [],
-      this.errorMessage,
+      this.error,
       this.selectedIcon = '',
       this.selectedColor = 'Color(0xff2196f3)',
       this.isEditMode = false,
@@ -396,7 +395,7 @@ class _SubcategoryState implements SubcategoryState {
   }
 
   @override
-  final String? errorMessage;
+  final SubcategoryError? error;
   @override
   @JsonKey()
   final String selectedIcon;
@@ -439,8 +438,7 @@ class _SubcategoryState implements SubcategoryState {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other._subcategories, _subcategories) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage) &&
+            (identical(other.error, error) || other.error == error) &&
             (identical(other.selectedIcon, selectedIcon) ||
                 other.selectedIcon == selectedIcon) &&
             (identical(other.selectedColor, selectedColor) ||
@@ -460,7 +458,7 @@ class _SubcategoryState implements SubcategoryState {
       runtimeType,
       status,
       const DeepCollectionEquality().hash(_subcategories),
-      errorMessage,
+      error,
       selectedIcon,
       selectedColor,
       isEditMode,
@@ -470,7 +468,7 @@ class _SubcategoryState implements SubcategoryState {
 
   @override
   String toString() {
-    return 'SubcategoryState(status: $status, subcategories: $subcategories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart, spentBySubcategory: $spentBySubcategory, generalSpent: $generalSpent)';
+    return 'SubcategoryState(status: $status, subcategories: $subcategories, error: $error, selectedIcon: $selectedIcon, selectedColor: $selectedColor, isEditMode: $isEditMode, showPieChart: $showPieChart, spentBySubcategory: $spentBySubcategory, generalSpent: $generalSpent)';
   }
 }
 
@@ -485,7 +483,7 @@ abstract mixin class _$SubcategoryStateCopyWith<$Res>
   $Res call(
       {SubcategoryStatus status,
       List<Subcategory> subcategories,
-      String? errorMessage,
+      SubcategoryError? error,
       String selectedIcon,
       String selectedColor,
       bool isEditMode,
@@ -509,7 +507,7 @@ class __$SubcategoryStateCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? subcategories = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
     Object? selectedIcon = null,
     Object? selectedColor = null,
     Object? isEditMode = null,
@@ -526,10 +524,10 @@ class __$SubcategoryStateCopyWithImpl<$Res>
           ? _self._subcategories
           : subcategories // ignore: cast_nullable_to_non_nullable
               as List<Subcategory>,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as SubcategoryError?,
       selectedIcon: null == selectedIcon
           ? _self.selectedIcon
           : selectedIcon // ignore: cast_nullable_to_non_nullable

@@ -52,7 +52,7 @@ class TransactionCubit extends Cubit<TransactionState> with StreamListener {
     } catch (_) {
       emit(state.copyWith(
         status: TransactionStatus.error,
-        errorMessage: 'Failed to load transactions.',
+        error: TransactionError.loadFailed,
       ));
     }
   }

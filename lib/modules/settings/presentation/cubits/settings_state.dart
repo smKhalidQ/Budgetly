@@ -5,12 +5,19 @@ part 'settings_state.freezed.dart';
 
 enum SettingsStatus { initial, loading, success, error }
 
+enum SettingsError {
+  startNewMonthFailed,
+  resetFailed,
+  clearCategoriesFailed,
+  clearSubcategoriesFailed,
+}
+
 // run build_runner
 @freezed
 sealed class SettingsState with _$SettingsState {
   const factory SettingsState({
     @Default(SettingsStatus.initial) SettingsStatus status,
-    String? errorMessage,
+    SettingsError? error,
     CycleSummary? lastCycle,
     @Default(false) bool wasReset,
   }) = _SettingsState;

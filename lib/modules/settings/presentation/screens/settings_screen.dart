@@ -1,6 +1,8 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
+import 'package:budget_buddy/core/widgets/language_bottom_sheet.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/reconcile/presentation/screens/reconcile_screen.dart';
 import 'package:budget_buddy/modules/recurring/presentation/screens/recurring_expenses_screen.dart';
@@ -29,16 +31,16 @@ class _SettingsView extends StatelessWidget {
 
   void _confirmReset(BuildContext context) {
     final cubit = context.read<SettingsCubit>();
+    final t = context.tr;
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(
-          'Reset to initial state?',
+          t.resetToInitialStateTitle,
           style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
         ),
         content: Text(
-          'All transactions will be deleted and spending will be zeroed. '
-          'Your salary, category allocations, and fixed expenses are kept.',
+          t.resetToInitialStateMsg,
           style: GoogleFonts.cairo(
             fontSize: 13.sp,
             color: AppColor.textSecondary,
@@ -48,7 +50,7 @@ class _SettingsView extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(
-              'Cancel',
+              t.cancel,
               style: GoogleFonts.cairo(color: AppColor.textSecondary),
             ),
           ),
@@ -61,7 +63,7 @@ class _SettingsView extends StatelessWidget {
               Navigator.pop(dialogContext);
               cubit.resetToPostSetup();
             },
-            child: const Text('Reset'),
+            child: Text(t.reset),
           ),
         ],
       ),
@@ -73,7 +75,7 @@ class _SettingsView extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Reset complete — back to post-setup state',
+          context.tr.resetCompleteMsg,
           style: GoogleFonts.cairo(fontSize: 12.sp),
         ),
       ),
@@ -82,6 +84,8 @@ class _SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tr;
+
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(
@@ -89,7 +93,7 @@ class _SettingsView extends StatelessWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
         title: Text(
-          'Settings',
+          t.settings,
           style: GoogleFonts.cairo(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -107,12 +111,26 @@ class _SettingsView extends StatelessWidget {
           return ListView(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             children: [
-              _SectionLabel('Categories'),
+              _SectionLabel(t.general),
+              _SettingsTile(
+                icon: Icons.language_rounded,
+                iconColor: AppColor.primaryColor,
+                title: t.language,
+                subtitle: t.changeAppLanguage,
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColor.textSecondary.withValues(alpha: 0.4),
+                  size: 22.sp,
+                ),
+                onTap: () => LanguageBottomSheet.show(context),
+              ),
+              SizedBox(height: 16.h),
+              _SectionLabel(t.categories),
               _SettingsTile(
                 icon: Icons.category_rounded,
                 iconColor: AppColor.primaryColor,
-                title: 'Manage categories',
-                subtitle: 'Redistribute budget or add a new category',
+                title: t.manageCategories,
+                subtitle: t.manageCategoriesSubtitle,
                 trailing: Icon(
                   Icons.chevron_right_rounded,
                   color: AppColor.textSecondary.withValues(alpha: 0.4),
@@ -126,12 +144,12 @@ class _SettingsView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16.h),
-              _SectionLabel('Fixed expenses'),
+              _SectionLabel(t.fixedExpenses),
               _SettingsTile(
                 icon: Icons.push_pin_rounded,
                 iconColor: AppColor.primaryColor,
-                title: 'Manage fixed expenses',
-                subtitle: 'Bills & start a new month',
+                title: t.manageFixedExpenses,
+                subtitle: t.manageFixedExpensesSubtitle,
                 trailing: Icon(
                   Icons.chevron_right_rounded,
                   color: AppColor.textSecondary.withValues(alpha: 0.4),
@@ -145,12 +163,12 @@ class _SettingsView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16.h),
-              _SectionLabel('Balance'),
+              _SectionLabel(t.balance),
               _SettingsTile(
                 icon: Icons.account_balance_wallet_rounded,
                 iconColor: AppColor.accentColor,
-                title: 'Reconcile balance',
-                subtitle: 'Match the app to the money you actually have',
+                title: t.reconcileBalance,
+                subtitle: t.reconcileBalanceSubtitle,
                 trailing: Icon(
                   Icons.chevron_right_rounded,
                   color: AppColor.textSecondary.withValues(alpha: 0.4),
@@ -164,13 +182,12 @@ class _SettingsView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16.h),
-              _SectionLabel('Debug'),
+              _SectionLabel(t.debug),
               _SettingsTile(
                 icon: Icons.restart_alt_rounded,
                 iconColor: AppColor.expenseColor,
-                title: 'Reset to post-setup state',
-                subtitle:
-                    'Wipe all transactions & spending — keeps salary and allocations',
+                title: t.resetToPostSetupTitle,
+                subtitle: t.resetToPostSetupSubtitle,
                 trailing: state.isLoading
                     ? SizedBox(
                         width: 18.w,

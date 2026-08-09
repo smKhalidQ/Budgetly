@@ -18,7 +18,7 @@ class ReconcileCubit extends Cubit<ReconcileState> {
     } catch (_) {
       emit(state.copyWith(
         status: ReconcileStatus.error,
-        errorMessage: 'Failed to load balance.',
+        error: ReconcileError.loadBalanceFailed,
       ));
     }
   }
@@ -41,7 +41,7 @@ class ReconcileCubit extends Cubit<ReconcileState> {
     } catch (_) {
       emit(state.copyWith(
         status: ReconcileStatus.error,
-        errorMessage: 'Reconcile failed.',
+        error: ReconcileError.reconcileFailed,
       ));
     }
   }

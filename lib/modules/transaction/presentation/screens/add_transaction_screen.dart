@@ -2,8 +2,11 @@ import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
+import 'package:budget_buddy/modules/subcategory/domain/models/subcategory_localization.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_cubit.dart';
 import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_state.dart';
@@ -252,9 +255,10 @@ class _EntryAppBar extends StatelessWidget {
       ),
     );
 
+    final t = context.tr;
     final title = isIncome
-        ? (isEditing ? 'Edit Income' : 'Add Income')
-        : (isEditing ? 'Edit Expense' : 'Add Expense');
+        ? (isEditing ? t.editIncome : t.addIncomeTitle)
+        : (isEditing ? t.editExpense : t.addExpense);
 
     return AppBar(
       backgroundColor: AppColor.primaryColor,
@@ -342,7 +346,7 @@ class _CategoryHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  category.name,
+                  category.localizedName(context.tr),
                   style: GoogleFonts.cairo(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
@@ -350,7 +354,8 @@ class _CategoryHeader extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Remaining: $currencySymbol${remaining.toStringAsFixed(2)}',
+                  context.tr.remainingAmount(
+                      '$currencySymbol${remaining.toStringAsFixed(2)}'),
                   style: GoogleFonts.cairo(
                     fontSize: 12.sp,
                     color: remaining > 0 ? color : AppColor.textSecondary,
@@ -393,7 +398,7 @@ class _SubcategoryChips extends StatelessWidget {
         itemBuilder: (_, i) {
           if (i == 0) {
             return _SubcategoryChip(
-              label: 'General',
+              label: context.tr.general,
               color: categoryColor,
               isSelected: subChosen && selectedSub == null,
               onTap: () => cubit.selectSubcategory(null),
@@ -401,7 +406,7 @@ class _SubcategoryChips extends StatelessWidget {
           }
           final sub = subcategories[i - 1];
           return _SubcategoryChip(
-            label: sub.name,
+            label: sub.localizedName(context.tr),
             color: parseColorFromString(sub.color),
             isSelected: selectedSub?.id == sub.id,
             onTap: () => cubit.selectSubcategory(sub),
@@ -468,7 +473,7 @@ class _IncomeTop extends StatelessWidget {
           child: Align(
             alignment: AlignmentDirectional.centerStart,
             child: Text(
-              'Add to which budget?',
+              context.tr.addToWhichBudget,
               style: GoogleFonts.cairo(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
@@ -567,7 +572,7 @@ class _IncomeCategoryTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    category.name,
+                    category.localizedName(context.tr),
                     style: GoogleFonts.cairo(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -575,7 +580,8 @@ class _IncomeCategoryTile extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Remaining: $currencySymbol${remaining.toStringAsFixed(2)}',
+                    context.tr.remainingAmount(
+                        '$currencySymbol${remaining.toStringAsFixed(2)}'),
                     style: GoogleFonts.cairo(
                       fontSize: 11.sp,
                       color: remaining > 0 ? color : AppColor.textSecondary,
@@ -644,7 +650,7 @@ class _NoteRow extends StatelessWidget {
         maxLines: 1,
         style: GoogleFonts.cairo(fontSize: 13.sp, color: AppColor.textPrimary),
         decoration: InputDecoration(
-          hintText: 'Add a note (optional)',
+          hintText: context.tr.addNoteOptional,
           hintStyle: GoogleFonts.cairo(
             fontSize: 13.sp,
             color: AppColor.textSecondary,
@@ -733,14 +739,15 @@ class _AmountDisplay extends StatelessWidget {
       return currencies[key]?['currencySymbol'] ?? '';
     });
 
+    final t = context.tr;
     final isExpense = type == TransactionType.expense;
     final typeColor =
         isExpense ? AppColor.expenseColor : AppColor.incomeColor;
     final label = selectedCat == null
         ? null
         : isExpense
-            ? '${selectedCat.name} · ${selectedSub?.name ?? 'General'}'
-            : selectedCat.name;
+            ? '${selectedCat.localizedName(t)} · ${selectedSub?.localizedName(t) ?? t.general}'
+            : selectedCat.localizedName(t);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 4.h),

@@ -2,7 +2,9 @@ import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/category/presentation/widgets/picker_dialog_helpers.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/manage_categories_cubit.dart';
@@ -75,8 +77,8 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
             curr.status == ManageCategoriesStatus.success &&
             prev.status == ManageCategoriesStatus.saving,
         listener: (context, state) {
-          if (state.deferredNames.isNotEmpty) {
-            _showDeferredDialog(context, state.deferredNames);
+          if (state.deferredCategories.isNotEmpty) {
+            _showDeferredDialog(context, state.deferredCategories);
           } else {
             Navigator.pop(context);
           }
@@ -94,7 +96,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                     color: AppColor.primaryColor),
               ),
               title: Text(
-                'Manage Categories',
+                context.tr.manageCategories,
                 style: GoogleFonts.cairo(
                   fontWeight: FontWeight.bold,
                   fontSize: 18.sp,
@@ -188,7 +190,8 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
   void _addCategory(BuildContext context) {
     PickerDialogHelpers.showCategoryPickerDialog(
       context: context,
-      title: 'New Category',
+      title: context.tr.addCategoryTitle,
+      isAdd: true,
       pickerFunction: (Category newCat) => _cubit.addCategory(newCat),
     );
   }
@@ -321,18 +324,19 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
     );
   }
 
-  void _showDeferredDialog(BuildContext context, List<String> names) {
-    final joined = names.join(', ');
+  void _showDeferredDialog(BuildContext context, List<Category> categories) {
+    final t = context.tr;
+    final joined =
+        categories.map((c) => c.localizedName(t)).join(', ');
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          'Partially applied',
+          t.partiallyAppliedTitle,
           style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
         ),
         content: Text(
-          '$joined: already spent more than the new budget — '
-          'the new budget will apply from next month.',
+          t.partiallyAppliedMsg(joined),
           style: GoogleFonts.cairo(fontSize: 13.sp),
         ),
         actions: [
@@ -345,7 +349,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
-            child: const Text('OK'),
+            child: Text(t.ok),
           ),
         ],
       ),
@@ -565,7 +569,7 @@ class _CategoryRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  category.name,
+                  category.localizedName(context.tr),
                   style: GoogleFonts.cairo(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w500,
@@ -574,7 +578,8 @@ class _CategoryRow extends StatelessWidget {
                 ),
                 if (isDeferred)
                   Text(
-                    'Next month · spent $symbol${category.spentAmount.toStringAsFixed(0)}',
+                    context.tr.deferredNextMonthSpent(
+                        '$symbol${category.spentAmount.toStringAsFixed(0)}'),
                     style: GoogleFonts.cairo(
                       fontSize: 10.sp,
                       color: AppColor.accentColor,

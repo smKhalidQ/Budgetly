@@ -31,7 +31,7 @@ class RecurringCubit extends Cubit<RecurringState> {
     } catch (_) {
       emit(state.copyWith(
         status: RecurringStatus.error,
-        errorMessage: 'Failed to load fixed expenses.',
+        error: RecurringError.loadFailed,
       ));
     }
   }

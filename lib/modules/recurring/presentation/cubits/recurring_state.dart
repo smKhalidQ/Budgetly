@@ -8,6 +8,8 @@ part 'recurring_state.freezed.dart';
 
 enum RecurringStatus { initial, loading, success, error }
 
+enum RecurringError { loadFailed }
+
 @freezed
 sealed class RecurringState with _$RecurringState {
   const factory RecurringState({
@@ -15,7 +17,7 @@ sealed class RecurringState with _$RecurringState {
     @Default([]) List<RecurringExpense> items,
     @Default([]) List<Category> categories,
     @Default([]) List<Subcategory> subcategories,
-    String? errorMessage,
+    RecurringError? error,
   }) = _RecurringState;
 }
 

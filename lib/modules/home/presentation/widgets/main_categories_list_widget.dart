@@ -3,7 +3,9 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/app_localizations.dart';
 import 'package:budget_buddy/l10n/translation.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
 import 'package:budget_buddy/modules/category/presentation/screens/category_detail_screen.dart';
@@ -12,6 +14,14 @@ import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_state
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+String _errorText(AppLocalizations t, CategoryError? error) {
+  return switch (error) {
+    CategoryError.loadFailed => t.failedToLoadCategories,
+    CategoryError.initializeFailed => t.failedToInitializeCategories,
+    null => '',
+  };
+}
 
 class MainCategoriesListWidget extends StatelessWidget {
   const MainCategoriesListWidget({super.key});
@@ -32,7 +42,7 @@ class MainCategoriesListWidget extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             if (state.hasError) {
-              return Center(child: Text(state.errorMessage ?? ''));
+              return Center(child: Text(_errorText(context.tr, state.error)));
             }
 
             final categories = state.categories;
@@ -105,7 +115,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                                           children: [
                                             Expanded(
                                               child: Text(
-                                                category.name,
+                                                category.localizedName(context.tr),
                                                 style: GoogleFonts.cairo(
                                                   fontSize: 13.sp,
                                                   fontWeight: FontWeight.w600,

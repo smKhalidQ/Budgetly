@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 
 class CurrencyBottomSheet extends StatelessWidget {
@@ -18,7 +19,7 @@ class CurrencyBottomSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Select Currency',
+            context.tr.selectCurrency,
             style: GoogleFonts.abel(
               textStyle: TextStyle(
                 fontSize: 20.sp,

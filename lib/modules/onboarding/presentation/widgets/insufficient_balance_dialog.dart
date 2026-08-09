@@ -112,7 +112,7 @@ class InsufficientBalanceDialog extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Set $maxAvailable',
+                      t.setAmount(maxAvailable.toString()),
                       style: GoogleFonts.cairo(
                         fontWeight: FontWeight.w700,
                         fontSize: 14.sp,

@@ -4,6 +4,8 @@ part 'setting_state.freezed.dart';
 
 enum SettingStatus { initial, loading, success, error }
 
+enum SettingError { saveProfileFailed }
+
 // run build_runner
 @freezed
 sealed class SettingState with _$SettingState {
@@ -12,7 +14,7 @@ sealed class SettingState with _$SettingState {
     String? selectedCurrency,
     @Default(0) int monthlySalary,
     @Default('') String userName,
-    String? errorMessage,
+    SettingError? error,
   }) = _SettingState;
 }
 

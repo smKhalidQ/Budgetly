@@ -18,7 +18,7 @@ mixin _$SettingState {
   String? get selectedCurrency;
   int get monthlySalary;
   String get userName;
-  String? get errorMessage;
+  SettingError? get error;
 
   /// Create a copy of SettingState
   /// with the given fields replaced by the non-null parameter values.
@@ -40,17 +40,16 @@ mixin _$SettingState {
                 other.monthlySalary == monthlySalary) &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, selectedCurrency,
-      monthlySalary, userName, errorMessage);
+  int get hashCode => Object.hash(
+      runtimeType, status, selectedCurrency, monthlySalary, userName, error);
 
   @override
   String toString() {
-    return 'SettingState(status: $status, selectedCurrency: $selectedCurrency, monthlySalary: $monthlySalary, userName: $userName, errorMessage: $errorMessage)';
+    return 'SettingState(status: $status, selectedCurrency: $selectedCurrency, monthlySalary: $monthlySalary, userName: $userName, error: $error)';
   }
 }
 
@@ -65,7 +64,7 @@ abstract mixin class $SettingStateCopyWith<$Res> {
       String? selectedCurrency,
       int monthlySalary,
       String userName,
-      String? errorMessage});
+      SettingError? error});
 }
 
 /// @nodoc
@@ -84,7 +83,7 @@ class _$SettingStateCopyWithImpl<$Res> implements $SettingStateCopyWith<$Res> {
     Object? selectedCurrency = freezed,
     Object? monthlySalary = null,
     Object? userName = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
   }) {
     return _then(_self.copyWith(
       status: null == status
@@ -103,10 +102,10 @@ class _$SettingStateCopyWithImpl<$Res> implements $SettingStateCopyWith<$Res> {
           ? _self.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as SettingError?,
     ));
   }
 }
@@ -203,7 +202,7 @@ extension SettingStatePatterns on SettingState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(SettingStatus status, String? selectedCurrency,
-            int monthlySalary, String userName, String? errorMessage)?
+            int monthlySalary, String userName, SettingError? error)?
         $default, {
     required TResult orElse(),
   }) {
@@ -211,7 +210,7 @@ extension SettingStatePatterns on SettingState {
     switch (_that) {
       case _SettingState() when $default != null:
         return $default(_that.status, _that.selectedCurrency,
-            _that.monthlySalary, _that.userName, _that.errorMessage);
+            _that.monthlySalary, _that.userName, _that.error);
       case _:
         return orElse();
     }
@@ -233,14 +232,14 @@ extension SettingStatePatterns on SettingState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(SettingStatus status, String? selectedCurrency,
-            int monthlySalary, String userName, String? errorMessage)
+            int monthlySalary, String userName, SettingError? error)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingState():
         return $default(_that.status, _that.selectedCurrency,
-            _that.monthlySalary, _that.userName, _that.errorMessage);
+            _that.monthlySalary, _that.userName, _that.error);
     }
   }
 
@@ -259,14 +258,14 @@ extension SettingStatePatterns on SettingState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(SettingStatus status, String? selectedCurrency,
-            int monthlySalary, String userName, String? errorMessage)?
+            int monthlySalary, String userName, SettingError? error)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingState() when $default != null:
         return $default(_that.status, _that.selectedCurrency,
-            _that.monthlySalary, _that.userName, _that.errorMessage);
+            _that.monthlySalary, _that.userName, _that.error);
       case _:
         return null;
     }
@@ -281,7 +280,7 @@ class _SettingState implements SettingState {
       this.selectedCurrency,
       this.monthlySalary = 0,
       this.userName = '',
-      this.errorMessage});
+      this.error});
 
   @override
   @JsonKey()
@@ -295,7 +294,7 @@ class _SettingState implements SettingState {
   @JsonKey()
   final String userName;
   @override
-  final String? errorMessage;
+  final SettingError? error;
 
   /// Create a copy of SettingState
   /// with the given fields replaced by the non-null parameter values.
@@ -317,17 +316,16 @@ class _SettingState implements SettingState {
                 other.monthlySalary == monthlySalary) &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, selectedCurrency,
-      monthlySalary, userName, errorMessage);
+  int get hashCode => Object.hash(
+      runtimeType, status, selectedCurrency, monthlySalary, userName, error);
 
   @override
   String toString() {
-    return 'SettingState(status: $status, selectedCurrency: $selectedCurrency, monthlySalary: $monthlySalary, userName: $userName, errorMessage: $errorMessage)';
+    return 'SettingState(status: $status, selectedCurrency: $selectedCurrency, monthlySalary: $monthlySalary, userName: $userName, error: $error)';
   }
 }
 
@@ -344,7 +342,7 @@ abstract mixin class _$SettingStateCopyWith<$Res>
       String? selectedCurrency,
       int monthlySalary,
       String userName,
-      String? errorMessage});
+      SettingError? error});
 }
 
 /// @nodoc
@@ -364,7 +362,7 @@ class __$SettingStateCopyWithImpl<$Res>
     Object? selectedCurrency = freezed,
     Object? monthlySalary = null,
     Object? userName = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
   }) {
     return _then(_SettingState(
       status: null == status
@@ -383,10 +381,10 @@ class __$SettingStateCopyWithImpl<$Res>
           ? _self.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as SettingError?,
     ));
   }
 }

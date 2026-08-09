@@ -470,6 +470,12 @@ abstract class AppLocalizations {
   /// **'Saving'**
   String get saving;
 
+  /// No description provided for @savingGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving & Goals'**
+  String get savingGoals;
+
   /// No description provided for @housing.
   ///
   /// In en, this message translates to:
@@ -505,6 +511,1008 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get other;
+
+  /// No description provided for @rent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get rent;
+
+  /// No description provided for @utilities.
+  ///
+  /// In en, this message translates to:
+  /// **'Utilities'**
+  String get utilities;
+
+  /// No description provided for @internet.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet'**
+  String get internet;
+
+  /// No description provided for @maintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance'**
+  String get maintenance;
+
+  /// No description provided for @furniture.
+  ///
+  /// In en, this message translates to:
+  /// **'Furniture'**
+  String get furniture;
+
+  /// No description provided for @restaurants.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurants'**
+  String get restaurants;
+
+  /// No description provided for @groceries.
+  ///
+  /// In en, this message translates to:
+  /// **'Groceries'**
+  String get groceries;
+
+  /// No description provided for @coffee.
+  ///
+  /// In en, this message translates to:
+  /// **'Coffee'**
+  String get coffee;
+
+  /// No description provided for @snacks.
+  ///
+  /// In en, this message translates to:
+  /// **'Snacks'**
+  String get snacks;
+
+  /// No description provided for @delivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery'**
+  String get delivery;
+
+  /// No description provided for @fuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel'**
+  String get fuel;
+
+  /// No description provided for @publicTransit.
+  ///
+  /// In en, this message translates to:
+  /// **'Public Transit'**
+  String get publicTransit;
+
+  /// No description provided for @parking.
+  ///
+  /// In en, this message translates to:
+  /// **'Parking'**
+  String get parking;
+
+  /// No description provided for @taxiRide.
+  ///
+  /// In en, this message translates to:
+  /// **'Taxi / Ride'**
+  String get taxiRide;
+
+  /// No description provided for @carService.
+  ///
+  /// In en, this message translates to:
+  /// **'Car Service'**
+  String get carService;
+
+  /// No description provided for @doctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor'**
+  String get doctor;
+
+  /// No description provided for @medicine.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine'**
+  String get medicine;
+
+  /// No description provided for @gym.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym'**
+  String get gym;
+
+  /// No description provided for @dentist.
+  ///
+  /// In en, this message translates to:
+  /// **'Dentist'**
+  String get dentist;
+
+  /// No description provided for @pharmacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Pharmacy'**
+  String get pharmacy;
+
+  /// No description provided for @movies.
+  ///
+  /// In en, this message translates to:
+  /// **'Movies'**
+  String get movies;
+
+  /// No description provided for @gaming.
+  ///
+  /// In en, this message translates to:
+  /// **'Gaming'**
+  String get gaming;
+
+  /// No description provided for @streaming.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaming'**
+  String get streaming;
+
+  /// No description provided for @books.
+  ///
+  /// In en, this message translates to:
+  /// **'Books'**
+  String get books;
+
+  /// No description provided for @events.
+  ///
+  /// In en, this message translates to:
+  /// **'Events'**
+  String get events;
+
+  /// No description provided for @shopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get shopping;
+
+  /// No description provided for @gifts.
+  ///
+  /// In en, this message translates to:
+  /// **'Gifts'**
+  String get gifts;
+
+  /// No description provided for @subscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions'**
+  String get subscriptions;
+
+  /// No description provided for @personalCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Care'**
+  String get personalCare;
+
+  /// No description provided for @education.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get education;
+
+  /// No description provided for @emergencyFund.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency Fund'**
+  String get emergencyFund;
+
+  /// No description provided for @investment.
+  ///
+  /// In en, this message translates to:
+  /// **'Investment'**
+  String get investment;
+
+  /// No description provided for @travelFund.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel Fund'**
+  String get travelFund;
+
+  /// No description provided for @retirement.
+  ///
+  /// In en, this message translates to:
+  /// **'Retirement'**
+  String get retirement;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @arabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get arabic;
+
+  /// No description provided for @changeAppLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the app language'**
+  String get changeAppLanguage;
+
+  /// No description provided for @general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
+  /// No description provided for @resetToInitialStateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to initial state?'**
+  String get resetToInitialStateTitle;
+
+  /// No description provided for @resetToInitialStateMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'All transactions will be deleted and spending will be zeroed. Your salary, category allocations, and fixed expenses are kept.'**
+  String get resetToInitialStateMsg;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @resetCompleteMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset complete — back to post-setup state'**
+  String get resetCompleteMsg;
+
+  /// No description provided for @manageCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage categories'**
+  String get manageCategories;
+
+  /// No description provided for @manageCategoriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Redistribute budget or add a new category'**
+  String get manageCategoriesSubtitle;
+
+  /// No description provided for @fixedExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed expenses'**
+  String get fixedExpenses;
+
+  /// No description provided for @manageFixedExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage fixed expenses'**
+  String get manageFixedExpenses;
+
+  /// No description provided for @manageFixedExpensesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills & start a new month'**
+  String get manageFixedExpensesSubtitle;
+
+  /// No description provided for @balance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get balance;
+
+  /// No description provided for @reconcileBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconcile balance'**
+  String get reconcileBalance;
+
+  /// No description provided for @reconcileBalanceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Match the app to the money you actually have'**
+  String get reconcileBalanceSubtitle;
+
+  /// No description provided for @debug.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug'**
+  String get debug;
+
+  /// No description provided for @resetToPostSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to post-setup state'**
+  String get resetToPostSetupTitle;
+
+  /// No description provided for @resetToPostSetupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe all transactions & spending — keeps salary and allocations'**
+  String get resetToPostSetupSubtitle;
+
+  /// No description provided for @selectCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Currency'**
+  String get selectCurrency;
+
+  /// No description provided for @setAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Set {amount}'**
+  String setAmount(String amount);
+
+  /// No description provided for @everyDollarHasJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {symbol} has a job — you\'re ready to go.'**
+  String everyDollarHasJob(String symbol);
+
+  /// No description provided for @splitAcrossCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Split your {symbol}{salary} across the categories below.'**
+  String splitAcrossCategories(String symbol, String salary);
+
+  /// No description provided for @remainingOverBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'{remaining} · over budget'**
+  String remainingOverBudget(String remaining);
+
+  /// No description provided for @salary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get salary;
+
+  /// No description provided for @addIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Income'**
+  String get addIncome;
+
+  /// No description provided for @quickAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Add'**
+  String get quickAdd;
+
+  /// No description provided for @failedToLoadCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load categories.'**
+  String get failedToLoadCategories;
+
+  /// No description provided for @failedToInitializeCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to initialize categories.'**
+  String get failedToInitializeCategories;
+
+  /// No description provided for @failedToLoadSubcategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load subcategories.'**
+  String get failedToLoadSubcategories;
+
+  /// No description provided for @failedToRestoreDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to restore defaults.'**
+  String get failedToRestoreDefaults;
+
+  /// No description provided for @failedToLoadTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load transactions.'**
+  String get failedToLoadTransactions;
+
+  /// No description provided for @failedToLoadFixedExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load fixed expenses.'**
+  String get failedToLoadFixedExpenses;
+
+  /// No description provided for @failedToLoadBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load balance.'**
+  String get failedToLoadBalance;
+
+  /// No description provided for @reconcileFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconcile failed.'**
+  String get reconcileFailed;
+
+  /// No description provided for @failedToSaveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save profile.'**
+  String get failedToSaveProfile;
+
+  /// No description provided for @failedToStartNewMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to start a new month.'**
+  String get failedToStartNewMonth;
+
+  /// No description provided for @failedToResetData.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to reset data.'**
+  String get failedToResetData;
+
+  /// No description provided for @failedToClearCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to clear categories.'**
+  String get failedToClearCategories;
+
+  /// No description provided for @failedToClearSubcategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to clear subcategories.'**
+  String get failedToClearSubcategories;
+
+  /// No description provided for @failedToSaveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save changes.'**
+  String get failedToSaveChanges;
+
+  /// No description provided for @failedToAddCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add category.'**
+  String get failedToAddCategory;
+
+  /// No description provided for @nameIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get nameIsRequired;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @selectIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Icon'**
+  String get selectIcon;
+
+  /// No description provided for @selectColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Color'**
+  String get selectColor;
+
+  /// No description provided for @addCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Category'**
+  String get addCategoryTitle;
+
+  /// No description provided for @editCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Category'**
+  String get editCategoryTitle;
+
+  /// No description provided for @addSubcategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Subcategory'**
+  String get addSubcategoryTitle;
+
+  /// No description provided for @editSubcategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Subcategory'**
+  String get editSubcategoryTitle;
+
+  /// No description provided for @noSpendingYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No spending yet'**
+  String get noSpendingYet;
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// No description provided for @noSubcategoriesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No subcategories yet'**
+  String get noSubcategoriesYet;
+
+  /// No description provided for @restoreDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore defaults'**
+  String get restoreDefaults;
+
+  /// No description provided for @subcategoriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SUBCATEGORIES'**
+  String get subcategoriesLabel;
+
+  /// No description provided for @deleteSubcategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Subcategory'**
+  String get deleteSubcategoryTitle;
+
+  /// No description provided for @deleteSubcategoryConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?'**
+  String deleteSubcategoryConfirm(String name);
+
+  /// No description provided for @editIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Income'**
+  String get editIncome;
+
+  /// No description provided for @addIncomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Income'**
+  String get addIncomeTitle;
+
+  /// No description provided for @editExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Expense'**
+  String get editExpense;
+
+  /// No description provided for @addExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense'**
+  String get addExpense;
+
+  /// No description provided for @remainingAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining: {amount}'**
+  String remainingAmount(String amount);
+
+  /// No description provided for @addToWhichBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to which budget?'**
+  String get addToWhichBudget;
+
+  /// No description provided for @addNoteOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a note (optional)'**
+  String get addNoteOptional;
+
+  /// No description provided for @coverTheDifference.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover the difference'**
+  String get coverTheDifference;
+
+  /// No description provided for @overflowNeedMore.
+  ///
+  /// In en, this message translates to:
+  /// **'You need {amount} more. Choose which categories it comes from — you\'ll feel it there later.'**
+  String overflowNeedMore(String amount);
+
+  /// No description provided for @allCovered.
+  ///
+  /// In en, this message translates to:
+  /// **'All covered'**
+  String get allCovered;
+
+  /// No description provided for @fromCategoryAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'From {category}: {amount}'**
+  String fromCategoryAmount(String category, String amount);
+
+  /// No description provided for @availableAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Available: {amount}'**
+  String availableAmount(String amount);
+
+  /// No description provided for @fromNewIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'From new income'**
+  String get fromNewIncome;
+
+  /// No description provided for @confirmSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm spend'**
+  String get confirmSpend;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @thisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get thisWeek;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get thisMonth;
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get dateLabel;
+
+  /// No description provided for @categoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get categoryLabel;
+
+  /// No description provided for @spentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get spentLabel;
+
+  /// No description provided for @incomeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get incomeLabel;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @transactionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction deleted'**
+  String get transactionDeleted;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @editAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editAction;
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAction;
+
+  /// No description provided for @noteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get noteLabel;
+
+  /// No description provided for @coveredFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Covered from'**
+  String get coveredFrom;
+
+  /// No description provided for @newIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'New income'**
+  String get newIncome;
+
+  /// No description provided for @noTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions'**
+  String get noTransactions;
+
+  /// No description provided for @tryDifferentPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different period'**
+  String get tryDifferentPeriod;
+
+  /// No description provided for @startNewMonthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a new month?'**
+  String get startNewMonthTitle;
+
+  /// No description provided for @startNewMonthMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Leftover in every category moves to Saving, spending resets, and your active fixed expenses are posted.'**
+  String get startNewMonthMsg;
+
+  /// No description provided for @start.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get start;
+
+  /// No description provided for @savedToSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {amount} to Saving'**
+  String savedToSaving(String amount);
+
+  /// No description provided for @recurringPostedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} fixed posted'**
+  String recurringPostedCount(String count);
+
+  /// No description provided for @recurringFlaggedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} need attention'**
+  String recurringFlaggedCount(String count);
+
+  /// No description provided for @newMonthStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'New month started · {parts}'**
+  String newMonthStarted(String parts);
+
+  /// No description provided for @fixedExpensesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed Expenses'**
+  String get fixedExpensesTitle;
+
+  /// No description provided for @monthlyFixedTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly fixed total'**
+  String get monthlyFixedTotal;
+
+  /// No description provided for @postedAutomatically.
+  ///
+  /// In en, this message translates to:
+  /// **'Posted automatically on the first day of each month'**
+  String get postedAutomatically;
+
+  /// No description provided for @startNewMonthAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start New Month'**
+  String get startNewMonthAction;
+
+  /// No description provided for @noFixedExpensesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No fixed expenses yet'**
+  String get noFixedExpensesYet;
+
+  /// No description provided for @addBillsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add bills like rent so they post each month'**
+  String get addBillsHint;
+
+  /// No description provided for @newFixedExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'New fixed expense'**
+  String get newFixedExpense;
+
+  /// No description provided for @editExpenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit expense'**
+  String get editExpenseTitle;
+
+  /// No description provided for @subcategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subcategory'**
+  String get subcategoryLabel;
+
+  /// No description provided for @amountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amountLabel;
+
+  /// No description provided for @noteOptionalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get noteOptionalLabel;
+
+  /// No description provided for @exceedsBudgetBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceeds budget by {amount}'**
+  String exceedsBudgetBy(String amount);
+
+  /// No description provided for @remainingOfBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'{remaining} remaining of {budget} budget'**
+  String remainingOfBudget(String remaining, String budget);
+
+  /// No description provided for @balanceReconciled.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance reconciled'**
+  String get balanceReconciled;
+
+  /// No description provided for @startFreshTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start fresh?'**
+  String get startFreshTitle;
+
+  /// No description provided for @startFreshMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending resets and {amount} is re-spread across your envelopes by their current ratios.'**
+  String startFreshMsg(String amount);
+
+  /// No description provided for @startFreshAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start fresh'**
+  String get startFreshAction;
+
+  /// No description provided for @reconcileBalanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconcile balance'**
+  String get reconcileBalanceTitle;
+
+  /// No description provided for @envelopesHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Your envelopes hold'**
+  String get envelopesHold;
+
+  /// No description provided for @howMuchDoYouHaveNow.
+  ///
+  /// In en, this message translates to:
+  /// **'How much do you actually have now?'**
+  String get howMuchDoYouHaveNow;
+
+  /// No description provided for @whereDidItGoSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Where did the {amount} go? Enter what you spent from each.'**
+  String whereDidItGoSpent(String amount);
+
+  /// No description provided for @whereDidItGoExtra.
+  ///
+  /// In en, this message translates to:
+  /// **'Where did the extra {amount} go? Add it as income to the envelopes that got it.'**
+  String whereDidItGoExtra(String amount);
+
+  /// No description provided for @startFreshInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost track? Start fresh instead'**
+  String get startFreshInstead;
+
+  /// No description provided for @allAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'All assigned'**
+  String get allAssigned;
+
+  /// No description provided for @leftToAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Left to assign: {amount}'**
+  String leftToAssign(String amount);
+
+  /// No description provided for @confirmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirmAction;
+
+  /// No description provided for @nowAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Now: {amount}'**
+  String nowAmount(String amount);
+
+  /// No description provided for @everythingMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything matches'**
+  String get everythingMatches;
+
+  /// No description provided for @unloggedSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlogged spending: {amount}'**
+  String unloggedSpending(String amount);
+
+  /// No description provided for @extraMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra money: {amount}'**
+  String extraMoney(String amount);
+
+  /// No description provided for @deferredNextMonthSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month · spent {amount}'**
+  String deferredNextMonthSpent(String amount);
+
+  /// No description provided for @editCategoryDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Category'**
+  String get editCategoryDialogTitle;
+
+  /// No description provided for @overAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} over'**
+  String overAmount(String amount);
+
+  /// No description provided for @leftAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} left'**
+  String leftAmount(String amount);
+
+  /// No description provided for @partiallyAppliedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Partially applied'**
+  String get partiallyAppliedTitle;
+
+  /// No description provided for @partiallyAppliedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'{names}: already spent more than the new budget — the new budget will apply from next month.'**
+  String partiallyAppliedMsg(String names);
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
 }
 
 class _AppLocalizationsDelegate

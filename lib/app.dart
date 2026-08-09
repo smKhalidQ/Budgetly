@@ -9,6 +9,8 @@ import 'core/router/app_router.dart';
 import 'core/theming/app_theme.dart';
 import 'l10n/app_localizations.dart';
 import 'modules/category/presentation/cubits/category_cubit.dart';
+import 'modules/settings/presentation/cubits/locale_cubit.dart';
+import 'modules/settings/presentation/cubits/locale_state.dart';
 import 'modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'modules/subcategory/presentation/cubits/subcategory_cubit.dart';
 
@@ -28,27 +30,35 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (_) => GetIt.I<SettingCubit>()..loadUserInfo(),
         ),
+        BlocProvider(
+          create: (_) => GetIt.I<LocaleCubit>()..initialize(),
+        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Budget Buddy',
-        builder: (context, child) {
-          if (ResponsiveManager.isInitialized) {
-            ResponsiveManager.instance.forceRecalculate(context);
-          } else {
-            ResponsiveManager.initialize(context);
-          }
-          return AdaptiveLayout(child: child!);
+      child: BlocBuilder<LocaleCubit, LocaleState>(
+        builder: (context, localeState) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Budget Buddy',
+            builder: (context, child) {
+              if (ResponsiveManager.isInitialized) {
+                ResponsiveManager.instance.forceRecalculate(context);
+              } else {
+                ResponsiveManager.initialize(context);
+              }
+              return AdaptiveLayout(child: child!);
+            },
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: localeState.locale,
+            theme: appTheme,
+            home: AppRouter.initialScreen(),
+          );
         },
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        theme: appTheme,
-        home: AppRouter.initialScreen(),
       ),
     );
   }

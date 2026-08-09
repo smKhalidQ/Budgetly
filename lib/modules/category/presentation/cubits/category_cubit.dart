@@ -42,7 +42,7 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
     } catch (_) {
       emit(state.copyWith(
         status: CategoryStatus.error,
-        errorMessage: 'Failed to load categories.',
+        error: CategoryError.loadFailed,
       ));
     }
   }
@@ -211,7 +211,7 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
     } catch (_) {
       emit(state.copyWith(
         status: CategoryStatus.error,
-        errorMessage: 'Failed to initialize categories.',
+        error: CategoryError.initializeFailed,
       ));
       return false;
     }
@@ -244,7 +244,7 @@ class CategoryCubit extends Cubit<CategoryState> with StreamListener {
     } catch (_) {
       emit(state.copyWith(
         status: CategoryStatus.error,
-        errorMessage: 'Failed to initialize categories.',
+        error: CategoryError.initializeFailed,
       ));
     }
   }

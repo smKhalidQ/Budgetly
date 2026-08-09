@@ -34,7 +34,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     } catch (_) {
       emit(state.copyWith(
         status: SettingsStatus.error,
-        errorMessage: 'Failed to start a new month.',
+        error: SettingsError.startNewMonthFailed,
       ));
     }
   }
@@ -57,7 +57,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     } catch (_) {
       emit(state.copyWith(
         status: SettingsStatus.error,
-        errorMessage: 'Failed to reset data.',
+        error: SettingsError.resetFailed,
         wasReset: false,
       ));
     }
@@ -71,7 +71,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     } catch (_) {
       emit(state.copyWith(
         status: SettingsStatus.error,
-        errorMessage: 'Failed to clear categories.',
+        error: SettingsError.clearCategoriesFailed,
       ));
     }
   }
@@ -84,7 +84,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     } catch (_) {
       emit(state.copyWith(
         status: SettingsStatus.error,
-        errorMessage: 'Failed to clear subcategories.',
+        error: SettingsError.clearSubcategoriesFailed,
       ));
     }
   }

@@ -3,7 +3,9 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/recurring/domain/models/recurring_expense.dart';
 import 'package:budget_buddy/modules/recurring/presentation/cubits/recurring_cubit.dart';
@@ -11,6 +13,7 @@ import 'package:budget_buddy/modules/recurring/presentation/cubits/recurring_sta
 import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
 import 'package:budget_buddy/modules/settings/presentation/cubits/settings_state.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
+import 'package:budget_buddy/modules/subcategory/domain/models/subcategory_localization.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,16 +59,16 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
   }
 
   void _confirmStartNewMonth(BuildContext context) {
+    final t = context.tr;
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(
-          'Start a new month?',
+          t.startNewMonthTitle,
           style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
         ),
         content: Text(
-          'Leftover in every category moves to Saving, spending resets, and '
-          'your active fixed expenses are posted.',
+          t.startNewMonthMsg,
           style: GoogleFonts.cairo(
             fontSize: 13.sp,
             color: AppColor.textSecondary,
@@ -75,7 +78,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(
-              'Cancel',
+              t.cancel,
               style: GoogleFonts.cairo(color: AppColor.textSecondary),
             ),
           ),
@@ -88,7 +91,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
               Navigator.pop(dialogContext);
               _settingsCubit.startNewMonth();
             },
-            child: const Text('Start'),
+            child: Text(t.start),
           ),
         ],
       ),
@@ -102,17 +105,19 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
     GetIt.I<CategoryCubit>().fetchCategories();
     _recurringCubit.initialize();
 
+    final t = context.tr;
     final parts = <String>[
-      'Saved ${summary.savedToSaving.toStringAsFixed(0)} to Saving',
-      if (summary.recurringPosted > 0) '${summary.recurringPosted} fixed posted',
+      t.savedToSaving(summary.savedToSaving.toStringAsFixed(0)),
+      if (summary.recurringPosted > 0)
+        t.recurringPostedCount(summary.recurringPosted.toString()),
       if (summary.recurringFlagged > 0)
-        '${summary.recurringFlagged} need attention',
+        t.recurringFlaggedCount(summary.recurringFlagged.toString()),
     ];
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'New month started · ${parts.join(' · ')}',
+          t.newMonthStarted(parts.join(' · ')),
           style: GoogleFonts.cairo(fontSize: 12.sp),
         ),
       ),
@@ -143,7 +148,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
                     elevation: 0,
                     scrolledUnderElevation: 0,
                     title: Text(
-                      'Fixed Expenses',
+                      context.tr.fixedExpensesTitle,
                       style: GoogleFonts.cairo(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -186,7 +191,8 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
                               category: byId[item.categoryId],
                               subcategoryName: item.subcategoryId == null
                                   ? null
-                                  : subById[item.subcategoryId!]?.name,
+                                  : subById[item.subcategoryId!]
+                                      ?.localizedName(context.tr),
                               symbol: symbol,
                               onTap: () =>
                                   _openEditor(context, existing: item),
@@ -245,7 +251,7 @@ class _TotalBanner extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Monthly fixed total',
+            context.tr.monthlyFixedTotal,
             style: GoogleFonts.cairo(
               fontSize: 12.sp,
               color: Colors.white.withValues(alpha: 0.75),
@@ -262,7 +268,7 @@ class _TotalBanner extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           Text(
-            'Posted automatically on the first day of each month',
+            context.tr.postedAutomatically,
             style: GoogleFonts.cairo(
               fontSize: 11.sp,
               color: Colors.white.withValues(alpha: 0.6),
@@ -298,7 +304,7 @@ class _TotalBanner extends StatelessWidget {
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            'Start New Month',
+                            context.tr.startNewMonthAction,
                             style: GoogleFonts.cairo(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.bold,
@@ -339,7 +345,7 @@ class _ExpenseRow extends StatelessWidget {
     final color = category != null
         ? parseColorFromString(category!.color)
         : AppColor.categoryOthers;
-    final catName = category?.name ?? 'Unknown';
+    final catName = category?.localizedName(context.tr) ?? context.tr.unknown;
     final note = item.note?.isNotEmpty == true ? item.note : null;
     final title = subcategoryName ?? note ?? catName;
     final subtitle = [
@@ -449,7 +455,7 @@ class _EmptyState extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Text(
-            'No fixed expenses yet',
+            context.tr.noFixedExpensesYet,
             style: GoogleFonts.cairo(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -458,7 +464,7 @@ class _EmptyState extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'Add bills like rent so they post each month',
+            context.tr.addBillsHint,
             style: GoogleFonts.cairo(
               fontSize: 12.sp,
               color: AppColor.textSecondary.withValues(alpha: 0.7),
@@ -609,7 +615,9 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
               ),
               SizedBox(height: 16.h),
               Text(
-                widget.existing == null ? 'New fixed expense' : 'Edit expense',
+                widget.existing == null
+                    ? context.tr.newFixedExpense
+                    : context.tr.editExpenseTitle,
                 style: GoogleFonts.cairo(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
@@ -618,7 +626,7 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
               ),
               SizedBox(height: 16.h),
               Text(
-                'Category',
+                context.tr.categoryLabel,
                 style: GoogleFonts.cairo(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
@@ -655,7 +663,7 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          cat.name,
+                          cat.localizedName(context.tr),
                           style: GoogleFonts.cairo(
                             fontSize: 13.sp,
                             fontWeight:
@@ -680,7 +688,7 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
               if (_categoryId != null) ...[
                 SizedBox(height: 16.h),
                 Text(
-                  'Subcategory',
+                  context.tr.subcategoryLabel,
                   style: GoogleFonts.cairo(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
@@ -701,7 +709,7 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
                   Expanded(
                     flex: 2,
                     child: _Field(
-                      label: 'Amount',
+                      label: context.tr.amountLabel,
                       controller: _amountCtrl,
                       keyboardType:
                           const TextInputType.numberWithOptions(decimal: true),
@@ -712,7 +720,7 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
                   Expanded(
                     flex: 3,
                     child: _Field(
-                      label: 'Note (optional)',
+                      label: context.tr.noteOptionalLabel,
                       controller: _noteCtrl,
                     ),
                   ),
@@ -731,7 +739,7 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
                         ),
                         onPressed: _delete,
                         child: Text(
-                          'Delete',
+                          context.tr.delete,
                           style: GoogleFonts.cairo(fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -750,7 +758,7 @@ class _ExpenseEditorSheetState extends State<_ExpenseEditorSheet> {
                       ),
                       onPressed: canSave ? _save : null,
                       child: Text(
-                        'Save',
+                        context.tr.save,
                         style: GoogleFonts.cairo(fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -809,7 +817,7 @@ class _SubcategorySelector extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: Text(
-                isGeneral ? 'General' : sub!.name,
+                isGeneral ? context.tr.general : sub!.localizedName(context.tr),
                 style: GoogleFonts.cairo(
                   fontSize: 13.sp,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
@@ -872,8 +880,11 @@ class _AllocationBar extends StatelessWidget {
             SizedBox(width: 4.w),
             Text(
               isOver
-                  ? 'Exceeds budget by $symbol${(-remaining).toStringAsFixed(0)}'
-                  : '$symbol${remaining.toStringAsFixed(0)} remaining of $symbol${budget.toStringAsFixed(0)} budget',
+                  ? context.tr.exceedsBudgetBy(
+                      '$symbol${(-remaining).toStringAsFixed(0)}')
+                  : context.tr.remainingOfBudget(
+                      '$symbol${remaining.toStringAsFixed(0)}',
+                      '$symbol${budget.toStringAsFixed(0)}'),
               style: GoogleFonts.cairo(
                 fontSize: 11.sp,
                 color: color,

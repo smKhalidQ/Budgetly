@@ -5,13 +5,15 @@ part 'category_state.freezed.dart';
 
 enum CategoryStatus { initial, loading, success, error }
 
+enum CategoryError { loadFailed, initializeFailed }
+
 // run build_runner
 @freezed
 sealed class CategoryState with _$CategoryState {
   const factory CategoryState({
     @Default(CategoryStatus.initial) CategoryStatus status,
     @Default([]) List<Category> categories,
-    String? errorMessage,
+    CategoryError? error,
     @Default('') String selectedIcon,
     @Default('Color(0xff2196f3)') String selectedColor,
     @Default(0) int remainingBudget,

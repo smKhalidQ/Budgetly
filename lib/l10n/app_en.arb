@@ -68,10 +68,274 @@
   "monthlyBudget": "Monthly Budget",
   "leftOf": "left of",
   "saving": "Saving",
+  "savingGoals": "Saving & Goals",
   "housing": "Housing",
   "foodDrinks": "Food & Drinks",
   "transportation": "Transportation",
   "healthcare": "Healthcare",
   "entertainment": "Entertainment",
-  "other": "Other"
+  "other": "Other",
+
+  "rent": "Rent",
+  "utilities": "Utilities",
+  "internet": "Internet",
+  "maintenance": "Maintenance",
+  "furniture": "Furniture",
+  "restaurants": "Restaurants",
+  "groceries": "Groceries",
+  "coffee": "Coffee",
+  "snacks": "Snacks",
+  "delivery": "Delivery",
+  "fuel": "Fuel",
+  "publicTransit": "Public Transit",
+  "parking": "Parking",
+  "taxiRide": "Taxi / Ride",
+  "carService": "Car Service",
+  "doctor": "Doctor",
+  "medicine": "Medicine",
+  "gym": "Gym",
+  "dentist": "Dentist",
+  "pharmacy": "Pharmacy",
+  "movies": "Movies",
+  "gaming": "Gaming",
+  "streaming": "Streaming",
+  "books": "Books",
+  "events": "Events",
+  "shopping": "Shopping",
+  "gifts": "Gifts",
+  "subscriptions": "Subscriptions",
+  "personalCare": "Personal Care",
+  "education": "Education",
+  "emergencyFund": "Emergency Fund",
+  "investment": "Investment",
+  "travelFund": "Travel Fund",
+  "retirement": "Retirement",
+
+  "language": "Language",
+  "english": "English",
+  "arabic": "Arabic",
+  "changeAppLanguage": "Change the app language",
+  "general": "General",
+
+  "resetToInitialStateTitle": "Reset to initial state?",
+  "resetToInitialStateMsg": "All transactions will be deleted and spending will be zeroed. Your salary, category allocations, and fixed expenses are kept.",
+  "reset": "Reset",
+  "resetCompleteMsg": "Reset complete — back to post-setup state",
+  "manageCategories": "Manage categories",
+  "manageCategoriesSubtitle": "Redistribute budget or add a new category",
+  "fixedExpenses": "Fixed expenses",
+  "manageFixedExpenses": "Manage fixed expenses",
+  "manageFixedExpensesSubtitle": "Bills & start a new month",
+  "balance": "Balance",
+  "reconcileBalance": "Reconcile balance",
+  "reconcileBalanceSubtitle": "Match the app to the money you actually have",
+  "debug": "Debug",
+  "resetToPostSetupTitle": "Reset to post-setup state",
+  "resetToPostSetupSubtitle": "Wipe all transactions & spending — keeps salary and allocations",
+
+  "selectCurrency": "Select Currency",
+  "setAmount": "Set {amount}",
+  "@setAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "everyDollarHasJob": "Every {symbol} has a job — you're ready to go.",
+  "@everyDollarHasJob": {
+    "placeholders": { "symbol": { "type": "String" } }
+  },
+  "splitAcrossCategories": "Split your {symbol}{salary} across the categories below.",
+  "@splitAcrossCategories": {
+    "placeholders": {
+      "symbol": { "type": "String" },
+      "salary": { "type": "String" }
+    }
+  },
+  "remainingOverBudget": "{remaining} · over budget",
+  "@remainingOverBudget": {
+    "placeholders": { "remaining": { "type": "String" } }
+  },
+  "salary": "Salary",
+  "addIncome": "Add Income",
+  "quickAdd": "Quick Add",
+
+  "failedToLoadCategories": "Failed to load categories.",
+  "failedToInitializeCategories": "Failed to initialize categories.",
+  "failedToLoadSubcategories": "Failed to load subcategories.",
+  "failedToRestoreDefaults": "Failed to restore defaults.",
+  "failedToLoadTransactions": "Failed to load transactions.",
+  "failedToLoadFixedExpenses": "Failed to load fixed expenses.",
+  "failedToLoadBalance": "Failed to load balance.",
+  "reconcileFailed": "Reconcile failed.",
+  "failedToSaveProfile": "Failed to save profile.",
+  "failedToStartNewMonth": "Failed to start a new month.",
+  "failedToResetData": "Failed to reset data.",
+  "failedToClearCategories": "Failed to clear categories.",
+  "failedToClearSubcategories": "Failed to clear subcategories.",
+  "failedToSaveChanges": "Failed to save changes.",
+  "failedToAddCategory": "Failed to add category.",
+
+  "nameIsRequired": "Name is required",
+  "name": "Name",
+  "selectIcon": "Select Icon",
+  "selectColor": "Select Color",
+  "addCategoryTitle": "Add Category",
+  "editCategoryTitle": "Edit Category",
+  "addSubcategoryTitle": "Add Subcategory",
+  "editSubcategoryTitle": "Edit Subcategory",
+  "noSpendingYet": "No spending yet",
+  "unknown": "Unknown",
+  "noSubcategoriesYet": "No subcategories yet",
+  "restoreDefaults": "Restore defaults",
+  "subcategoriesLabel": "SUBCATEGORIES",
+  "deleteSubcategoryTitle": "Delete Subcategory",
+  "deleteSubcategoryConfirm": "Delete \"{name}\"?",
+  "@deleteSubcategoryConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "editIncome": "Edit Income",
+  "addIncomeTitle": "Add Income",
+  "editExpense": "Edit Expense",
+  "addExpense": "Add Expense",
+  "remainingAmount": "Remaining: {amount}",
+  "@remainingAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "addToWhichBudget": "Add to which budget?",
+  "addNoteOptional": "Add a note (optional)",
+  "coverTheDifference": "Cover the difference",
+  "overflowNeedMore": "You need {amount} more. Choose which categories it comes from — you'll feel it there later.",
+  "@overflowNeedMore": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "allCovered": "All covered",
+  "fromCategoryAmount": "From {category}: {amount}",
+  "@fromCategoryAmount": {
+    "placeholders": {
+      "category": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "availableAmount": "Available: {amount}",
+  "@availableAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "fromNewIncome": "From new income",
+  "confirmSpend": "Confirm spend",
+  "today": "Today",
+  "thisWeek": "This Week",
+  "thisMonth": "This Month",
+  "dateLabel": "Date",
+  "categoryLabel": "Category",
+  "spentLabel": "Spent",
+  "incomeLabel": "Income",
+  "yesterday": "Yesterday",
+  "transactionDeleted": "Transaction deleted",
+  "undo": "Undo",
+  "editAction": "Edit",
+  "deleteAction": "Delete",
+  "noteLabel": "Note",
+  "coveredFrom": "Covered from",
+  "newIncome": "New income",
+  "noTransactions": "No transactions",
+  "tryDifferentPeriod": "Try a different period",
+
+  "startNewMonthTitle": "Start a new month?",
+  "startNewMonthMsg": "Leftover in every category moves to Saving, spending resets, and your active fixed expenses are posted.",
+  "start": "Start",
+  "savedToSaving": "Saved {amount} to Saving",
+  "@savedToSaving": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "recurringPostedCount": "{count} fixed posted",
+  "@recurringPostedCount": {
+    "placeholders": { "count": { "type": "String" } }
+  },
+  "recurringFlaggedCount": "{count} need attention",
+  "@recurringFlaggedCount": {
+    "placeholders": { "count": { "type": "String" } }
+  },
+  "newMonthStarted": "New month started · {parts}",
+  "@newMonthStarted": {
+    "placeholders": { "parts": { "type": "String" } }
+  },
+  "fixedExpensesTitle": "Fixed Expenses",
+  "monthlyFixedTotal": "Monthly fixed total",
+  "postedAutomatically": "Posted automatically on the first day of each month",
+  "startNewMonthAction": "Start New Month",
+  "noFixedExpensesYet": "No fixed expenses yet",
+  "addBillsHint": "Add bills like rent so they post each month",
+  "newFixedExpense": "New fixed expense",
+  "editExpenseTitle": "Edit expense",
+  "subcategoryLabel": "Subcategory",
+  "amountLabel": "Amount",
+  "noteOptionalLabel": "Note (optional)",
+  "exceedsBudgetBy": "Exceeds budget by {amount}",
+  "@exceedsBudgetBy": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "remainingOfBudget": "{remaining} remaining of {budget} budget",
+  "@remainingOfBudget": {
+    "placeholders": {
+      "remaining": { "type": "String" },
+      "budget": { "type": "String" }
+    }
+  },
+
+  "balanceReconciled": "Balance reconciled",
+  "startFreshTitle": "Start fresh?",
+  "startFreshMsg": "Spending resets and {amount} is re-spread across your envelopes by their current ratios.",
+  "@startFreshMsg": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "startFreshAction": "Start fresh",
+  "reconcileBalanceTitle": "Reconcile balance",
+  "envelopesHold": "Your envelopes hold",
+  "howMuchDoYouHaveNow": "How much do you actually have now?",
+  "whereDidItGoSpent": "Where did the {amount} go? Enter what you spent from each.",
+  "@whereDidItGoSpent": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "whereDidItGoExtra": "Where did the extra {amount} go? Add it as income to the envelopes that got it.",
+  "@whereDidItGoExtra": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "startFreshInstead": "Lost track? Start fresh instead",
+  "allAssigned": "All assigned",
+  "leftToAssign": "Left to assign: {amount}",
+  "@leftToAssign": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "confirmAction": "Confirm",
+  "nowAmount": "Now: {amount}",
+  "@nowAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "everythingMatches": "Everything matches",
+  "unloggedSpending": "Unlogged spending: {amount}",
+  "@unloggedSpending": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "extraMoney": "Extra money: {amount}",
+  "@extraMoney": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "deferredNextMonthSpent": "Next month · spent {amount}",
+  "@deferredNextMonthSpent": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "editCategoryDialogTitle": "Edit Category",
+  "overAmount": "{amount} over",
+  "@overAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "leftAmount": "{amount} left",
+  "@leftAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "partiallyAppliedTitle": "Partially applied",
+  "partiallyAppliedMsg": "{names}: already spent more than the new budget — the new budget will apply from next month.",
+  "@partiallyAppliedMsg": {
+    "placeholders": { "names": { "type": "String" } }
+  },
+  "ok": "OK"
 }

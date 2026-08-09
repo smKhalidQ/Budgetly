@@ -8,12 +8,14 @@ enum TransactionPeriod { today, week, month }
 
 enum TransactionGrouping { byDate, byCategory }
 
+enum TransactionError { loadFailed }
+
 class TransactionState {
   final TransactionStatus status;
   final List<Transaction> transactions;
   final Map<int, Category> categoriesById;
   final Map<int, Subcategory> subcategoriesById;
-  final String? errorMessage;
+  final TransactionError? error;
   final bool isEditMode;
   final TransactionPeriod period;
   final TransactionGrouping grouping;
@@ -23,7 +25,7 @@ class TransactionState {
     this.transactions = const [],
     this.categoriesById = const {},
     this.subcategoriesById = const {},
-    this.errorMessage,
+    this.error,
     this.isEditMode = false,
     this.period = TransactionPeriod.today,
     this.grouping = TransactionGrouping.byDate,
@@ -34,7 +36,7 @@ class TransactionState {
     List<Transaction>? transactions,
     Map<int, Category>? categoriesById,
     Map<int, Subcategory>? subcategoriesById,
-    String? errorMessage,
+    TransactionError? error,
     bool? isEditMode,
     TransactionPeriod? period,
     TransactionGrouping? grouping,
@@ -44,7 +46,7 @@ class TransactionState {
       transactions: transactions ?? this.transactions,
       categoriesById: categoriesById ?? this.categoriesById,
       subcategoriesById: subcategoriesById ?? this.subcategoriesById,
-      errorMessage: errorMessage ?? this.errorMessage,
+      error: error ?? this.error,
       isEditMode: isEditMode ?? this.isEditMode,
       period: period ?? this.period,
       grouping: grouping ?? this.grouping,

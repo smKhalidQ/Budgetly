@@ -170,7 +170,7 @@ class HomeHeaderWidget extends StatelessWidget {
                                   SizedBox(height: 4.h),
                                   Text(
                                     remaining < 0
-                                        ? '${t.remaining} · over budget'
+                                        ? t.remainingOverBudget(t.remaining)
                                         : t.remaining,
                                     style: GoogleFonts.cairo(
                                       color:
@@ -215,7 +215,7 @@ class HomeHeaderWidget extends StatelessWidget {
                                 color: Colors.white.withValues(alpha: 0.15),
                               ),
                               _StatItem(
-                                label: 'Saving',
+                                label: t.saving,
                                 value: '$symbol${saving.toStringAsFixed(0)}',
                                 dotColor: AppColor.incomeColor,
                               ),
@@ -225,7 +225,7 @@ class HomeHeaderWidget extends StatelessWidget {
                                 color: Colors.white.withValues(alpha: 0.15),
                               ),
                               _StatItem(
-                                label: 'Salary',
+                                label: t.salary,
                                 value: '$symbol${salary.toStringAsFixed(0)}',
                                 dotColor: Colors.white,
                               ),
@@ -336,7 +336,7 @@ class _AddIncomeButton extends StatelessWidget {
               Icon(Icons.add_rounded, size: 16.sp, color: Colors.white),
               SizedBox(width: 5.w),
               Text(
-                'Add Income',
+                context.tr.addIncome,
                 style: GoogleFonts.cairo(
                   color: Colors.white,
                   fontSize: 12.5.sp,

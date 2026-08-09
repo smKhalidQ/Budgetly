@@ -18,7 +18,7 @@ mixin _$RecurringState {
   List<RecurringExpense> get items;
   List<Category> get categories;
   List<Subcategory> get subcategories;
-  String? get errorMessage;
+  RecurringError? get error;
 
   /// Create a copy of RecurringState
   /// with the given fields replaced by the non-null parameter values.
@@ -39,8 +39,7 @@ mixin _$RecurringState {
                 .equals(other.categories, categories) &&
             const DeepCollectionEquality()
                 .equals(other.subcategories, subcategories) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
@@ -50,11 +49,11 @@ mixin _$RecurringState {
       const DeepCollectionEquality().hash(items),
       const DeepCollectionEquality().hash(categories),
       const DeepCollectionEquality().hash(subcategories),
-      errorMessage);
+      error);
 
   @override
   String toString() {
-    return 'RecurringState(status: $status, items: $items, categories: $categories, subcategories: $subcategories, errorMessage: $errorMessage)';
+    return 'RecurringState(status: $status, items: $items, categories: $categories, subcategories: $subcategories, error: $error)';
   }
 }
 
@@ -69,7 +68,7 @@ abstract mixin class $RecurringStateCopyWith<$Res> {
       List<RecurringExpense> items,
       List<Category> categories,
       List<Subcategory> subcategories,
-      String? errorMessage});
+      RecurringError? error});
 }
 
 /// @nodoc
@@ -89,7 +88,7 @@ class _$RecurringStateCopyWithImpl<$Res>
     Object? items = null,
     Object? categories = null,
     Object? subcategories = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
   }) {
     return _then(_self.copyWith(
       status: null == status
@@ -108,10 +107,10 @@ class _$RecurringStateCopyWithImpl<$Res>
           ? _self.subcategories
           : subcategories // ignore: cast_nullable_to_non_nullable
               as List<Subcategory>,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as RecurringError?,
     ));
   }
 }
@@ -212,7 +211,7 @@ extension RecurringStatePatterns on RecurringState {
             List<RecurringExpense> items,
             List<Category> categories,
             List<Subcategory> subcategories,
-            String? errorMessage)?
+            RecurringError? error)?
         $default, {
     required TResult orElse(),
   }) {
@@ -220,7 +219,7 @@ extension RecurringStatePatterns on RecurringState {
     switch (_that) {
       case _RecurringState() when $default != null:
         return $default(_that.status, _that.items, _that.categories,
-            _that.subcategories, _that.errorMessage);
+            _that.subcategories, _that.error);
       case _:
         return orElse();
     }
@@ -246,14 +245,14 @@ extension RecurringStatePatterns on RecurringState {
             List<RecurringExpense> items,
             List<Category> categories,
             List<Subcategory> subcategories,
-            String? errorMessage)
+            RecurringError? error)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _RecurringState():
         return $default(_that.status, _that.items, _that.categories,
-            _that.subcategories, _that.errorMessage);
+            _that.subcategories, _that.error);
     }
   }
 
@@ -276,14 +275,14 @@ extension RecurringStatePatterns on RecurringState {
             List<RecurringExpense> items,
             List<Category> categories,
             List<Subcategory> subcategories,
-            String? errorMessage)?
+            RecurringError? error)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _RecurringState() when $default != null:
         return $default(_that.status, _that.items, _that.categories,
-            _that.subcategories, _that.errorMessage);
+            _that.subcategories, _that.error);
       case _:
         return null;
     }
@@ -298,7 +297,7 @@ class _RecurringState implements RecurringState {
       final List<RecurringExpense> items = const [],
       final List<Category> categories = const [],
       final List<Subcategory> subcategories = const [],
-      this.errorMessage})
+      this.error})
       : _items = items,
         _categories = categories,
         _subcategories = subcategories;
@@ -334,7 +333,7 @@ class _RecurringState implements RecurringState {
   }
 
   @override
-  final String? errorMessage;
+  final RecurringError? error;
 
   /// Create a copy of RecurringState
   /// with the given fields replaced by the non-null parameter values.
@@ -355,8 +354,7 @@ class _RecurringState implements RecurringState {
                 .equals(other._categories, _categories) &&
             const DeepCollectionEquality()
                 .equals(other._subcategories, _subcategories) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
@@ -366,11 +364,11 @@ class _RecurringState implements RecurringState {
       const DeepCollectionEquality().hash(_items),
       const DeepCollectionEquality().hash(_categories),
       const DeepCollectionEquality().hash(_subcategories),
-      errorMessage);
+      error);
 
   @override
   String toString() {
-    return 'RecurringState(status: $status, items: $items, categories: $categories, subcategories: $subcategories, errorMessage: $errorMessage)';
+    return 'RecurringState(status: $status, items: $items, categories: $categories, subcategories: $subcategories, error: $error)';
   }
 }
 
@@ -387,7 +385,7 @@ abstract mixin class _$RecurringStateCopyWith<$Res>
       List<RecurringExpense> items,
       List<Category> categories,
       List<Subcategory> subcategories,
-      String? errorMessage});
+      RecurringError? error});
 }
 
 /// @nodoc
@@ -407,7 +405,7 @@ class __$RecurringStateCopyWithImpl<$Res>
     Object? items = null,
     Object? categories = null,
     Object? subcategories = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
   }) {
     return _then(_RecurringState(
       status: null == status
@@ -426,10 +424,10 @@ class __$RecurringStateCopyWithImpl<$Res>
           ? _self._subcategories
           : subcategories // ignore: cast_nullable_to_non_nullable
               as List<Subcategory>,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as RecurringError?,
     ));
   }
 }

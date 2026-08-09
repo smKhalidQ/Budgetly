@@ -5,7 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'insufficient_balance_dialog.dart';
 
@@ -52,7 +54,7 @@ class SlicingCategoryCard extends StatelessWidget {
             SizedBox(width: 14.w),
             Expanded(
               child: Text(
-                category.name,
+                category.localizedName(context.tr),
                 style: GoogleFonts.cairo(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,

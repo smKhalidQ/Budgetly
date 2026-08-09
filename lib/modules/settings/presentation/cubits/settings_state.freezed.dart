@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SettingsState {
   SettingsStatus get status;
-  String? get errorMessage;
+  SettingsError? get error;
   CycleSummary? get lastCycle;
   bool get wasReset;
 
@@ -33,8 +33,7 @@ mixin _$SettingsState {
         (other.runtimeType == runtimeType &&
             other is SettingsState &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage) &&
+            (identical(other.error, error) || other.error == error) &&
             (identical(other.lastCycle, lastCycle) ||
                 other.lastCycle == lastCycle) &&
             (identical(other.wasReset, wasReset) ||
@@ -43,11 +42,11 @@ mixin _$SettingsState {
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, status, errorMessage, lastCycle, wasReset);
+      Object.hash(runtimeType, status, error, lastCycle, wasReset);
 
   @override
   String toString() {
-    return 'SettingsState(status: $status, errorMessage: $errorMessage, lastCycle: $lastCycle, wasReset: $wasReset)';
+    return 'SettingsState(status: $status, error: $error, lastCycle: $lastCycle, wasReset: $wasReset)';
   }
 }
 
@@ -59,7 +58,7 @@ abstract mixin class $SettingsStateCopyWith<$Res> {
   @useResult
   $Res call(
       {SettingsStatus status,
-      String? errorMessage,
+      SettingsError? error,
       CycleSummary? lastCycle,
       bool wasReset});
 }
@@ -78,7 +77,7 @@ class _$SettingsStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
     Object? lastCycle = freezed,
     Object? wasReset = null,
   }) {
@@ -87,10 +86,10 @@ class _$SettingsStateCopyWithImpl<$Res>
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as SettingsStatus,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as SettingsError?,
       lastCycle: freezed == lastCycle
           ? _self.lastCycle
           : lastCycle // ignore: cast_nullable_to_non_nullable
@@ -194,7 +193,7 @@ extension SettingsStatePatterns on SettingsState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(SettingsStatus status, String? errorMessage,
+    TResult Function(SettingsStatus status, SettingsError? error,
             CycleSummary? lastCycle, bool wasReset)?
         $default, {
     required TResult orElse(),
@@ -203,7 +202,7 @@ extension SettingsStatePatterns on SettingsState {
     switch (_that) {
       case _SettingsState() when $default != null:
         return $default(
-            _that.status, _that.errorMessage, _that.lastCycle, _that.wasReset);
+            _that.status, _that.error, _that.lastCycle, _that.wasReset);
       case _:
         return orElse();
     }
@@ -224,7 +223,7 @@ extension SettingsStatePatterns on SettingsState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(SettingsStatus status, String? errorMessage,
+    TResult Function(SettingsStatus status, SettingsError? error,
             CycleSummary? lastCycle, bool wasReset)
         $default,
   ) {
@@ -232,7 +231,7 @@ extension SettingsStatePatterns on SettingsState {
     switch (_that) {
       case _SettingsState():
         return $default(
-            _that.status, _that.errorMessage, _that.lastCycle, _that.wasReset);
+            _that.status, _that.error, _that.lastCycle, _that.wasReset);
     }
   }
 
@@ -250,7 +249,7 @@ extension SettingsStatePatterns on SettingsState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(SettingsStatus status, String? errorMessage,
+    TResult? Function(SettingsStatus status, SettingsError? error,
             CycleSummary? lastCycle, bool wasReset)?
         $default,
   ) {
@@ -258,7 +257,7 @@ extension SettingsStatePatterns on SettingsState {
     switch (_that) {
       case _SettingsState() when $default != null:
         return $default(
-            _that.status, _that.errorMessage, _that.lastCycle, _that.wasReset);
+            _that.status, _that.error, _that.lastCycle, _that.wasReset);
       case _:
         return null;
     }
@@ -270,7 +269,7 @@ extension SettingsStatePatterns on SettingsState {
 class _SettingsState implements SettingsState {
   const _SettingsState(
       {this.status = SettingsStatus.initial,
-      this.errorMessage,
+      this.error,
       this.lastCycle,
       this.wasReset = false});
 
@@ -278,7 +277,7 @@ class _SettingsState implements SettingsState {
   @JsonKey()
   final SettingsStatus status;
   @override
-  final String? errorMessage;
+  final SettingsError? error;
   @override
   final CycleSummary? lastCycle;
   @override
@@ -299,8 +298,7 @@ class _SettingsState implements SettingsState {
         (other.runtimeType == runtimeType &&
             other is _SettingsState &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage) &&
+            (identical(other.error, error) || other.error == error) &&
             (identical(other.lastCycle, lastCycle) ||
                 other.lastCycle == lastCycle) &&
             (identical(other.wasReset, wasReset) ||
@@ -309,11 +307,11 @@ class _SettingsState implements SettingsState {
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, status, errorMessage, lastCycle, wasReset);
+      Object.hash(runtimeType, status, error, lastCycle, wasReset);
 
   @override
   String toString() {
-    return 'SettingsState(status: $status, errorMessage: $errorMessage, lastCycle: $lastCycle, wasReset: $wasReset)';
+    return 'SettingsState(status: $status, error: $error, lastCycle: $lastCycle, wasReset: $wasReset)';
   }
 }
 
@@ -327,7 +325,7 @@ abstract mixin class _$SettingsStateCopyWith<$Res>
   @useResult
   $Res call(
       {SettingsStatus status,
-      String? errorMessage,
+      SettingsError? error,
       CycleSummary? lastCycle,
       bool wasReset});
 }
@@ -346,7 +344,7 @@ class __$SettingsStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? status = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
     Object? lastCycle = freezed,
     Object? wasReset = null,
   }) {
@@ -355,10 +353,10 @@ class __$SettingsStateCopyWithImpl<$Res>
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as SettingsStatus,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as SettingsError?,
       lastCycle: freezed == lastCycle
           ? _self.lastCycle
           : lastCycle // ignore: cast_nullable_to_non_nullable

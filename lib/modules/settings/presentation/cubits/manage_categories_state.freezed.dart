@@ -18,8 +18,8 @@ mixin _$ManageCategoriesState {
   List<Category> get categories;
   Map<int, double> get newBases;
   double get newSalary;
-  List<String> get deferredNames;
-  String? get errorMessage;
+  List<Category> get deferredCategories;
+  ManageCategoriesError? get error;
 
   /// Create a copy of ManageCategoriesState
   /// with the given fields replaced by the non-null parameter values.
@@ -41,9 +41,8 @@ mixin _$ManageCategoriesState {
             (identical(other.newSalary, newSalary) ||
                 other.newSalary == newSalary) &&
             const DeepCollectionEquality()
-                .equals(other.deferredNames, deferredNames) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+                .equals(other.deferredCategories, deferredCategories) &&
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
@@ -53,12 +52,12 @@ mixin _$ManageCategoriesState {
       const DeepCollectionEquality().hash(categories),
       const DeepCollectionEquality().hash(newBases),
       newSalary,
-      const DeepCollectionEquality().hash(deferredNames),
-      errorMessage);
+      const DeepCollectionEquality().hash(deferredCategories),
+      error);
 
   @override
   String toString() {
-    return 'ManageCategoriesState(status: $status, categories: $categories, newBases: $newBases, newSalary: $newSalary, deferredNames: $deferredNames, errorMessage: $errorMessage)';
+    return 'ManageCategoriesState(status: $status, categories: $categories, newBases: $newBases, newSalary: $newSalary, deferredCategories: $deferredCategories, error: $error)';
   }
 }
 
@@ -73,8 +72,8 @@ abstract mixin class $ManageCategoriesStateCopyWith<$Res> {
       List<Category> categories,
       Map<int, double> newBases,
       double newSalary,
-      List<String> deferredNames,
-      String? errorMessage});
+      List<Category> deferredCategories,
+      ManageCategoriesError? error});
 }
 
 /// @nodoc
@@ -94,8 +93,8 @@ class _$ManageCategoriesStateCopyWithImpl<$Res>
     Object? categories = null,
     Object? newBases = null,
     Object? newSalary = null,
-    Object? deferredNames = null,
-    Object? errorMessage = freezed,
+    Object? deferredCategories = null,
+    Object? error = freezed,
   }) {
     return _then(_self.copyWith(
       status: null == status
@@ -114,14 +113,14 @@ class _$ManageCategoriesStateCopyWithImpl<$Res>
           ? _self.newSalary
           : newSalary // ignore: cast_nullable_to_non_nullable
               as double,
-      deferredNames: null == deferredNames
-          ? _self.deferredNames
-          : deferredNames // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      deferredCategories: null == deferredCategories
+          ? _self.deferredCategories
+          : deferredCategories // ignore: cast_nullable_to_non_nullable
+              as List<Category>,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as ManageCategoriesError?,
     ));
   }
 }
@@ -222,8 +221,8 @@ extension ManageCategoriesStatePatterns on ManageCategoriesState {
             List<Category> categories,
             Map<int, double> newBases,
             double newSalary,
-            List<String> deferredNames,
-            String? errorMessage)?
+            List<Category> deferredCategories,
+            ManageCategoriesError? error)?
         $default, {
     required TResult orElse(),
   }) {
@@ -231,7 +230,7 @@ extension ManageCategoriesStatePatterns on ManageCategoriesState {
     switch (_that) {
       case _ManageCategoriesState() when $default != null:
         return $default(_that.status, _that.categories, _that.newBases,
-            _that.newSalary, _that.deferredNames, _that.errorMessage);
+            _that.newSalary, _that.deferredCategories, _that.error);
       case _:
         return orElse();
     }
@@ -257,15 +256,15 @@ extension ManageCategoriesStatePatterns on ManageCategoriesState {
             List<Category> categories,
             Map<int, double> newBases,
             double newSalary,
-            List<String> deferredNames,
-            String? errorMessage)
+            List<Category> deferredCategories,
+            ManageCategoriesError? error)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ManageCategoriesState():
         return $default(_that.status, _that.categories, _that.newBases,
-            _that.newSalary, _that.deferredNames, _that.errorMessage);
+            _that.newSalary, _that.deferredCategories, _that.error);
     }
   }
 
@@ -288,15 +287,15 @@ extension ManageCategoriesStatePatterns on ManageCategoriesState {
             List<Category> categories,
             Map<int, double> newBases,
             double newSalary,
-            List<String> deferredNames,
-            String? errorMessage)?
+            List<Category> deferredCategories,
+            ManageCategoriesError? error)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ManageCategoriesState() when $default != null:
         return $default(_that.status, _that.categories, _that.newBases,
-            _that.newSalary, _that.deferredNames, _that.errorMessage);
+            _that.newSalary, _that.deferredCategories, _that.error);
       case _:
         return null;
     }
@@ -311,11 +310,11 @@ class _ManageCategoriesState implements ManageCategoriesState {
       final List<Category> categories = const [],
       final Map<int, double> newBases = const {},
       this.newSalary = 0.0,
-      final List<String> deferredNames = const [],
-      this.errorMessage})
+      final List<Category> deferredCategories = const [],
+      this.error})
       : _categories = categories,
         _newBases = newBases,
-        _deferredNames = deferredNames;
+        _deferredCategories = deferredCategories;
 
   @override
   @JsonKey()
@@ -341,17 +340,18 @@ class _ManageCategoriesState implements ManageCategoriesState {
   @override
   @JsonKey()
   final double newSalary;
-  final List<String> _deferredNames;
+  final List<Category> _deferredCategories;
   @override
   @JsonKey()
-  List<String> get deferredNames {
-    if (_deferredNames is EqualUnmodifiableListView) return _deferredNames;
+  List<Category> get deferredCategories {
+    if (_deferredCategories is EqualUnmodifiableListView)
+      return _deferredCategories;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_deferredNames);
+    return EqualUnmodifiableListView(_deferredCategories);
   }
 
   @override
-  final String? errorMessage;
+  final ManageCategoriesError? error;
 
   /// Create a copy of ManageCategoriesState
   /// with the given fields replaced by the non-null parameter values.
@@ -374,9 +374,8 @@ class _ManageCategoriesState implements ManageCategoriesState {
             (identical(other.newSalary, newSalary) ||
                 other.newSalary == newSalary) &&
             const DeepCollectionEquality()
-                .equals(other._deferredNames, _deferredNames) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+                .equals(other._deferredCategories, _deferredCategories) &&
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
@@ -386,12 +385,12 @@ class _ManageCategoriesState implements ManageCategoriesState {
       const DeepCollectionEquality().hash(_categories),
       const DeepCollectionEquality().hash(_newBases),
       newSalary,
-      const DeepCollectionEquality().hash(_deferredNames),
-      errorMessage);
+      const DeepCollectionEquality().hash(_deferredCategories),
+      error);
 
   @override
   String toString() {
-    return 'ManageCategoriesState(status: $status, categories: $categories, newBases: $newBases, newSalary: $newSalary, deferredNames: $deferredNames, errorMessage: $errorMessage)';
+    return 'ManageCategoriesState(status: $status, categories: $categories, newBases: $newBases, newSalary: $newSalary, deferredCategories: $deferredCategories, error: $error)';
   }
 }
 
@@ -408,8 +407,8 @@ abstract mixin class _$ManageCategoriesStateCopyWith<$Res>
       List<Category> categories,
       Map<int, double> newBases,
       double newSalary,
-      List<String> deferredNames,
-      String? errorMessage});
+      List<Category> deferredCategories,
+      ManageCategoriesError? error});
 }
 
 /// @nodoc
@@ -429,8 +428,8 @@ class __$ManageCategoriesStateCopyWithImpl<$Res>
     Object? categories = null,
     Object? newBases = null,
     Object? newSalary = null,
-    Object? deferredNames = null,
-    Object? errorMessage = freezed,
+    Object? deferredCategories = null,
+    Object? error = freezed,
   }) {
     return _then(_ManageCategoriesState(
       status: null == status
@@ -449,14 +448,14 @@ class __$ManageCategoriesStateCopyWithImpl<$Res>
           ? _self.newSalary
           : newSalary // ignore: cast_nullable_to_non_nullable
               as double,
-      deferredNames: null == deferredNames
-          ? _self._deferredNames
-          : deferredNames // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      deferredCategories: null == deferredCategories
+          ? _self._deferredCategories
+          : deferredCategories // ignore: cast_nullable_to_non_nullable
+              as List<Category>,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as ManageCategoriesError?,
     ));
   }
 }

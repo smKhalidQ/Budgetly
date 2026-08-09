@@ -3,7 +3,9 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/reconcile/presentation/cubits/reconcile_cubit.dart';
 import 'package:budget_buddy/modules/reconcile/presentation/cubits/reconcile_state.dart';
@@ -47,29 +49,29 @@ class _ReconcileViewState extends State<_ReconcileView> {
     Navigator.pop(context);
     messenger.showSnackBar(
       SnackBar(
-        content: Text('Balance reconciled',
+        content: Text(context.tr.balanceReconciled,
             style: GoogleFonts.cairo(fontSize: 12.sp)),
       ),
     );
   }
 
   void _confirmFreshStart(BuildContext context, String symbol, double actual) {
+    final t = context.tr;
     final cubit = context.read<ReconcileCubit>();
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text('Start fresh?',
+        title: Text(t.startFreshTitle,
             style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
         content: Text(
-          'Spending resets and $symbol${actual.toStringAsFixed(0)} is re-spread '
-          'across your envelopes by their current ratios.',
+          t.startFreshMsg('$symbol${actual.toStringAsFixed(0)}'),
           style:
               GoogleFonts.cairo(fontSize: 13.sp, color: AppColor.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Cancel',
+            child: Text(t.cancel,
                 style: GoogleFonts.cairo(color: AppColor.textSecondary)),
           ),
           ElevatedButton(
@@ -81,7 +83,7 @@ class _ReconcileViewState extends State<_ReconcileView> {
               Navigator.pop(dialogContext);
               cubit.freshStart();
             },
-            child: const Text('Start fresh'),
+            child: Text(t.startFreshAction),
           ),
         ],
       ),
@@ -102,7 +104,7 @@ class _ReconcileViewState extends State<_ReconcileView> {
         elevation: 0,
         scrolledUnderElevation: 0,
         title: Text(
-          'Reconcile balance',
+          context.tr.reconcileBalanceTitle,
           style: GoogleFonts.cairo(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -116,18 +118,19 @@ class _ReconcileViewState extends State<_ReconcileView> {
         listener: (context, _) => _onDone(context),
         builder: (context, state) {
           final cubit = context.read<ReconcileCubit>();
+          final t = context.tr;
 
           return ListView(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             children: [
               _InfoCard(
-                label: 'Your envelopes hold',
+                label: t.envelopesHold,
                 value: '$symbol${state.expected.toStringAsFixed(0)}',
                 color: AppColor.primaryColor,
               ),
               SizedBox(height: 16.h),
               Text(
-                'How much do you actually have now?',
+                t.howMuchDoYouHaveNow,
                 style: GoogleFonts.cairo(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w600,
@@ -168,8 +171,8 @@ class _ReconcileViewState extends State<_ReconcileView> {
                 if (state.isUnloggedSpending) ...[
                   SizedBox(height: 16.h),
                   Text(
-                    'Where did the $symbol${state.diff.abs().toStringAsFixed(0)} go? '
-                    'Enter what you spent from each.',
+                    t.whereDidItGoSpent(
+                        '$symbol${state.diff.abs().toStringAsFixed(0)}'),
                     style: GoogleFonts.cairo(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
@@ -190,8 +193,8 @@ class _ReconcileViewState extends State<_ReconcileView> {
                 if (state.isExtra) ...[
                   SizedBox(height: 16.h),
                   Text(
-                    'Where did the extra $symbol${state.diff.abs().toStringAsFixed(0)} go? '
-                    'Add it as income to the envelopes that got it.',
+                    t.whereDidItGoExtra(
+                        '$symbol${state.diff.abs().toStringAsFixed(0)}'),
                     style: GoogleFonts.cairo(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
@@ -218,7 +221,7 @@ class _ReconcileViewState extends State<_ReconcileView> {
                           : () =>
                               _confirmFreshStart(context, symbol, state.actual),
                       child: Text(
-                        'Lost track? Start fresh instead',
+                        t.startFreshInstead,
                         style: GoogleFonts.cairo(
                           fontSize: 12.sp,
                           color: AppColor.textSecondary,
@@ -342,8 +345,9 @@ class _DistributorState extends State<_Distributor> {
               SizedBox(width: 8.w),
               Text(
                 _balanced
-                    ? 'All assigned'
-                    : 'Left to assign: ${widget.symbol}${_left.toStringAsFixed(0)}',
+                    ? context.tr.allAssigned
+                    : context.tr.leftToAssign(
+                        '${widget.symbol}${_left.toStringAsFixed(0)}'),
                 style: GoogleFonts.cairo(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
@@ -357,7 +361,7 @@ class _DistributorState extends State<_Distributor> {
         for (final c in _candidates) _row(c),
         SizedBox(height: 6.h),
         _PrimaryButton(
-          label: 'Confirm',
+          label: context.tr.confirmAction,
           onTap: (_balanced && !widget.isLoading)
               ? () => widget.onConfirm(Map<int, double>.from(_amounts))
               : null,
@@ -397,7 +401,7 @@ class _DistributorState extends State<_Distributor> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  c.name,
+                  c.localizedName(context.tr),
                   style: GoogleFonts.cairo(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
@@ -406,8 +410,10 @@ class _DistributorState extends State<_Distributor> {
                 ),
                 Text(
                   widget.isIncome
-                      ? 'Now: ${widget.symbol}${(_remaining(c) + (_amounts[c.id!] ?? 0)).toStringAsFixed(0)}'
-                      : 'Available: ${widget.symbol}${(_remaining(c) - (_amounts[c.id!] ?? 0)).toStringAsFixed(0)}',
+                      ? context.tr.nowAmount(
+                          '${widget.symbol}${(_remaining(c) + (_amounts[c.id!] ?? 0)).toStringAsFixed(0)}')
+                      : context.tr.availableAmount(
+                          '${widget.symbol}${(_remaining(c) - (_amounts[c.id!] ?? 0)).toStringAsFixed(0)}'),
                   style: GoogleFonts.cairo(
                     fontSize: 10.sp,
                     color: AppColor.textSecondary,
@@ -509,11 +515,13 @@ class _DiffBanner extends StatelessWidget {
         : (state.isUnloggedSpending
             ? AppColor.expenseColor
             : AppColor.incomeColor);
+    final t = context.tr;
     final label = matched
-        ? 'Everything matches'
+        ? t.everythingMatches
         : (state.isUnloggedSpending
-            ? 'Unlogged spending: $symbol${state.diff.abs().toStringAsFixed(0)}'
-            : 'Extra money: $symbol${state.diff.abs().toStringAsFixed(0)}');
+            ? t.unloggedSpending(
+                '$symbol${state.diff.abs().toStringAsFixed(0)}')
+            : t.extraMoney('$symbol${state.diff.abs().toStringAsFixed(0)}'));
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),

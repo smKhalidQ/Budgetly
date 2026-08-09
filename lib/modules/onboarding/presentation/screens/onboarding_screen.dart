@@ -1,5 +1,6 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/core/widgets/language_bottom_sheet.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/onboarding/presentation/screens/setup_profile_screen.dart';
 import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
@@ -56,20 +57,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Align(
-              alignment: AlignmentDirectional.topEnd,
-              child: Padding(
-                padding: EdgeInsets.only(top: 12.h, right: 20.w, left: 20.w),
-                child: TextButton(
-                  onPressed: _finish,
-                  child: Text(
-                    t.skip,
-                    style: GoogleFonts.cairo(
-                      color: Colors.white.withValues(alpha: 0.6),
-                      fontSize: 14.sp,
+            Padding(
+              padding: EdgeInsets.only(top: 12.h, right: 20.w, left: 20.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () => LanguageBottomSheet.show(context),
+                    icon: Icon(
+                      Icons.language_rounded,
+                      color: Colors.white.withValues(alpha: 0.85),
+                      size: 22.sp,
                     ),
                   ),
-                ),
+                  TextButton(
+                    onPressed: _finish,
+                    child: Text(
+                      t.skip,
+                      style: GoogleFonts.cairo(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(

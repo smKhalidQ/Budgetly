@@ -5,12 +5,15 @@ part 'subcategory_state.freezed.dart';
 
 enum SubcategoryStatus { initial, loading, success, error }
 
+enum SubcategoryError { loadFailed, restoreDefaultsFailed }
+
+// run build_runner
 @freezed
 sealed class SubcategoryState with _$SubcategoryState {
   const factory SubcategoryState({
     @Default(SubcategoryStatus.initial) SubcategoryStatus status,
     @Default([]) List<Subcategory> subcategories,
-    String? errorMessage,
+    SubcategoryError? error,
     @Default('') String selectedIcon,
     @Default('Color(0xff2196f3)') String selectedColor,
     @Default(false) bool isEditMode,

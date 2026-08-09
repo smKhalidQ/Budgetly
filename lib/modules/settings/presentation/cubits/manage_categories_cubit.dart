@@ -33,7 +33,7 @@ class ManageCategoriesCubit extends Cubit<ManageCategoriesState> {
     } catch (_) {
       emit(state.copyWith(
         status: ManageCategoriesStatus.error,
-        errorMessage: 'Failed to load categories.',
+        error: ManageCategoriesError.loadFailed,
       ));
     }
   }
@@ -51,7 +51,7 @@ class ManageCategoriesCubit extends Cubit<ManageCategoriesState> {
     if (!state.canSave) return;
     emit(state.copyWith(status: ManageCategoriesStatus.saving));
 
-    final deferred = <String>[];
+    final deferred = <Category>[];
 
     try {
       // save salary if changed
@@ -79,19 +79,19 @@ class ManageCategoriesCubit extends Cubit<ManageCategoriesState> {
           );
         } else {
           updated = category.copyWith(baseAllocation: newBase);
-          deferred.add(category.name);
+          deferred.add(updated);
         }
         await _categoryRepository.update(category.id!, updated);
       }
 
       emit(state.copyWith(
         status: ManageCategoriesStatus.success,
-        deferredNames: deferred,
+        deferredCategories: deferred,
       ));
     } catch (_) {
       emit(state.copyWith(
         status: ManageCategoriesStatus.error,
-        errorMessage: 'Failed to save changes.',
+        error: ManageCategoriesError.saveFailed,
       ));
     }
   }
@@ -128,7 +128,7 @@ class ManageCategoriesCubit extends Cubit<ManageCategoriesState> {
     } catch (_) {
       emit(state.copyWith(
         status: ManageCategoriesStatus.error,
-        errorMessage: 'Failed to add category.',
+        error: ManageCategoriesError.addCategoryFailed,
       ));
     }
   }

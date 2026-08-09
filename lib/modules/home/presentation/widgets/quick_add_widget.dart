@@ -1,6 +1,7 @@
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/home/presentation/cubits/quick_add_cubit.dart';
 import 'package:budget_buddy/modules/home/presentation/cubits/quick_add_state.dart';
@@ -27,7 +28,7 @@ class QuickAddWidget extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 8.h),
                 child: Text(
-                  'Quick Add',
+                  context.tr.quickAdd,
                   style: GoogleFonts.cairo(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.bold,
@@ -104,7 +105,7 @@ class _QuickAddTile extends StatelessWidget {
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 72.w),
               child: Text(
-                item.label,
+                item.label(context.tr),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.cairo(

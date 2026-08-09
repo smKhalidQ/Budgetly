@@ -1,7 +1,9 @@
 import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/widgets/picker_dialog_helpers.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/category/presentation/widgets/selected_category_header.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
@@ -54,7 +56,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
           ),
-          title: Text(_category.name),
+          title: Text(_category.localizedName(context.tr)),
         ),
         backgroundColor: AppColor.cardBackground,
         body: BlocBuilder<SubcategoryCubit, SubcategoryState>(
@@ -120,7 +122,8 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   void _showAddSubcategoryDialog(BuildContext context) async {
     await PickerDialogHelpers.showSubcategoryPickerDialog(
       context: context,
-      title: "Add New Subcategory",
+      title: context.tr.addSubcategoryTitle,
+      isAdd: true,
       parentCategoryId: _category.id!,
       pickerFunction: (Subcategory newSubcategory) {
         _subcategoryCubit.insertNewSubcategory(newSubcategory);

@@ -3,6 +3,7 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/widgets/pickers/color_picker_widget.dart';
 import 'package:budget_buddy/core/widgets/pickers/icon_picker_widget.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
@@ -17,6 +18,7 @@ class PickerDialogHelpers {
   static Future<void> showCategoryPickerDialog({
     required BuildContext context,
     required String title,
+    required bool isAdd,
     required Function(Category) pickerFunction,
   }) {
     return showDialog<void>(
@@ -25,6 +27,7 @@ class PickerDialogHelpers {
         value: CategoryCubit.get(context),
         child: _CategoryPickerDialog(
           title: title,
+          isAdd: isAdd,
           pickerFunction: pickerFunction,
         ),
       ),
@@ -34,6 +37,7 @@ class PickerDialogHelpers {
   static Future<void> showSubcategoryPickerDialog({
     required BuildContext context,
     required String title,
+    required bool isAdd,
     required int parentCategoryId,
     required Function(Subcategory) pickerFunction,
   }) {
@@ -43,6 +47,7 @@ class PickerDialogHelpers {
         value: SubcategoryCubit.get(context),
         child: _SubcategoryPickerDialog(
           title: title,
+          isAdd: isAdd,
           parentCategoryId: parentCategoryId,
           pickerFunction: pickerFunction,
         ),
@@ -55,10 +60,12 @@ class PickerDialogHelpers {
 
 class _CategoryPickerDialog extends StatefulWidget {
   final String title;
+  final bool isAdd;
   final Function(Category) pickerFunction;
 
   const _CategoryPickerDialog({
     required this.title,
+    required this.isAdd,
     required this.pickerFunction,
   });
 
@@ -100,10 +107,11 @@ class _CategoryPickerDialogState extends State<_CategoryPickerDialog> {
 
         return _PickerDialogShell(
           title: widget.title,
+          isAdd: widget.isAdd,
           nameCtrl: _nameCtrl,
           pageCtrl: _pageCtrl,
           hasError: _hasError,
-          errorText: 'Name is required',
+          errorText: context.tr.nameIsRequired,
           page: _page,
           currentIcon: icon,
           currentColor: color,
@@ -141,11 +149,13 @@ class _CategoryPickerDialogState extends State<_CategoryPickerDialog> {
 
 class _SubcategoryPickerDialog extends StatefulWidget {
   final String title;
+  final bool isAdd;
   final int parentCategoryId;
   final Function(Subcategory) pickerFunction;
 
   const _SubcategoryPickerDialog({
     required this.title,
+    required this.isAdd,
     required this.parentCategoryId,
     required this.pickerFunction,
   });
@@ -188,6 +198,7 @@ class _SubcategoryPickerDialogState extends State<_SubcategoryPickerDialog> {
 
         return _PickerDialogShell(
           title: widget.title,
+          isAdd: widget.isAdd,
           nameCtrl: _nameCtrl,
           pageCtrl: _pageCtrl,
           hasError: false,
@@ -221,6 +232,7 @@ class _SubcategoryPickerDialogState extends State<_SubcategoryPickerDialog> {
 
 class _PickerDialogShell extends StatelessWidget {
   final String title;
+  final bool isAdd;
   final TextEditingController nameCtrl;
   final PageController pageCtrl;
   final bool hasError;
@@ -235,6 +247,7 @@ class _PickerDialogShell extends StatelessWidget {
 
   const _PickerDialogShell({
     required this.title,
+    required this.isAdd,
     required this.nameCtrl,
     required this.pageCtrl,
     required this.hasError,
@@ -250,6 +263,8 @@ class _PickerDialogShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tr;
+
     return AlertDialog(
       title: Text(title, style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
       content: SizedBox(
@@ -260,7 +275,7 @@ class _PickerDialogShell extends StatelessWidget {
             TextField(
               controller: nameCtrl,
               decoration: InputDecoration(
-                labelText: "Name",
+                labelText: t.name,
                 border: const OutlineInputBorder(),
                 errorText: hasError ? errorText : null,
               ),
@@ -275,7 +290,7 @@ class _PickerDialogShell extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("Select Icon",
+                        Text(t.selectIcon,
                             style: GoogleFonts.cairo(
                                 fontWeight: FontWeight.w500)),
                         SizedBox(height: 10.h),
@@ -296,7 +311,7 @@ class _PickerDialogShell extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("Select Color",
+                        Text(t.selectColor,
                             style: GoogleFonts.cairo(
                                 fontWeight: FontWeight.w500)),
                         SizedBox(height: 10.h),
@@ -335,7 +350,7 @@ class _PickerDialogShell extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text("Cancel",
+          child: Text(t.cancel,
               style: GoogleFonts.cairo(color: AppColor.textSecondary)),
         ),
         ElevatedButton(
@@ -344,7 +359,7 @@ class _PickerDialogShell extends StatelessWidget {
             foregroundColor: Colors.white,
           ),
           onPressed: onSave,
-          child: Text(title.contains("Add") ? "Add" : "Save"),
+          child: Text(isAdd ? t.add : t.save),
         ),
       ],
     );

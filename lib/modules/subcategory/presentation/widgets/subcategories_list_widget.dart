@@ -6,8 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/l10n/app_localizations.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
 import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
+import 'package:budget_buddy/modules/subcategory/domain/models/subcategory_localization.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
 import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
 import 'package:budget_buddy/core/widgets/pickers/color_picker_widget.dart';
@@ -54,6 +57,7 @@ class SubcategoriesListWidget extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, SubcategoryCubit cubit) {
+    final t = context.tr;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -62,7 +66,7 @@ class SubcategoriesListWidget extends StatelessWidget {
               size: 48.sp, color: AppColor.textTertiary),
           SizedBox(height: 12.h),
           Text(
-            "No subcategories yet",
+            t.noSubcategoriesYet,
             style: GoogleFonts.roboto(
                 fontSize: 15.sp, color: AppColor.textSecondary),
           ),
@@ -70,7 +74,7 @@ class SubcategoriesListWidget extends StatelessWidget {
           TextButton.icon(
             onPressed: () => cubit.resetToDefaults(category),
             icon: Icon(Icons.refresh_rounded, size: 18.sp),
-            label: Text("Restore defaults",
+            label: Text(t.restoreDefaults,
                 style: GoogleFonts.roboto(fontSize: 13.sp)),
             style: TextButton.styleFrom(
               foregroundColor: AppColor.primaryColor,
@@ -92,7 +96,7 @@ class SubcategoriesListWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "SUBCATEGORIES",
+            context.tr.subcategoriesLabel,
             style: GoogleFonts.roboto(
               fontSize: 14.sp,
               fontWeight: FontWeight.bold,
@@ -162,7 +166,7 @@ class SubcategoriesListWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.name,
+                    item.localizedName(context.tr),
                     style: GoogleFonts.roboto(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w500,
@@ -237,17 +241,18 @@ class SubcategoriesListWidget extends StatelessWidget {
 
   void _confirmDelete(
       BuildContext context, SubcategoryCubit cubit, Subcategory item) {
+    final t = context.tr;
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text("Delete Subcategory",
+        title: Text(t.deleteSubcategoryTitle,
             style: GoogleFonts.roboto(fontWeight: FontWeight.bold)),
-        content: Text('Delete "${item.name}"?',
+        content: Text(t.deleteSubcategoryConfirm(item.localizedName(t)),
             style: GoogleFonts.roboto()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text("Cancel",
+            child: Text(t.cancel,
                 style: TextStyle(color: AppColor.textSecondary)),
           ),
           ElevatedButton(
@@ -257,8 +262,7 @@ class SubcategoriesListWidget extends StatelessWidget {
               cubit.removeSubcategory(item.id!);
               Navigator.pop(dialogContext);
             },
-            child:
-                const Text("Delete", style: TextStyle(color: Colors.white)),
+            child: Text(t.delete, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -284,11 +288,12 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
   late Color _color;
   late String _icon;
   int _page = 0;
+  bool _nameInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(text: widget.item.name);
+    _nameCtrl = TextEditingController();
     _pageCtrl = PageController();
     _color = parseColorFromString(widget.item.color);
     _icon = widget.item.icon;
@@ -303,8 +308,14 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tr;
+    if (!_nameInitialized) {
+      _nameCtrl.text = widget.item.localizedName(t);
+      _nameInitialized = true;
+    }
+
     return AlertDialog(
-      title: Text("Edit Subcategory",
+      title: Text(t.editSubcategoryTitle,
           style: GoogleFonts.roboto(fontWeight: FontWeight.bold)),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
@@ -313,9 +324,9 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
           children: [
             TextField(
               controller: _nameCtrl,
-              decoration: const InputDecoration(
-                labelText: "Name",
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: t.name,
+                border: const OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 16.h),
@@ -327,7 +338,7 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
                   SingleChildScrollView(
                     child: Column(
                       children: [
-                        Text("Select Icon",
+                        Text(t.selectIcon,
                             style:
                                 GoogleFonts.roboto(fontWeight: FontWeight.w500)),
                         SizedBox(height: 10.h),
@@ -347,7 +358,7 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
                   SingleChildScrollView(
                     child: Column(
                       children: [
-                        Text("Select Color",
+                        Text(t.selectColor,
                             style:
                                 GoogleFonts.roboto(fontWeight: FontWeight.w500)),
                         SizedBox(height: 10.h),
@@ -386,7 +397,7 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text("Cancel",
+          child: Text(t.cancel,
               style: TextStyle(color: AppColor.textSecondary)),
         ),
         ElevatedButton(
@@ -406,7 +417,7 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
             );
             Navigator.pop(context);
           },
-          child: const Text("Save"),
+          child: Text(t.save),
         ),
       ],
     );

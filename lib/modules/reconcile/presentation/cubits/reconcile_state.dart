@@ -6,13 +6,15 @@ part 'reconcile_state.freezed.dart';
 
 enum ReconcileStatus { initial, loading, ready, done, error }
 
+enum ReconcileError { loadBalanceFailed, reconcileFailed }
+
 @freezed
 sealed class ReconcileState with _$ReconcileState {
   const factory ReconcileState({
     @Default(ReconcileStatus.initial) ReconcileStatus status,
     @Default([]) List<Category> categories,
     @Default(0.0) double actual,
-    String? errorMessage,
+    ReconcileError? error,
   }) = _ReconcileState;
 }
 

@@ -4,10 +4,19 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:budget_buddy/core/responsive/responsive_manager.dart';
 import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:budget_buddy/l10n/app_localizations.dart';
 import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
 import 'build_slicing_category_card.dart';
+
+String _errorText(AppLocalizations t, CategoryError? error) {
+  return switch (error) {
+    CategoryError.loadFailed => t.failedToLoadCategories,
+    CategoryError.initializeFailed => t.failedToInitializeCategories,
+    null => '',
+  };
+}
 
 class CategorySlicingCardList extends StatefulWidget {
   const CategorySlicingCardList({
@@ -58,7 +67,7 @@ class _CategorySlicingCardListState extends State<CategorySlicingCardList> {
         if (state.hasError) {
           return Center(
             child: Text(
-              state.errorMessage ?? '',
+              _errorText(t, state.error),
               style: GoogleFonts.cairo(
                   color: AppColor.expenseColor, fontSize: 15.sp),
               textAlign: TextAlign.center,

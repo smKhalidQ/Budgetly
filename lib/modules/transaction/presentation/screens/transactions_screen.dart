@@ -3,7 +3,10 @@ import 'package:budget_buddy/core/theming/app_color.dart';
 import 'package:budget_buddy/core/theming/app_radius.dart';
 import 'package:budget_buddy/core/theming/app_text_style.dart';
 import 'package:budget_buddy/core/utilities/constants.dart';
+import 'package:budget_buddy/l10n/app_localizations.dart';
+import 'package:budget_buddy/l10n/translation.dart';
 import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
 import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
 import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
@@ -73,14 +76,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 class _FilterBar extends StatelessWidget {
   const _FilterBar();
 
-  static const _periodLabels = {
-    TransactionPeriod.today: 'Today',
-    TransactionPeriod.week: 'This Week',
-    TransactionPeriod.month: 'This Month',
-  };
+  static String _periodLabel(AppLocalizations t, TransactionPeriod period) {
+    return switch (period) {
+      TransactionPeriod.today => t.today,
+      TransactionPeriod.week => t.thisWeek,
+      TransactionPeriod.month => t.thisMonth,
+    };
+  }
 
   void _showPeriodDropdown(
       BuildContext context, TransactionPeriod current, TransactionCubit cubit) {
+    final t = context.tr;
     final button = context.findRenderObject() as RenderBox;
     final overlay =
         Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
@@ -119,7 +125,7 @@ class _FilterBar extends StatelessWidget {
                     ),
                     SizedBox(width: 10.w),
                     Text(
-                      _periodLabels[p]!,
+                      _periodLabel(t, p),
                       style: GoogleFonts.cairo(
                         fontSize: 13.sp,
                         fontWeight:
@@ -149,6 +155,7 @@ class _FilterBar extends StatelessWidget {
         .select<TransactionCubit, (TransactionPeriod, TransactionGrouping)>(
             (c) => (c.state.period, c.state.grouping));
     final cubit = context.read<TransactionCubit>();
+    final t = context.tr;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 10.h),
@@ -171,7 +178,7 @@ class _FilterBar extends StatelessWidget {
                         size: 14.sp, color: AppColor.primaryColor),
                     SizedBox(width: 6.w),
                     Text(
-                      _periodLabels[period]!,
+                      _periodLabel(t, period),
                       style: GoogleFonts.cairo(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
@@ -200,13 +207,14 @@ class _GroupingTabs extends StatelessWidget {
 
   const _GroupingTabs({required this.grouping, required this.onChanged});
 
-  static const _tabs = [
-    (TransactionGrouping.byDate, Icons.event_rounded, 'Date'),
-    (TransactionGrouping.byCategory, Icons.grid_view_rounded, 'Category'),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final t = context.tr;
+    final tabs = [
+      (TransactionGrouping.byDate, Icons.event_rounded, t.dateLabel),
+      (TransactionGrouping.byCategory, Icons.grid_view_rounded, t.categoryLabel),
+    ];
+
     return Container(
       padding: EdgeInsets.all(3.w),
       decoration: BoxDecoration(
@@ -216,7 +224,7 @@ class _GroupingTabs extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          for (final (value, icon, label) in _tabs)
+          for (final (value, icon, label) in tabs)
             _GroupingTabIcon(
               icon: icon,
               label: label,
@@ -303,17 +311,18 @@ class _SummaryStrip extends StatelessWidget {
       return currencies[key]?['currencySymbol'] ?? '';
     });
 
+    final t = context.tr;
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
       child: Row(
         children: [
           _StripStat(
-              label: 'Spent',
+              label: t.spentLabel,
               value: '$currencySymbol${expense.toStringAsFixed(0)}',
               color: AppColor.expenseColor),
           SizedBox(width: 16.w),
           _StripStat(
-              label: 'Income',
+              label: t.incomeLabel,
               value: '$currencySymbol${income.toStringAsFixed(0)}',
               color: AppColor.incomeColor),
         ],
@@ -478,7 +487,7 @@ class _CategoryGroupState extends State<_CategoryGroup> {
             padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 8.h),
             child: Row(
               children: [
-                Text(widget.category.name,
+                Text(widget.category.localizedName(context.tr),
                     style: GoogleFonts.cairo(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
@@ -528,12 +537,12 @@ class _DayHeader extends StatelessWidget {
   final DateTime day;
   const _DayHeader({required this.day});
 
-  String _label() {
+  String _label(AppLocalizations t) {
     final today = DateTime.now();
     final d = DateTime(today.year, today.month, today.day);
     final diff = d.difference(day).inDays;
-    if (diff == 0) return 'Today';
-    if (diff == 1) return 'Yesterday';
+    if (diff == 0) return t.today;
+    if (diff == 1) return t.yesterday;
     return '${day.day}/${day.month}/${day.year}';
   }
 
@@ -541,7 +550,7 @@ class _DayHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 8.h),
-      child: Text(_label(),
+      child: Text(_label(context.tr),
           style: GoogleFonts.cairo(
               fontSize: 13.sp,
               fontWeight: FontWeight.w700,
@@ -574,6 +583,7 @@ class _TransactionRowState extends State<_TransactionRow> {
   Transaction get _txn => widget.transaction;
 
   void _deleteWithUndo() {
+    final t = context.tr;
     final categoryCubit = context.read<CategoryCubit>();
     final repo = GetIt.I<TransactionRepository>();
     final balanceService = GetIt.I<TransactionBalanceService>();
@@ -588,10 +598,10 @@ class _TransactionRowState extends State<_TransactionRow> {
     messenger
       ..clearSnackBars()
       ..showSnackBar(SnackBar(
-        content: Text('Transaction deleted',
+        content: Text(t.transactionDeleted,
             style: GoogleFonts.cairo(fontSize: 12.sp)),
         action: SnackBarAction(
-          label: 'Undo',
+          label: t.undo,
           onPressed: () => repo
               .add(removed.copyWith(id: null))
               .then((_) => balanceService.applyEffect(removed))
@@ -654,7 +664,7 @@ class _TransactionRowState extends State<_TransactionRow> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.category?.name ?? 'Unknown',
+                    widget.category?.localizedName(context.tr) ?? context.tr.unknown,
                     style: GoogleFonts.cairo(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
@@ -705,7 +715,7 @@ class _TransactionRowState extends State<_TransactionRow> {
                   backgroundColor: AppColor.accentColor,
                   foregroundColor: Colors.white,
                   icon: Icons.edit_rounded,
-                  label: 'Edit',
+                  label: context.tr.editAction,
                   borderRadius: BorderRadius.horizontal(
                       left: Radius.circular(AppRadius.md.r)),
                 ),
@@ -714,7 +724,7 @@ class _TransactionRowState extends State<_TransactionRow> {
                   backgroundColor: AppColor.expenseColor,
                   foregroundColor: Colors.white,
                   icon: Icons.delete_rounded,
-                  label: 'Delete',
+                  label: context.tr.deleteAction,
                   borderRadius: BorderRadius.horizontal(
                       right: Radius.circular(AppRadius.md.r)),
                 ),
@@ -760,6 +770,7 @@ class _ExpandedDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tr;
     final d = transaction.date;
     final dateLabel =
         '${d.day}/${d.month}/${d.year} · ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
@@ -775,12 +786,12 @@ class _ExpandedDetails extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _DetailLine(label: 'Date', value: dateLabel),
+          _DetailLine(label: t.dateLabel, value: dateLabel),
           if (transaction.note != null && transaction.note!.isNotEmpty)
-            _DetailLine(label: 'Note', value: transaction.note!),
+            _DetailLine(label: t.noteLabel, value: transaction.note!),
           if (cov != null && (cov.sources.isNotEmpty || cov.income > 0)) ...[
             SizedBox(height: 6.h),
-            Text('Covered from',
+            Text(t.coveredFrom,
                 style: GoogleFonts.cairo(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
@@ -788,12 +799,13 @@ class _ExpandedDetails extends StatelessWidget {
             SizedBox(height: 4.h),
             for (final s in cov.sources)
               _CoverageChip(
-                  name: categoriesById[s.categoryId]?.name ?? 'Unknown',
+                  name: categoriesById[s.categoryId]?.localizedName(t) ??
+                      t.unknown,
                   amount: s.amount,
                   currencySymbol: currencySymbol),
             if (cov.income > 0)
               _CoverageChip(
-                  name: 'New income',
+                  name: t.newIncome,
                   amount: cov.income,
                   currencySymbol: currencySymbol),
           ],
@@ -882,13 +894,13 @@ class _EmptyState extends StatelessWidget {
               size: 64.sp,
               color: AppColor.primaryColor.withValues(alpha: 0.15)),
           SizedBox(height: 12.h),
-          Text('No transactions',
+          Text(context.tr.noTransactions,
               style: GoogleFonts.cairo(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColor.textSecondary)),
           SizedBox(height: 4.h),
-          Text('Try a different period',
+          Text(context.tr.tryDifferentPeriod,
               style: GoogleFonts.cairo(
                   fontSize: 12.sp,
                   color: AppColor.textSecondary.withValues(alpha: 0.6))),

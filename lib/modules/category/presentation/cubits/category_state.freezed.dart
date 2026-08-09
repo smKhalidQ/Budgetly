@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$CategoryState {
   CategoryStatus get status;
   List<Category> get categories;
-  String? get errorMessage;
+  CategoryError? get error;
   String get selectedIcon;
   String get selectedColor;
   int get remainingBudget;
@@ -38,8 +38,7 @@ mixin _$CategoryState {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other.categories, categories) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage) &&
+            (identical(other.error, error) || other.error == error) &&
             (identical(other.selectedIcon, selectedIcon) ||
                 other.selectedIcon == selectedIcon) &&
             (identical(other.selectedColor, selectedColor) ||
@@ -55,7 +54,7 @@ mixin _$CategoryState {
       runtimeType,
       status,
       const DeepCollectionEquality().hash(categories),
-      errorMessage,
+      error,
       selectedIcon,
       selectedColor,
       remainingBudget,
@@ -63,7 +62,7 @@ mixin _$CategoryState {
 
   @override
   String toString() {
-    return 'CategoryState(status: $status, categories: $categories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, remainingBudget: $remainingBudget, allocations: $allocations)';
+    return 'CategoryState(status: $status, categories: $categories, error: $error, selectedIcon: $selectedIcon, selectedColor: $selectedColor, remainingBudget: $remainingBudget, allocations: $allocations)';
   }
 }
 
@@ -76,7 +75,7 @@ abstract mixin class $CategoryStateCopyWith<$Res> {
   $Res call(
       {CategoryStatus status,
       List<Category> categories,
-      String? errorMessage,
+      CategoryError? error,
       String selectedIcon,
       String selectedColor,
       int remainingBudget,
@@ -98,7 +97,7 @@ class _$CategoryStateCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? categories = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
     Object? selectedIcon = null,
     Object? selectedColor = null,
     Object? remainingBudget = null,
@@ -113,10 +112,10 @@ class _$CategoryStateCopyWithImpl<$Res>
           ? _self.categories
           : categories // ignore: cast_nullable_to_non_nullable
               as List<Category>,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as CategoryError?,
       selectedIcon: null == selectedIcon
           ? _self.selectedIcon
           : selectedIcon // ignore: cast_nullable_to_non_nullable
@@ -231,7 +230,7 @@ extension CategoryStatePatterns on CategoryState {
     TResult Function(
             CategoryStatus status,
             List<Category> categories,
-            String? errorMessage,
+            CategoryError? error,
             String selectedIcon,
             String selectedColor,
             int remainingBudget,
@@ -245,7 +244,7 @@ extension CategoryStatePatterns on CategoryState {
         return $default(
             _that.status,
             _that.categories,
-            _that.errorMessage,
+            _that.error,
             _that.selectedIcon,
             _that.selectedColor,
             _that.remainingBudget,
@@ -273,7 +272,7 @@ extension CategoryStatePatterns on CategoryState {
     TResult Function(
             CategoryStatus status,
             List<Category> categories,
-            String? errorMessage,
+            CategoryError? error,
             String selectedIcon,
             String selectedColor,
             int remainingBudget,
@@ -286,7 +285,7 @@ extension CategoryStatePatterns on CategoryState {
         return $default(
             _that.status,
             _that.categories,
-            _that.errorMessage,
+            _that.error,
             _that.selectedIcon,
             _that.selectedColor,
             _that.remainingBudget,
@@ -311,7 +310,7 @@ extension CategoryStatePatterns on CategoryState {
     TResult? Function(
             CategoryStatus status,
             List<Category> categories,
-            String? errorMessage,
+            CategoryError? error,
             String selectedIcon,
             String selectedColor,
             int remainingBudget,
@@ -324,7 +323,7 @@ extension CategoryStatePatterns on CategoryState {
         return $default(
             _that.status,
             _that.categories,
-            _that.errorMessage,
+            _that.error,
             _that.selectedIcon,
             _that.selectedColor,
             _that.remainingBudget,
@@ -341,7 +340,7 @@ class _CategoryState implements CategoryState {
   const _CategoryState(
       {this.status = CategoryStatus.initial,
       final List<Category> categories = const [],
-      this.errorMessage,
+      this.error,
       this.selectedIcon = '',
       this.selectedColor = 'Color(0xff2196f3)',
       this.remainingBudget = 0,
@@ -362,7 +361,7 @@ class _CategoryState implements CategoryState {
   }
 
   @override
-  final String? errorMessage;
+  final CategoryError? error;
   @override
   @JsonKey()
   final String selectedIcon;
@@ -397,8 +396,7 @@ class _CategoryState implements CategoryState {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other._categories, _categories) &&
-            (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage) &&
+            (identical(other.error, error) || other.error == error) &&
             (identical(other.selectedIcon, selectedIcon) ||
                 other.selectedIcon == selectedIcon) &&
             (identical(other.selectedColor, selectedColor) ||
@@ -414,7 +412,7 @@ class _CategoryState implements CategoryState {
       runtimeType,
       status,
       const DeepCollectionEquality().hash(_categories),
-      errorMessage,
+      error,
       selectedIcon,
       selectedColor,
       remainingBudget,
@@ -422,7 +420,7 @@ class _CategoryState implements CategoryState {
 
   @override
   String toString() {
-    return 'CategoryState(status: $status, categories: $categories, errorMessage: $errorMessage, selectedIcon: $selectedIcon, selectedColor: $selectedColor, remainingBudget: $remainingBudget, allocations: $allocations)';
+    return 'CategoryState(status: $status, categories: $categories, error: $error, selectedIcon: $selectedIcon, selectedColor: $selectedColor, remainingBudget: $remainingBudget, allocations: $allocations)';
   }
 }
 
@@ -437,7 +435,7 @@ abstract mixin class _$CategoryStateCopyWith<$Res>
   $Res call(
       {CategoryStatus status,
       List<Category> categories,
-      String? errorMessage,
+      CategoryError? error,
       String selectedIcon,
       String selectedColor,
       int remainingBudget,
@@ -459,7 +457,7 @@ class __$CategoryStateCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? categories = null,
-    Object? errorMessage = freezed,
+    Object? error = freezed,
     Object? selectedIcon = null,
     Object? selectedColor = null,
     Object? remainingBudget = null,
@@ -474,10 +472,10 @@ class __$CategoryStateCopyWithImpl<$Res>
           ? _self._categories
           : categories // ignore: cast_nullable_to_non_nullable
               as List<Category>,
-      errorMessage: freezed == errorMessage
-          ? _self.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as CategoryError?,
       selectedIcon: null == selectedIcon
           ? _self.selectedIcon
           : selectedIcon // ignore: cast_nullable_to_non_nullable
