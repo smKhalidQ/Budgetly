@@ -1,8 +1,8 @@
-import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
-import 'package:budget_buddy/modules/recurring/domain/models/recurring_expense.dart';
-import 'package:budget_buddy/modules/recurring/domain/repositories/recurring_expense_repository.dart';
-import 'package:budget_buddy/modules/recurring/presentation/cubits/recurring_state.dart';
-import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
+import 'package:slice_pay/modules/category/domain/repositories/category_repository.dart';
+import 'package:slice_pay/modules/recurring/domain/models/recurring_expense.dart';
+import 'package:slice_pay/modules/recurring/domain/repositories/recurring_expense_repository.dart';
+import 'package:slice_pay/modules/recurring/presentation/cubits/recurring_state.dart';
+import 'package:slice_pay/modules/subcategory/domain/repositories/subcategory_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RecurringCubit extends Cubit<RecurringState> {

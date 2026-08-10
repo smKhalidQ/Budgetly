@@ -1,8 +1,8 @@
 // run build_runner
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/recurring/domain/models/recurring_expense.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/recurring/domain/models/recurring_expense.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
 
 part 'recurring_state.freezed.dart';
 
@@ -40,7 +40,7 @@ extension RecurringStateX on RecurringState {
       .where((s) => s.parentCategoryId == categoryId)
       .toList();
 
-  /// Total of the active fixed expenses — shown as the recurring monthly load.
+  /// Total of the active fixed expenses â€” shown as the recurring monthly load.
   double get activeTotal => items
       .where((i) => i.isActive)
       .fold(0.0, (sum, i) => sum + i.amount);

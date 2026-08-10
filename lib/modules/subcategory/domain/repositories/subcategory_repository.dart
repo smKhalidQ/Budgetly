@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:budget_buddy/modules/subcategory/data/data_sources/subcategory_data_source.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/subcategory/data/data_sources/subcategory_data_source.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
 
 class SubcategoryChangedEvent {
   const SubcategoryChangedEvent();

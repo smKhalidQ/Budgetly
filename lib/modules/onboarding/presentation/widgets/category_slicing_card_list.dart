@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/l10n/app_localizations.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/l10n/app_localizations.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_state.dart';
 import 'build_slicing_category_card.dart';
 
 String _errorText(AppLocalizations t, CategoryError? error) {
@@ -88,7 +88,7 @@ class _CategorySlicingCardListState extends State<CategorySlicingCardList> {
           );
         }
 
-        // Flat list — rows sit directly on the screen background, separated
+        // Flat list â€” rows sit directly on the screen background, separated
         // by hairline dividers (no card / white sheet wrapper).
         return ListView.separated(
           padding: EdgeInsets.only(top: 4.h, bottom: 20.h),

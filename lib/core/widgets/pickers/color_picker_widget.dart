@@ -1,5 +1,5 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:flutter/material.dart';
 
 class ColorPickerWidget extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:budget_buddy/core/services/locale_service.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/locale_state.dart';
+import 'package:slice_pay/core/services/locale_service.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/locale_state.dart';
 
 class LocaleCubit extends Cubit<LocaleState> {
   final LocaleService _localeService;

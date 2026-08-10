@@ -1,4 +1,4 @@
-# Budget Buddy — App Concept Reference
+# Slice Pay — App Concept Reference
 
 > مرجع داخلي لفكرة التطبيق يُرجع إليه قبل بناء أي feature جديدة.
 

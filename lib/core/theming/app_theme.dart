@@ -1,5 +1,5 @@
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/theming/app_radius.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_radius.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';

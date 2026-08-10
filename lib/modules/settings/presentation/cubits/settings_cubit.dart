@@ -1,10 +1,10 @@
-import 'package:budget_buddy/core/services/month_cycle_service.dart';
-import 'package:budget_buddy/core/utilities/cache_helper.dart';
-import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/settings_state.dart';
-import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
+import 'package:slice_pay/core/services/month_cycle_service.dart';
+import 'package:slice_pay/core/utilities/cache_helper.dart';
+import 'package:slice_pay/modules/category/domain/repositories/category_repository.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/settings_state.dart';
+import 'package:slice_pay/modules/subcategory/domain/repositories/subcategory_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/services/transaction_balance_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
@@ -42,7 +42,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   /// Resets all runtime data back to the post-setup state:
   /// restores original allocations (reverses income/rollover/coverage effects),
   /// clears every transaction, zeroes all spent amounts, and removes the active
-  /// cycle — keeping user info, category config, and recurring expenses intact.
+  /// cycle â€” keeping user info, category config, and recurring expenses intact.
   Future<void> resetToPostSetup() async {
     emit(state.copyWith(status: SettingsStatus.loading, wasReset: false));
     try {

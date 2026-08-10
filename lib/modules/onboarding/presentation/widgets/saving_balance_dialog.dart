@@ -1,8 +1,8 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/home/presentation/screens/home_screen.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:slice_pay/modules/home/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

@@ -1,5 +1,5 @@
-import 'package:budget_buddy/modules/reconcile/domain/services/reconcile_service.dart';
-import 'package:budget_buddy/modules/reconcile/presentation/cubits/reconcile_state.dart';
+import 'package:slice_pay/modules/reconcile/domain/services/reconcile_service.dart';
+import 'package:slice_pay/modules/reconcile/presentation/cubits/reconcile_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReconcileCubit extends Cubit<ReconcileState> {

@@ -1,19 +1,19 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/theming/app_radius.dart';
-import 'package:budget_buddy/core/theming/app_text_style.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/l10n/app_localizations.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory_localization.dart';
-import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
-import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
-import 'package:budget_buddy/core/widgets/pickers/color_picker_widget.dart';
-import 'package:budget_buddy/core/widgets/pickers/icon_picker_widget.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_radius.dart';
+import 'package:slice_pay/core/theming/app_text_style.dart';
+import 'package:slice_pay/core/utilities/constants.dart';
+import 'package:slice_pay/l10n/app_localizations.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/models/category_localization.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory_localization.dart';
+import 'package:slice_pay/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
+import 'package:slice_pay/modules/subcategory/presentation/cubits/subcategory_state.dart';
+import 'package:slice_pay/core/widgets/pickers/color_picker_widget.dart';
+import 'package:slice_pay/core/widgets/pickers/icon_picker_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -296,7 +296,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
   }
 }
 
-// ─── Edit Category Dialog ─────────────────────────────────────────────────────
+// â”€â”€â”€ Edit Category Dialog â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _EditCategoryDialog extends StatefulWidget {
   final Category category;

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:budget_buddy/core/services/month_cycle_service.dart';
+import 'package:slice_pay/core/services/month_cycle_service.dart';
 
 part 'settings_state.freezed.dart';
 

@@ -1,14 +1,14 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/theming/app_radius.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
-import 'package:budget_buddy/modules/category/presentation/widgets/picker_dialog_helpers.dart';
-import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/manage_categories_cubit.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/manage_categories_state.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_radius.dart';
+import 'package:slice_pay/core/utilities/constants.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/models/category_localization.dart';
+import 'package:slice_pay/modules/category/presentation/widgets/picker_dialog_helpers.dart';
+import 'package:slice_pay/modules/user_info/presentation/cubits/setting_cubit.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/manage_categories_cubit.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/manage_categories_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -357,7 +357,7 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
   }
 }
 
-// ─── Header Banner ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Header Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _HeaderBanner extends StatelessWidget {
   final double salary;
@@ -509,7 +509,7 @@ class _HeaderBanner extends StatelessWidget {
                     size: 14.sp, color: AppColor.expenseColor),
                 SizedBox(width: 6.w),
                 Text(
-                  'Total exceeds salary — reduce some categories to save',
+                  'Total exceeds salary â€” reduce some categories to save',
                   style: GoogleFonts.cairo(
                     fontSize: 11.sp,
                     color: AppColor.expenseColor,
@@ -525,7 +525,7 @@ class _HeaderBanner extends StatelessWidget {
   }
 }
 
-// ─── Category Row ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Category Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _CategoryRow extends StatelessWidget {
   final Category category;

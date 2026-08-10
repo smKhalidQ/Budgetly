@@ -38,7 +38,7 @@ class App extends StatelessWidget {
         builder: (context, localeState) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Budget Buddy',
+            title: 'Slice Pay',
             builder: (context, child) {
               if (ResponsiveManager.isInitialized) {
                 ResponsiveManager.instance.forceRecalculate(context);

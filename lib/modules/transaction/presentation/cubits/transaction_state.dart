@@ -1,6 +1,6 @@
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction.dart';
 
 enum TransactionStatus { initial, loading, success, error }
 
@@ -59,7 +59,7 @@ extension TransactionStateX on TransactionState {
 
   bool get isEmpty => transactions.isEmpty;
 
-  // All transactions grouped by day — used by the home tab (no period filter)
+  // All transactions grouped by day â€” used by the home tab (no period filter)
   List<MapEntry<DateTime, List<Transaction>>> get groupedByDay {
     final filtered = transactions
         .where((t) => t.type != TransactionType.rollover)
@@ -77,7 +77,7 @@ extension TransactionStateX on TransactionState {
     return entries;
   }
 
-  // Period-filtered transactions — used by the reports page
+  // Period-filtered transactions â€” used by the reports page
   List<Transaction> get filteredTransactions {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);

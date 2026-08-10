@@ -1,28 +1,28 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/theming/app_radius.dart';
-import 'package:budget_buddy/core/theming/app_text_style.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/l10n/app_localizations.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
-import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
-import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_cubit.dart';
-import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_state.dart';
-import 'package:budget_buddy/modules/transaction/presentation/screens/add_transaction_screen.dart';
-import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_radius.dart';
+import 'package:slice_pay/core/theming/app_text_style.dart';
+import 'package:slice_pay/core/utilities/constants.dart';
+import 'package:slice_pay/l10n/app_localizations.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/models/category_localization.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction_coverage.dart';
+import 'package:slice_pay/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/services/transaction_balance_service.dart';
+import 'package:slice_pay/modules/transaction/presentation/cubits/transaction_cubit.dart';
+import 'package:slice_pay/modules/transaction/presentation/cubits/transaction_state.dart';
+import 'package:slice_pay/modules/transaction/presentation/screens/add_transaction_screen.dart';
+import 'package:slice_pay/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// ─── Screen ───────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -71,7 +71,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 }
 
-// ─── Filter Bar ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Filter Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _FilterBar extends StatelessWidget {
   const _FilterBar();
@@ -296,7 +296,7 @@ class _GroupingTabIcon extends StatelessWidget {
   }
 }
 
-// ─── Summary Strip ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Summary Strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _SummaryStrip extends StatelessWidget {
   const _SummaryStrip();
@@ -360,7 +360,7 @@ class _StripStat extends StatelessWidget {
   }
 }
 
-// ─── Body ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Body â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _Body extends StatelessWidget {
   const _Body();
@@ -380,7 +380,7 @@ class _Body extends StatelessWidget {
   }
 }
 
-// ─── By Date ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ By Date â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _ByDateList extends StatelessWidget {
   const _ByDateList();
@@ -420,7 +420,7 @@ class _ByDateList extends StatelessWidget {
   }
 }
 
-// ─── By Category ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ By Category â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _ByCategoryList extends StatelessWidget {
   const _ByCategoryList();
@@ -531,7 +531,7 @@ class _CategoryGroupState extends State<_CategoryGroup> {
   }
 }
 
-// ─── Day Header ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Day Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _DayHeader extends StatelessWidget {
   final DateTime day;
@@ -559,7 +559,7 @@ class _DayHeader extends StatelessWidget {
   }
 }
 
-// ─── Transaction Row ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Transaction Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _TransactionRow extends StatefulWidget {
   final Transaction transaction;
@@ -753,7 +753,7 @@ class _TransactionRowState extends State<_TransactionRow> {
   }
 }
 
-// ─── Expanded Details ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Expanded Details â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _ExpandedDetails extends StatelessWidget {
   final Transaction transaction;
@@ -773,7 +773,7 @@ class _ExpandedDetails extends StatelessWidget {
     final t = context.tr;
     final d = transaction.date;
     final dateLabel =
-        '${d.day}/${d.month}/${d.year} · ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
+        '${d.day}/${d.month}/${d.year} Â· ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
     final cov = coverage;
 
     return Container(
@@ -879,7 +879,7 @@ class _CoverageChip extends StatelessWidget {
   }
 }
 
-// ─── Empty State ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ Empty State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _EmptyState extends StatelessWidget {
   const _EmptyState();

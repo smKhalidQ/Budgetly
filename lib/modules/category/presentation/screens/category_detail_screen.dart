@@ -1,16 +1,16 @@
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/presentation/widgets/picker_dialog_helpers.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
-import 'package:budget_buddy/modules/category/presentation/widgets/selected_category_header.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
-import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
-import 'package:budget_buddy/modules/subcategory/presentation/widgets/subcategories_list_widget.dart';
-import 'package:budget_buddy/modules/transaction/presentation/screens/add_transaction_screen.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/utilities/constants.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/presentation/widgets/picker_dialog_helpers.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/models/category_localization.dart';
+import 'package:slice_pay/modules/category/presentation/widgets/selected_category_header.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:slice_pay/modules/subcategory/presentation/cubits/subcategory_state.dart';
+import 'package:slice_pay/modules/subcategory/presentation/widgets/subcategories_list_widget.dart';
+import 'package:slice_pay/modules/transaction/presentation/screens/add_transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -106,7 +106,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   }
 
   /// A transaction changes the category's spent/allocated amounts and the
-  /// per-subcategory spent totals — refresh both and the local header copy.
+  /// per-subcategory spent totals â€” refresh both and the local header copy.
   void _onTransactionAdded() async {
     final categoryCubit = context.read<CategoryCubit>();
     await categoryCubit.fetchCategories();

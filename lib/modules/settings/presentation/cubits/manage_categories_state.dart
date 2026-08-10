@@ -1,6 +1,6 @@
 // run build_runner
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
 
 part 'manage_categories_state.freezed.dart';
 

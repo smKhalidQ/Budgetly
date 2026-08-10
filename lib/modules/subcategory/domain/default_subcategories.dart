@@ -1,5 +1,5 @@
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
 import 'package:flutter/material.dart';
 
 /// Returns default subcategories for a category.

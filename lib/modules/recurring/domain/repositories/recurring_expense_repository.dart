@@ -1,5 +1,5 @@
-import 'package:budget_buddy/modules/recurring/data/data_sources/recurring_expense_data_source.dart';
-import 'package:budget_buddy/modules/recurring/domain/models/recurring_expense.dart';
+import 'package:slice_pay/modules/recurring/data/data_sources/recurring_expense_data_source.dart';
+import 'package:slice_pay/modules/recurring/domain/models/recurring_expense.dart';
 
 class RecurringExpenseRepository {
   final RecurringExpenseDataSource _dataSource;

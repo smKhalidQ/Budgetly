@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:budget_buddy/core/database/database_helper.dart';
+import 'package:slice_pay/core/database/database_helper.dart';
 
 class UserInfoDataSource {
   Future<List<Map<String, dynamic>>> getUserData() async {

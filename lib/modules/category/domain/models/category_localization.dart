@@ -1,5 +1,5 @@
-import 'package:budget_buddy/l10n/app_localizations.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:slice_pay/l10n/app_localizations.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
 
 extension CategoryLocalization on Category {
   String localizedName(AppLocalizations t) {

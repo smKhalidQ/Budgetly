@@ -1,8 +1,8 @@
-import 'package:budget_buddy/core/services/month_cycle_service.dart';
-import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
-import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:slice_pay/core/services/month_cycle_service.dart';
+import 'package:slice_pay/modules/category/domain/repositories/category_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction_coverage.dart';
+import 'package:slice_pay/modules/transaction/domain/repositories/transaction_repository.dart';
 
 /// Shared rules for keeping category balances in sync with transactions.
 /// Spending is always re-derived from the expense transactions of the current

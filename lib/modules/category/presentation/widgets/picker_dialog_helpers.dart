@@ -1,15 +1,15 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/core/widgets/pickers/color_picker_widget.dart';
-import 'package:budget_buddy/core/widgets/pickers/icon_picker_widget.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
-import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
-import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/utilities/constants.dart';
+import 'package:slice_pay/core/widgets/pickers/color_picker_widget.dart';
+import 'package:slice_pay/core/widgets/pickers/icon_picker_widget.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_state.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/subcategory/presentation/cubits/subcategory_cubit.dart';
+import 'package:slice_pay/modules/subcategory/presentation/cubits/subcategory_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -56,7 +56,7 @@ class PickerDialogHelpers {
   }
 }
 
-// ─── Category Picker ────────────────────────────────────────────────────────
+// â”€â”€â”€ Category Picker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _CategoryPickerDialog extends StatefulWidget {
   final String title;
@@ -145,7 +145,7 @@ class _CategoryPickerDialogState extends State<_CategoryPickerDialog> {
   }
 }
 
-// ─── Subcategory Picker ─────────────────────────────────────────────────────
+// â”€â”€â”€ Subcategory Picker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _SubcategoryPickerDialog extends StatefulWidget {
   final String title;
@@ -228,7 +228,7 @@ class _SubcategoryPickerDialogState extends State<_SubcategoryPickerDialog> {
   }
 }
 
-// ─── Shared Dialog Shell ────────────────────────────────────────────────────
+// â”€â”€â”€ Shared Dialog Shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _PickerDialogShell extends StatelessWidget {
   final String title;

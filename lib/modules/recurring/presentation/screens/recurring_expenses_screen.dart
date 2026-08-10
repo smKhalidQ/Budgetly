@@ -1,20 +1,20 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/theming/app_radius.dart';
-import 'package:budget_buddy/core/theming/app_text_style.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/recurring/domain/models/recurring_expense.dart';
-import 'package:budget_buddy/modules/recurring/presentation/cubits/recurring_cubit.dart';
-import 'package:budget_buddy/modules/recurring/presentation/cubits/recurring_state.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/settings_state.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory_localization.dart';
-import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_radius.dart';
+import 'package:slice_pay/core/theming/app_text_style.dart';
+import 'package:slice_pay/core/utilities/constants.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/models/category_localization.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:slice_pay/modules/recurring/domain/models/recurring_expense.dart';
+import 'package:slice_pay/modules/recurring/presentation/cubits/recurring_cubit.dart';
+import 'package:slice_pay/modules/recurring/presentation/cubits/recurring_state.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/settings_cubit.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/settings_state.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory_localization.dart';
+import 'package:slice_pay/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -117,7 +117,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          t.newMonthStarted(parts.join(' · ')),
+          t.newMonthStarted(parts.join(' Â· ')),
           style: GoogleFonts.cairo(fontSize: 12.sp),
         ),
       ),
@@ -217,7 +217,7 @@ String _currencySymbol(BuildContext context) {
   return currencies[key]?['currencySymbol'] ?? '';
 }
 
-// ─── Total Banner ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Total Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _TotalBanner extends StatelessWidget {
   final double total;
@@ -322,7 +322,7 @@ class _TotalBanner extends StatelessWidget {
   }
 }
 
-// ─── Expense Row ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ Expense Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _ExpenseRow extends StatelessWidget {
   final RecurringExpense item;
@@ -351,7 +351,7 @@ class _ExpenseRow extends StatelessWidget {
     final subtitle = [
       if (title != catName) catName,
       if (subcategoryName != null && note != null) note,
-    ].join(' · ');
+    ].join(' Â· ');
 
     return Container(
       margin: EdgeInsets.only(bottom: 10.h),
@@ -437,7 +437,7 @@ class _ExpenseRow extends StatelessWidget {
   }
 }
 
-// ─── Empty State ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ Empty State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _EmptyState extends StatelessWidget {
   const _EmptyState();
@@ -476,7 +476,7 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-// ─── Editor Sheet ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Editor Sheet â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _ExpenseEditorSheet extends StatefulWidget {
   final RecurringExpense? existing;
@@ -832,7 +832,7 @@ class _SubcategorySelector extends StatelessWidget {
   }
 }
 
-// ─── Allocation Bar ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Allocation Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _AllocationBar extends StatelessWidget {
   final double budget;

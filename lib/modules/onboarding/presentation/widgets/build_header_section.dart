@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/theming/app_radius.dart';
-import 'package:budget_buddy/core/theming/app_text_style.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_state.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_radius.dart';
+import 'package:slice_pay/core/theming/app_text_style.dart';
+import 'package:slice_pay/core/utilities/constants.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_state.dart';
 
 /// Summary for the budget-slicing screen: salary, how much is still
 /// unallocated, a progress bar, and a one-line hint telling the user the
-/// screen's purpose — split the salary across the categories below.
+/// screen's purpose â€” split the salary across the categories below.
 class BuildHeaderSection extends StatelessWidget {
   const BuildHeaderSection({
     super.key,

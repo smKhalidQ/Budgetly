@@ -1,14 +1,14 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/theming/app_radius.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/presentation/cubits/category_cubit.dart';
-import 'package:budget_buddy/modules/reconcile/presentation/screens/reconcile_screen.dart';
-import 'package:budget_buddy/modules/recurring/presentation/screens/recurring_expenses_screen.dart';
-import 'package:budget_buddy/modules/settings/presentation/screens/language_screen.dart';
-import 'package:budget_buddy/modules/settings/presentation/screens/manage_categories_screen.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/settings_cubit.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/settings_state.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_radius.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
+import 'package:slice_pay/modules/reconcile/presentation/screens/reconcile_screen.dart';
+import 'package:slice_pay/modules/recurring/presentation/screens/recurring_expenses_screen.dart';
+import 'package:slice_pay/modules/settings/presentation/screens/language_screen.dart';
+import 'package:slice_pay/modules/settings/presentation/screens/manage_categories_screen.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/settings_cubit.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/settings_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -212,7 +212,7 @@ class _SettingsView extends StatelessWidget {
   }
 }
 
-// ─── Section Label ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Section Label â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _SectionLabel extends StatelessWidget {
   final String label;
@@ -235,7 +235,7 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-// ─── Settings Tile ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Settings Tile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _SettingsTile extends StatelessWidget {
   final IconData icon;

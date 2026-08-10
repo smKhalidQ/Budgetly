@@ -1,6 +1,6 @@
 {
-    "name": "budget_buddy",
-    "short_name": "budget_buddy",
+    "name": "slice_pay",
+    "short_name": "slice_pay",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

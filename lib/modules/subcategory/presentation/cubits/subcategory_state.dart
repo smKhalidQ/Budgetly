@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
 
 part 'subcategory_state.freezed.dart';
 

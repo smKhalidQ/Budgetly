@@ -1,14 +1,14 @@
-import 'package:budget_buddy/core/services/month_cycle_service.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
-import 'package:budget_buddy/modules/subcategory/domain/default_subcategories.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
-import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
-import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
-import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_state.dart';
+import 'package:slice_pay/core/services/month_cycle_service.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/repositories/category_repository.dart';
+import 'package:slice_pay/modules/subcategory/domain/default_subcategories.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/subcategory/domain/repositories/subcategory_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction_coverage.dart';
+import 'package:slice_pay/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/services/transaction_balance_service.dart';
+import 'package:slice_pay/modules/transaction/presentation/cubits/add_transaction/add_transaction_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddTransactionCubit extends Cubit<AddTransactionState> {
@@ -147,7 +147,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         expressionLog: '',
       ));
 
-  /// Collapses the open category and clears the in-progress entry — closing the
+  /// Collapses the open category and clears the in-progress entry â€” closing the
   /// numpad resets the amount back to zero.
   void collapse() => emit(state.copyWith(
         expandedCategoryId: null,

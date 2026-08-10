@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/theming/app_radius.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/locale_cubit.dart';
-import 'package:budget_buddy/modules/settings/presentation/cubits/locale_state.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_radius.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/locale_cubit.dart';
+import 'package:slice_pay/modules/settings/presentation/cubits/locale_state.dart';
 
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});

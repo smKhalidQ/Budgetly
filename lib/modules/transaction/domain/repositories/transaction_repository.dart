@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:budget_buddy/modules/transaction/data/data_sources/transaction_data_source.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
+import 'package:slice_pay/modules/transaction/data/data_sources/transaction_data_source.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction.dart';
 
 class TransactionAddedEvent {
   final Transaction transaction;

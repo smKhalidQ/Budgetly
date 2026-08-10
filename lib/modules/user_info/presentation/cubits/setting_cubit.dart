@@ -1,8 +1,8 @@
-﻿import 'package:budget_buddy/core/utilities/cache_helper.dart';
-import 'package:budget_buddy/core/utilities/listener_mixin.dart';
-import 'package:budget_buddy/modules/user_info/domain/models/user_info.dart';
-import 'package:budget_buddy/modules/user_info/domain/repositories/user_info_repository.dart';
-import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_state.dart';
+import 'package:slice_pay/core/utilities/cache_helper.dart';
+import 'package:slice_pay/core/utilities/listener_mixin.dart';
+import 'package:slice_pay/modules/user_info/domain/models/user_info.dart';
+import 'package:slice_pay/modules/user_info/domain/repositories/user_info_repository.dart';
+import 'package:slice_pay/modules/user_info/presentation/cubits/setting_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

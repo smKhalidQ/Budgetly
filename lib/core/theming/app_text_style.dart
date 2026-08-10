@@ -1,10 +1,10 @@
-import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Typography rule for the whole app:
-///   • Cairo  → all labels, titles and body text
-///   • Poppins → numeric values (amounts, percentages, currency figures)
+///   â€¢ Cairo  â†’ all labels, titles and body text
+///   â€¢ Poppins â†’ numeric values (amounts, percentages, currency figures)
 ///
 /// Plain text already uses `GoogleFonts.cairo(...)` inline (and the global
 /// `textTheme` defaults to Cairo). Use [AppTextStyle.number] anywhere a number

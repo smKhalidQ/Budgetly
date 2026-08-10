@@ -1,6 +1,6 @@
 // run build_runner
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
 
 part 'reconcile_state.freezed.dart';
 

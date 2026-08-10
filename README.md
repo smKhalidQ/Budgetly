@@ -1,4 +1,4 @@
-# budget_buddy
+# slice_pay
 
 A new Flutter project.
 

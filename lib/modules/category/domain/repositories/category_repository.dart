@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:budget_buddy/modules/category/data/data_sources/category_data_source.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/data/data_sources/category_data_source.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
 
 class CategoryChangedEvent {
   const CategoryChangedEvent();

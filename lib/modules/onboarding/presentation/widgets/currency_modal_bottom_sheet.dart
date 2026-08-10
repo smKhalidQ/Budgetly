@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/utilities/constants.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/user_info/presentation/cubits/setting_cubit.dart';
 
 class CurrencyBottomSheet extends StatelessWidget {
   const CurrencyBottomSheet({super.key, required this.settingCubit});

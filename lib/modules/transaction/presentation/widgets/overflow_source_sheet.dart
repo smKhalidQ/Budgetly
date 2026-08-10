@@ -1,19 +1,19 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
-import 'package:budget_buddy/core/theming/app_text_style.dart';
-import 'package:budget_buddy/core/utilities/constants.dart';
-import 'package:budget_buddy/l10n/translation.dart';
-import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
-import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_cubit.dart';
-import 'package:budget_buddy/modules/transaction/presentation/cubits/add_transaction/add_transaction_state.dart';
-import 'package:budget_buddy/modules/user_info/presentation/cubits/setting_cubit.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_text_style.dart';
+import 'package:slice_pay/core/utilities/constants.dart';
+import 'package:slice_pay/l10n/translation.dart';
+import 'package:slice_pay/modules/category/domain/models/category_localization.dart';
+import 'package:slice_pay/modules/transaction/presentation/cubits/add_transaction/add_transaction_cubit.dart';
+import 'package:slice_pay/modules/transaction/presentation/cubits/add_transaction/add_transaction_state.dart';
+import 'package:slice_pay/modules/user_info/presentation/cubits/setting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// The conscious-decision view: when an expense exceeds a category's balance,
 /// the user deliberately chooses which other envelopes cover the difference.
-/// Embedded inline inside AddTransactionScreen (no nested modal) — [onBack]
+/// Embedded inline inside AddTransactionScreen (no nested modal) â€” [onBack]
 /// returns to the entry view, confirmation is handled by the parent screen.
 class OverflowDecisionView extends StatelessWidget {
   final VoidCallback onBack;
@@ -51,7 +51,7 @@ class OverflowDecisionView extends StatelessWidget {
   }
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _Header extends StatelessWidget {
   final String currencySymbol;
@@ -127,7 +127,7 @@ class _Header extends StatelessWidget {
   }
 }
 
-// ─── Deficit Meter ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Deficit Meter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _DeficitMeter extends StatelessWidget {
   final String currencySymbol;
@@ -240,7 +240,7 @@ class _DeficitMeter extends StatelessWidget {
   }
 }
 
-// ─── Split List ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Split List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _SplitList extends StatelessWidget {
   final String currencySymbol;
@@ -265,7 +265,7 @@ class _SplitList extends StatelessWidget {
   }
 }
 
-// ─── Split Row ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Split Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _SplitRow extends StatelessWidget {
   final OverflowSplit split;
@@ -525,7 +525,7 @@ class _SourceAmountFieldState extends State<_SourceAmountField> {
   }
 }
 
-// ─── Confirm Row ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ Confirm Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _ConfirmRow extends StatelessWidget {
   const _ConfirmRow();

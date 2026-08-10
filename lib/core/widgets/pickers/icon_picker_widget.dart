@@ -1,4 +1,4 @@
-import 'package:budget_buddy/core/responsive/responsive_manager.dart';
+import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:flutter/material.dart';
 
 class IconPickerWidget extends StatelessWidget {

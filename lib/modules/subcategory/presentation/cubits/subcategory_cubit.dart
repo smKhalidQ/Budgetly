@@ -1,12 +1,12 @@
-import 'package:budget_buddy/core/services/month_cycle_service.dart';
-import 'package:budget_buddy/core/utilities/listener_mixin.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/subcategory/domain/default_subcategories.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
-import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
-import 'package:budget_buddy/modules/subcategory/presentation/cubits/subcategory_state.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
-import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:slice_pay/core/services/month_cycle_service.dart';
+import 'package:slice_pay/core/utilities/listener_mixin.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/subcategory/domain/default_subcategories.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/subcategory/domain/repositories/subcategory_repository.dart';
+import 'package:slice_pay/modules/subcategory/presentation/cubits/subcategory_state.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction.dart';
+import 'package:slice_pay/modules/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -139,7 +139,7 @@ class SubcategoryCubit extends Cubit<SubcategoryState> with StreamListener {
   }
 
   /// Per-subcategory and "general" (no subcategory) spending for [categoryId],
-  /// derived from the actual expense transactions — the single source of truth.
+  /// derived from the actual expense transactions â€” the single source of truth.
   Future<(Map<int, double>, double)> _spendingFor(int categoryId) async {
     final transactions = await _transactionRepository.getAll();
     final cycleStart = MonthCycleService.currentCycleStart();

@@ -1,11 +1,11 @@
-import 'package:budget_buddy/core/utilities/cache_helper.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
-import 'package:budget_buddy/modules/recurring/domain/repositories/recurring_expense_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
-import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:slice_pay/core/utilities/cache_helper.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/repositories/category_repository.dart';
+import 'package:slice_pay/modules/recurring/domain/repositories/recurring_expense_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction.dart';
+import 'package:slice_pay/modules/transaction/domain/repositories/transaction_repository.dart';
 
-/// Outcome of starting a new month — surfaced to the user as a summary.
+/// Outcome of starting a new month â€” surfaced to the user as a summary.
 class CycleSummary {
   final double savedToSaving;
   final int recurringPosted;
@@ -19,11 +19,11 @@ class CycleSummary {
 }
 
 /// Owns the monthly budget cycle. The cycle is advanced **manually** by the
-/// user (via Settings) when their salary arrives — salaries don't always land
+/// user (via Settings) when their salary arrives â€” salaries don't always land
 /// on the 1st, so the calendar can't be trusted to decide.
 ///
 /// Starting a new month, in order:
-///   1. sweep every spending category's leftover (allocated − spent) into Saving
+///   1. sweep every spending category's leftover (allocated âˆ’ spent) into Saving
 ///   2. reset spend counters to zero (the allocation plan carries over)
 ///   3. post the active fixed expenses against their fresh envelopes
 ///
@@ -127,14 +127,14 @@ class MonthCycleService {
       amount: swept,
       date: DateTime.now(),
       type: TransactionType.rollover,
-      note: 'Month-end savings · ${_monthLabel(endedCycleStart)}',
+      note: 'Month-end savings Â· ${_monthLabel(endedCycleStart)}',
     ));
     return swept;
   }
 
   /// Posts each active fixed expense against its (freshly reset) envelope.
   /// Returns (posted count, flagged count) where flagged means the envelope
-  /// couldn't fully cover the bill — we never push a category below zero.
+  /// couldn't fully cover the bill â€” we never push a category below zero.
   Future<(int, int)> _postRecurringExpenses() async {
     final recurrings = await _recurringRepository.getAll();
     final actives = recurrings.where((r) => r.isActive).toList();

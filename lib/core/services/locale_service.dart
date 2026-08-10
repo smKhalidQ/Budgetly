@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:budget_buddy/core/utilities/cache_helper.dart';
+import 'package:slice_pay/core/utilities/cache_helper.dart';
 
 class LocaleService {
   static const _localeKey = 'locale_code';

@@ -1,5 +1,5 @@
-import 'package:budget_buddy/modules/user_info/data/data_sources/user_info_data_source.dart';
-import 'package:budget_buddy/modules/user_info/domain/models/user_info.dart';
+import 'package:slice_pay/modules/user_info/data/data_sources/user_info_data_source.dart';
+import 'package:slice_pay/modules/user_info/domain/models/user_info.dart';
 
 class UserInfoRepository {
   final UserInfoDataSource _dataSource;

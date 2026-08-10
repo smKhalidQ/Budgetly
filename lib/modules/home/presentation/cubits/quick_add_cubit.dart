@@ -1,9 +1,9 @@
-import 'package:budget_buddy/core/services/month_cycle_service.dart';
-import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
-import 'package:budget_buddy/modules/home/presentation/cubits/quick_add_state.dart';
-import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
-import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:slice_pay/core/services/month_cycle_service.dart';
+import 'package:slice_pay/modules/category/domain/repositories/category_repository.dart';
+import 'package:slice_pay/modules/home/presentation/cubits/quick_add_state.dart';
+import 'package:slice_pay/modules/subcategory/domain/repositories/subcategory_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction.dart';
+import 'package:slice_pay/modules/transaction/domain/repositories/transaction_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class QuickAddCubit extends Cubit<QuickAddState> {

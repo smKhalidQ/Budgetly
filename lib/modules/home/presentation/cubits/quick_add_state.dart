@@ -1,9 +1,9 @@
 // run build_runner
-import 'package:budget_buddy/l10n/app_localizations.dart';
-import 'package:budget_buddy/modules/category/domain/models/category.dart';
-import 'package:budget_buddy/modules/category/domain/models/category_localization.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory.dart';
-import 'package:budget_buddy/modules/subcategory/domain/models/subcategory_localization.dart';
+import 'package:slice_pay/l10n/app_localizations.dart';
+import 'package:slice_pay/modules/category/domain/models/category.dart';
+import 'package:slice_pay/modules/category/domain/models/category_localization.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
+import 'package:slice_pay/modules/subcategory/domain/models/subcategory_localization.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'quick_add_state.freezed.dart';

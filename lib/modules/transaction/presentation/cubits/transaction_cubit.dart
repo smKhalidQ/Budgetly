@@ -1,11 +1,11 @@
-import 'package:budget_buddy/core/utilities/listener_mixin.dart';
-import 'package:budget_buddy/modules/category/domain/repositories/category_repository.dart';
-import 'package:budget_buddy/modules/subcategory/domain/repositories/subcategory_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction.dart';
-import 'package:budget_buddy/modules/transaction/domain/models/transaction_coverage.dart';
-import 'package:budget_buddy/modules/transaction/domain/repositories/transaction_repository.dart';
-import 'package:budget_buddy/modules/transaction/domain/services/transaction_balance_service.dart';
-import 'package:budget_buddy/modules/transaction/presentation/cubits/transaction_state.dart';
+import 'package:slice_pay/core/utilities/listener_mixin.dart';
+import 'package:slice_pay/modules/category/domain/repositories/category_repository.dart';
+import 'package:slice_pay/modules/subcategory/domain/repositories/subcategory_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction.dart';
+import 'package:slice_pay/modules/transaction/domain/models/transaction_coverage.dart';
+import 'package:slice_pay/modules/transaction/domain/repositories/transaction_repository.dart';
+import 'package:slice_pay/modules/transaction/domain/services/transaction_balance_service.dart';
+import 'package:slice_pay/modules/transaction/presentation/cubits/transaction_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TransactionCubit extends Cubit<TransactionState> with StreamListener {

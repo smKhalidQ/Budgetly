@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:budget_buddy/core/theming/app_color.dart';
+import 'package:slice_pay/core/theming/app_color.dart';
 
 Map<String, Map<String, String>> currencies = {
   "OMR": {"currencyName": "Omani Rial", "currencySymbol": "﷼", "flag": "🇴🇲"},
