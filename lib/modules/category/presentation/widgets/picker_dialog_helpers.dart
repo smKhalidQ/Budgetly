@@ -1,3 +1,4 @@
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:slice_pay/core/utilities/constants.dart';
@@ -296,11 +297,7 @@ class _PickerDialogShell extends StatelessWidget {
                         SizedBox(height: 10.h),
                         IconPickerWidget(
                           key: ValueKey(currentIcon),
-                          currentIcon: IconData(
-                            int.tryParse(currentIcon) ??
-                                Icons.category.codePoint,
-                            fontFamily: 'MaterialIcons',
-                          ),
+                          currentIcon: currentIcon.toIconData(),
                           currentColor: currentColor,
                           onIconSelected: onIconSelected,
                         ),

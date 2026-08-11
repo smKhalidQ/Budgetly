@@ -1,6 +1,6 @@
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
-import 'package:slice_pay/core/theming/app_radius.dart';
 import 'package:slice_pay/core/utilities/constants.dart';
 import 'package:slice_pay/l10n/translation.dart';
 import 'package:slice_pay/modules/category/domain/models/category.dart';
@@ -558,7 +558,7 @@ class _CategoryRow extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              IconData(int.parse(category.icon), fontFamily: 'MaterialIcons'),
+              category.icon.toIconData(),
               color: color,
               size: 20.sp,
             ),

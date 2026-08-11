@@ -1,3 +1,4 @@
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:slice_pay/core/theming/app_text_style.dart';
@@ -311,10 +312,7 @@ class _SplitRow extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              IconData(
-                int.parse(split.category.icon),
-                fontFamily: 'MaterialIcons',
-              ),
+              split.category.icon.toIconData(),
               color: color,
               size: 16.sp,
             ),

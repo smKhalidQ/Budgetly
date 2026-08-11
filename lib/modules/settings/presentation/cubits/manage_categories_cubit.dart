@@ -1,7 +1,6 @@
 import 'package:slice_pay/modules/category/domain/models/category.dart';
 import 'package:slice_pay/modules/category/domain/repositories/category_repository.dart';
 import 'package:slice_pay/modules/settings/presentation/cubits/manage_categories_state.dart';
-import 'package:slice_pay/modules/user_info/domain/models/user_info.dart';
 import 'package:slice_pay/modules/user_info/domain/repositories/user_info_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

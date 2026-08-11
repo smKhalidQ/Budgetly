@@ -1,3 +1,4 @@
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:slice_pay/core/theming/app_radius.dart';
@@ -390,7 +391,7 @@ class _DistributorState extends State<_Distributor> {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              IconData(int.parse(c.icon), fontFamily: 'MaterialIcons'),
+              c.icon.toIconData(),
               color: color,
               size: 15.sp,
             ),

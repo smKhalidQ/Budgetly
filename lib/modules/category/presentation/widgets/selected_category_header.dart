@@ -1,7 +1,7 @@
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:slice_pay/core/theming/app_radius.dart';
-import 'package:slice_pay/core/theming/app_text_style.dart';
 import 'package:slice_pay/core/utilities/constants.dart';
 import 'package:slice_pay/l10n/app_localizations.dart';
 import 'package:slice_pay/l10n/translation.dart';
@@ -203,7 +203,7 @@ class SelectedCategoryHeaderWidget extends StatelessWidget {
           decoration:
               BoxDecoration(color: categoryColor, shape: BoxShape.circle),
           child: Icon(
-            IconData(int.parse(category.icon), fontFamily: 'MaterialIcons'),
+            category.icon.toIconData(),
             color: Colors.white,
             size: 24.sp,
           ),
@@ -378,10 +378,7 @@ class _EditCategoryDialogState extends State<_EditCategoryDialog> {
                         SizedBox(height: 10.h),
                         IconPickerWidget(
                           key: ValueKey(_icon),
-                          currentIcon: IconData(
-                            int.tryParse(_icon) ?? Icons.category.codePoint,
-                            fontFamily: 'MaterialIcons',
-                          ),
+                          currentIcon: _icon.toIconData(),
                           currentColor: _color,
                           onIconSelected: (icon) =>
                               setState(() => _icon = icon.codePoint.toString()),

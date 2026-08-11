@@ -1,3 +1,4 @@
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:slice_pay/core/theming/app_text_style.dart';
@@ -335,7 +336,7 @@ class _CategoryHeader extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              IconData(int.parse(category.icon), fontFamily: 'MaterialIcons'),
+              category.icon.toIconData(),
               color: color,
               size: 20.sp,
             ),
@@ -560,8 +561,7 @@ class _IncomeCategoryTile extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                IconData(int.parse(category.icon),
-                    fontFamily: 'MaterialIcons'),
+                category.icon.toIconData(),
                 color: color,
                 size: 18.sp,
               ),

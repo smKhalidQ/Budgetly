@@ -1,3 +1,4 @@
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:slice_pay/core/theming/app_radius.dart';
@@ -377,8 +378,7 @@ class _ExpenseRow extends StatelessWidget {
                   ),
                   child: Icon(
                     category != null
-                        ? IconData(int.parse(category!.icon),
-                            fontFamily: 'MaterialIcons')
+                        ? category!.icon.toIconData()
                         : Icons.help_outline_rounded,
                     color: color,
                     size: 20.sp,

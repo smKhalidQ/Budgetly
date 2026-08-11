@@ -1,3 +1,4 @@
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:slice_pay/core/theming/app_radius.dart';
@@ -96,10 +97,7 @@ class MainCategoriesListWidget extends StatelessWidget {
                                       shape: BoxShape.circle,
                                     ),
                                     child: Icon(
-                                      IconData(
-                                        int.parse(category.icon),
-                                        fontFamily: 'MaterialIcons',
-                                      ),
+                                      category.icon.toIconData(),
                                       color: color,
                                       size: 18.sp,
                                     ),

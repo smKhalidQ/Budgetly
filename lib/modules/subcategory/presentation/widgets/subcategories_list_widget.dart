@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/utilities/constants.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
-import 'package:slice_pay/l10n/app_localizations.dart';
 import 'package:slice_pay/l10n/translation.dart';
 import 'package:slice_pay/modules/category/domain/models/category.dart';
 import 'package:slice_pay/modules/subcategory/domain/models/subcategory.dart';
@@ -155,7 +155,7 @@ class SubcategoriesListWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
-                IconData(int.parse(item.icon), fontFamily: 'MaterialIcons'),
+                item.icon.toIconData(),
                 color: color,
                 size: 24.sp,
               ),
@@ -344,10 +344,7 @@ class _EditSubcategoryDialogState extends State<_EditSubcategoryDialog> {
                         SizedBox(height: 10.h),
                         IconPickerWidget(
                           key: ValueKey(_icon),
-                          currentIcon: IconData(
-                            int.tryParse(_icon) ?? Icons.category.codePoint,
-                            fontFamily: 'MaterialIcons',
-                          ),
+                          currentIcon: _icon.toIconData(),
                           currentColor: _color,
                           onIconSelected: (icon) =>
                               setState(() => _icon = icon.codePoint.toString()),

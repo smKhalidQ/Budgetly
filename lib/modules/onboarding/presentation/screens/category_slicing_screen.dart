@@ -1,6 +1,5 @@
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
-import 'package:slice_pay/core/theming/app_radius.dart';
 import 'package:slice_pay/l10n/translation.dart';
 import 'package:slice_pay/modules/category/presentation/cubits/category_cubit.dart';
 import 'package:slice_pay/modules/onboarding/presentation/widgets/build_header_section.dart';

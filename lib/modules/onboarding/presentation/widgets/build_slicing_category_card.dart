@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:slice_pay/core/extensions/icon_extensions.dart';
 import 'package:slice_pay/core/responsive/responsive_manager.dart';
 import 'package:slice_pay/core/theming/app_color.dart';
 import 'package:slice_pay/core/utilities/constants.dart';
@@ -46,7 +47,7 @@ class SlicingCategoryCard extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                IconData(int.parse(category.icon), fontFamily: 'MaterialIcons'),
+                category.icon.toIconData(),
                 color: categoryColor,
                 size: 20.sp,
               ),
